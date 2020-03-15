@@ -38,6 +38,20 @@ p.printresults()
 In this example, four parameters were examined: optimizer, learning_rate, hiddenactivation, and activation.
 The number of neurons in the hidden layer was kept as default.
 
+### Details
+
+The user is given the chance to handle some of the default parameters such as the number of epochs. 
+The user can modify this by changing a psosearch class intance. For e.g., if you need to change the number of epochs from 50 
+to 10 for an MLP training:
+```python
+from psosearch import psosearch
+task='binary classification'
+score='auc'
+p=psosearch.psosearch('mlp',params,task,score)
+p.defaultparams['epochs']=10
+
+```
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
