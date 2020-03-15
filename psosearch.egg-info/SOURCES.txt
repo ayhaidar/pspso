@@ -1,0 +1,9 @@
+README.md
+setup.py
+psosearch/__init__.py
+psosearch/psosearch.py
+psosearch.egg-info/PKG-INFO
+psosearch.egg-info/SOURCES.txt
+psosearch.egg-info/dependency_links.txt
+psosearch.egg-info/requires.txt
+psosearch.egg-info/top_level.txt

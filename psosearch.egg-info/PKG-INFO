@@ -1,0 +1,56 @@
+Metadata-Version: 2.1
+Name: psosearch
+Version: 0.0.7
+Summary: psosearch is a python package for selecting machine learning algorithms parameters.
+Home-page: https://github.com/ayhaidar/psosearch
+Author: Ali Haidar
+Author-email: ali.hdrv@outlook.com
+License: MIT
+Description: # psosearch
+        
+        psosearch is a Python library for dealing with word pluralization.
+        
+        ## Installation
+        
+        Use the package manager [pip](https://pip.pypa.io/en/stable/) to install psosearch.
+        
+        ```bash
+        pip install psosearch
+        ```
+        
+        ## Usage
+        
+        ```python
+        import psosearch
+        
+        params = {"optimizer":['adam','nadam','sgd','adadelta'],
+            "learning_rate":  [0.01,0.2,2],
+            "hiddenactivation": ['sigmoid','tanh','relu'],
+            "activation": ['sigmoid','tanh','relu']}
+        task='binary classification'
+        score='auc'
+        number_of_particles=10
+        number_of_iterations=15
+        p=psosearch('mlp',params,task,score)
+        p.fitpsosearch(x_train,y_train,x_val,y_val,number_of_particles=number_of_particles,
+                       number_of_iterations=number_of_iterations)
+        ```
+        
+        ## Contributing
+        Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+        
+        Please make sure to update tests as appropriate.
+        
+        ## License
+        [MIT](https://choosealicense.com/licenses/mit/)
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Intended Audience :: Developers
+Requires-Python: >=3.5
+Description-Content-Type: text/markdown
