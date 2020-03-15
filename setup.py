@@ -1,4 +1,4 @@
-"""Setup for the psosearch package."""
+"""Setup for the pspso package."""
 
 import setuptools
 from setuptools import setup
@@ -9,13 +9,13 @@ with open('README.md') as f:
 setuptools.setup(
     author="Ali Haidar",
     author_email="ali.hdrv@outlook.com",
-    name='psosearch',
+    name='pspso',
     license="MIT",
-    description='psosearch is a python package for selecting machine learning algorithms parameters.',
-    version='v0.0.7',
+    description='pspso is a python package for selecting machine learning algorithms parameters.',
+    version='v0.0.8',
     long_description=README,
     long_description_content_type='text/markdown',
-    url='https://github.com/ayhaidar/psosearch',
+    url='https://github.com/ayhaidar/pspso',
     packages=setuptools.find_packages(),
     python_requires=">=3.5",
     install_requires=['numpy==1.16.1','lightgbm','xgboost','scikit-learn>=0.21.2','keras','pyswarms>=1.0.2','matplotlib>=3.1.1'],
