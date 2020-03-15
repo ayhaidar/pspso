@@ -1,6 +1,6 @@
 # psosearch
 
-psosearch is a Python library for dealing with word pluralization.
+psosearch is a Python library selecting machine learning algorithms parameters.
 
 ## Installation
 
