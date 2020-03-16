@@ -13,9 +13,10 @@
 import os
 import sys
 import sphinx_rtd_theme
+
 sys.path.insert(0, os.path.abspath('../..'))
 sys.path.insert(0, os.path.abspath('../../pspso/'))
-sys.path.append(os.path.abspath('..'))
+#sys.path.append(os.path.abspath('..'))
 # -- Project information -----------------------------------------------------
 
 project = 'pspso'

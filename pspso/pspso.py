@@ -473,7 +473,7 @@ class pspso:
         return self.pos,self.cost,self.duration,self.model,self.optimizer
     
     
-    def fitgridsearch(self,X_train=None, Y_train=None, X_val=None,Y_val=None ):
+    def fitpsgrid(self,X_train=None, Y_train=None, X_val=None,Y_val=None ):
         """ Grid search was implemented to match the training process with pspso and for comparison purposes.
         I have to traverse each value between x_min, x_max. Create a list seperating rounding value.
         
@@ -518,7 +518,7 @@ class pspso:
         return self.pos,self.cost,self.duration,self.model,self.combinations,self.results #return pos, cost, duration, model, combinations, results
     
     
-    def fitrandomsearch(self,X_train=None, Y_train=None, X_val=None,Y_val=None,number_of_attempts=20 ):
+    def fitpsrandom(self,X_train=None, Y_train=None, X_val=None,Y_val=None,number_of_attempts=20 ):
         """With Random search, the process is done for number of times specified by a parameter in the function.
         
         """

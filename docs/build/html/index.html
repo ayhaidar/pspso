@@ -92,7 +92,12 @@
 </li>
 <li><a class="reference internal" href="#contributing">Contributing</a></li>
 <li><a class="reference internal" href="#license">License</a></li>
-<li><a class="reference internal" href="#module-pspso">Summary</a></li>
+<li><a class="reference internal" href="#functions">Functions</a><ul>
+<li><a class="reference internal" href="#ml-algorithms-functions">ML Algorithms Functions</a></li>
+<li><a class="reference internal" href="#selection-functions">Selection Functions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#summary">Summary</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 </div>
@@ -251,17 +256,71 @@ to discuss what you would like to change.</p>
 </div>
 <div class="section" id="license">
 <h1>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference external" href="https://choosealicense.com/licenses/mit/">MIT</a></p>
+<p>Copyright (c) [2020] [Ali Haidar]</p>
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the “Software”), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.</p>
+<p>THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.</p>
 </div>
-<div class="section" id="module-pspso">
-<span id="summary"></span><h1>Summary<a class="headerlink" href="#module-pspso" title="Permalink to this headline">¶</a></h1>
-<p>Created on Wed Jan 15 08:53:50 2020</p>
-<p>&#64;author: AliHaidar</p>
-<p>This package allows using PSO for optimizing Machine Learning algorithms parameters.
-Four algorithms were initiated in the first study: MLP, SVM, XGBoost, GBDT
-The class contains various static classes, to allow running seperate functions alone.
-In some cases, i was forced to follow the hardest way since I didnt want to modify any part of the package
-that supports pso (pwswarms)</p>
+<div class="section" id="functions">
+<h1>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="ml-algorithms-functions">
+<h2>ML Algorithms Functions<a class="headerlink" href="#ml-algorithms-functions" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pspso.pspso.forward_prop_gbdt" title="pspso.pspso.forward_prop_gbdt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">forward_prop_gbdt</span></code></a>(particle, task, score, …)</p></td>
+<td><p>Calculates the fitness value of the encoded parameters in variable particle.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pspso.pspso.forward_prop_xgboost" title="pspso.pspso.forward_prop_xgboost"><code class="xref py py-obj docutils literal notranslate"><span class="pre">forward_prop_xgboost</span></code></a>(particle, task, score, …)</p></td>
+<td><p>This function accepts the particle from the PSO fitness function.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pspso.pspso.forward_prop_svm" title="pspso.pspso.forward_prop_svm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">forward_prop_svm</span></code></a>(particle, task, score, …)</p></td>
+<td><p>Train the SVM after decoding the parameters in variable particle.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pspso.pspso.forward_prop_mlp" title="pspso.pspso.forward_prop_mlp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">forward_prop_mlp</span></code></a>(particle, task, score, …)</p></td>
+<td><p>Train the MLP after the decoding the parameters in variable particle.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="selection-functions">
+<h2>Selection Functions<a class="headerlink" href="#selection-functions" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pspso.pspso.fitpspso" title="pspso.pspso.fitpspso"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fitpspso</span></code></a>([X_train, Y_train, X_val, Y_val, …])</p></td>
+<td><p>fitpso search</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pspso.pspso.fitpsgrid" title="pspso.pspso.fitpsgrid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fitpsgrid</span></code></a>([X_train, Y_train, X_val, Y_val])</p></td>
+<td><p>Grid search was implemented to match the training process with pspso and for comparison purposes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pspso.pspso.fitpsrandom" title="pspso.pspso.fitpsrandom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fitpsrandom</span></code></a>([X_train, Y_train, X_val, …])</p></td>
+<td><p>With Random search, the process is done for number of times specified by a parameter in the function.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="summary">
+<h1>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="pspso.pspso">
 <em class="property">class </em><code class="sig-prename descclassname">pspso.</code><code class="sig-name descname">pspso</code><span class="sig-paren">(</span><em class="sig-param">estimator='xgboost'</em>, <em class="sig-param">params=None</em>, <em class="sig-param">task='regression'</em>, <em class="sig-param">score='rmse'</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso" title="Permalink to this definition">¶</a></dt>
@@ -303,8 +362,8 @@ whole swarm.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pspso.pspso.fitgridsearch">
-<code class="sig-name descname">fitgridsearch</code><span class="sig-paren">(</span><em class="sig-param">X_train=None</em>, <em class="sig-param">Y_train=None</em>, <em class="sig-param">X_val=None</em>, <em class="sig-param">Y_val=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.fitgridsearch" title="Permalink to this definition">¶</a></dt>
+<dt id="pspso.pspso.fitpsgrid">
+<code class="sig-name descname">fitpsgrid</code><span class="sig-paren">(</span><em class="sig-param">X_train=None</em>, <em class="sig-param">Y_train=None</em>, <em class="sig-param">X_val=None</em>, <em class="sig-param">Y_val=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.fitpsgrid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Grid search was implemented to match the training process with pspso and for comparison purposes.
 I have to traverse each value between x_min, x_max. Create a list seperating rounding value.</p>
 </dd></dl>
@@ -316,8 +375,8 @@ I have to traverse each value between x_min, x_max. Create a list seperating rou
 </dd></dl>
 
 <dl class="method">
-<dt id="pspso.pspso.fitrandomsearch">
-<code class="sig-name descname">fitrandomsearch</code><span class="sig-paren">(</span><em class="sig-param">X_train=None</em>, <em class="sig-param">Y_train=None</em>, <em class="sig-param">X_val=None</em>, <em class="sig-param">Y_val=None</em>, <em class="sig-param">number_of_attempts=20</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.fitrandomsearch" title="Permalink to this definition">¶</a></dt>
+<dt id="pspso.pspso.fitpsrandom">
+<code class="sig-name descname">fitpsrandom</code><span class="sig-paren">(</span><em class="sig-param">X_train=None</em>, <em class="sig-param">Y_train=None</em>, <em class="sig-param">X_val=None</em>, <em class="sig-param">Y_val=None</em>, <em class="sig-param">number_of_attempts=20</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.fitpsrandom" title="Permalink to this definition">¶</a></dt>
 <dd><p>With Random search, the process is done for number of times specified by a parameter in the function.</p>
 </dd></dl>
 
