@@ -92,7 +92,7 @@
 </li>
 <li><a class="reference internal" href="#contributing">Contributing</a></li>
 <li><a class="reference internal" href="#license">License</a></li>
-<li><a class="reference internal" href="#summary">Summary</a></li>
+<li><a class="reference internal" href="#module-pspso">Summary</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 </div>
@@ -253,8 +253,143 @@ to discuss what you would like to change.</p>
 <h1>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="https://choosealicense.com/licenses/mit/">MIT</a></p>
 </div>
-<div class="section" id="summary">
-<h1>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-pspso">
+<span id="summary"></span><h1>Summary<a class="headerlink" href="#module-pspso" title="Permalink to this headline">¶</a></h1>
+<p>Created on Sat Mar 14 18:28:52 2020</p>
+<p>&#64;author: AliHaidar</p>
+<dl class="class">
+<dt id="pspso.pspso">
+<em class="property">class </em><code class="sig-prename descclassname">pspso.</code><code class="sig-name descname">pspso</code><span class="sig-paren">(</span><em class="sig-param">estimator='xgboost'</em>, <em class="sig-param">params=None</em>, <em class="sig-param">task='regression'</em>, <em class="sig-param">score='rmse'</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class searches for algorithm parameters by using the Particle Swarm Optimization (PSO) algorithm.</p>
+<dl class="method">
+<dt id="pspso.pspso.decode_parameters">
+<em class="property">static </em><code class="sig-name descname">decode_parameters</code><span class="sig-paren">(</span><em class="sig-param">particle</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.decode_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decodes the parameters of a list into a meaningful set of parameters.
+To decode a particle, we need the following global variables:</p>
+<blockquote>
+<div><p>global variable parameters
+global variable defaultparameters
+global variable paramdetails
+global variable rounding</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="pspso.pspso.f">
+<em class="property">static </em><code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param">q</em>, <em class="sig-param">estimator</em>, <em class="sig-param">task</em>, <em class="sig-param">score</em>, <em class="sig-param">X_train</em>, <em class="sig-param">Y_train</em>, <em class="sig-param">X_val</em>, <em class="sig-param">Y_val</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.f" title="Permalink to this definition">¶</a></dt>
+<dd><p>Higher-level method to do forward_prop in the
+whole swarm.</p>
+<dl class="simple">
+<dt>x: numpy.ndarray of shape (n_particles, dimensions)</dt><dd><p>The swarm that will perform the search</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The computed loss for each particle</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray of shape (n_particles, )</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pspso.pspso.fitgridsearch">
+<code class="sig-name descname">fitgridsearch</code><span class="sig-paren">(</span><em class="sig-param">X_train=None</em>, <em class="sig-param">Y_train=None</em>, <em class="sig-param">X_val=None</em>, <em class="sig-param">Y_val=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.fitgridsearch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Grid search was implemented to match the training process with pspso and for comparison purposes.
+I have to traverse each value between x_min, x_max. Create a list seperating rounding value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pspso.pspso.fitrandomsearch">
+<code class="sig-name descname">fitrandomsearch</code><span class="sig-paren">(</span><em class="sig-param">X_train=None</em>, <em class="sig-param">Y_train=None</em>, <em class="sig-param">X_val=None</em>, <em class="sig-param">Y_val=None</em>, <em class="sig-param">number_of_attempts=20</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.fitrandomsearch" title="Permalink to this definition">¶</a></dt>
+<dd><p>With Random search, the process is done for number of times specified by a parameter in the function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pspso.pspso.forward_prop_gbdt">
+<em class="property">static </em><code class="sig-name descname">forward_prop_gbdt</code><span class="sig-paren">(</span><em class="sig-param">particle</em>, <em class="sig-param">task</em>, <em class="sig-param">score</em>, <em class="sig-param">X_train</em>, <em class="sig-param">Y_train</em>, <em class="sig-param">X_val</em>, <em class="sig-param">Y_val</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.forward_prop_gbdt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the fitness value of the encoded parameters in variable particle.
+The particle is decoded into parameters of the gbdt. Then, The gbdt is trained and the score is sent back to the fitness function.</p>
+<dl class="simple">
+<dt>particle: list of values (n dimensions)</dt><dd><p>A particle in the swarm</p>
+</dd>
+<dt>task: regression, binary classification, or binary classification r</dt><dd><p>the task to be conducted</p>
+</dd>
+<dt>score: rmse (regression), auc (binary classification), acc (binary classification)</dt><dd><p>the type of evaluation</p>
+</dd>
+<dt>X_train: numpy.ndarray of shape (m, n)</dt><dd><p>Training dataset</p>
+</dd>
+<dt>Y_train: numpy.ndarray of shape (m,1)</dt><dd><p>Training target</p>
+</dd>
+<dt>X_val: numpy.ndarray of shape (x, y)</dt><dd><p>Validation dataset</p>
+</dd>
+<dt>Y_val: numpy.ndarray of shape (x,1)</dt><dd><p>Validation target</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the score of the trained algorithm over the validation dataset, trained model</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>variable, model</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pspso.pspso.forward_prop_mlp">
+<em class="property">static </em><code class="sig-name descname">forward_prop_mlp</code><span class="sig-paren">(</span><em class="sig-param">particle</em>, <em class="sig-param">task</em>, <em class="sig-param">score</em>, <em class="sig-param">X_train</em>, <em class="sig-param">Y_train</em>, <em class="sig-param">X_val</em>, <em class="sig-param">Y_val</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.forward_prop_mlp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train the MLP after the decoding the parameters in variable particle.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pspso.pspso.forward_prop_svm">
+<em class="property">static </em><code class="sig-name descname">forward_prop_svm</code><span class="sig-paren">(</span><em class="sig-param">particle</em>, <em class="sig-param">task</em>, <em class="sig-param">score</em>, <em class="sig-param">X_train</em>, <em class="sig-param">Y_train</em>, <em class="sig-param">X_val</em>, <em class="sig-param">Y_val</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.forward_prop_svm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train the SVM after decoding the parameters in variable particle.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pspso.pspso.forward_prop_xgboost">
+<em class="property">static </em><code class="sig-name descname">forward_prop_xgboost</code><span class="sig-paren">(</span><em class="sig-param">particle</em>, <em class="sig-param">task</em>, <em class="sig-param">score</em>, <em class="sig-param">X_train</em>, <em class="sig-param">Y_train</em>, <em class="sig-param">X_val</em>, <em class="sig-param">Y_val</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.forward_prop_xgboost" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function accepts the particle from the PSO fitness function.
+The particle is decoded into parameters of the XGBoost.
+This function is similar to forward_prop_gbdt
+The gbdt is trained and the score is sent back to the fitness function.</p>
+<dl class="simple">
+<dt>particle: list of values (n dimensions)</dt><dd><p>A particle in the swarm</p>
+</dd>
+<dt>task: regression, binary classification, or binary classification r</dt><dd><p>the task to be conducted</p>
+</dd>
+<dt>score: rmse (regression), auc (binary classification), acc (binary classification)</dt><dd><p>the type of evaluation</p>
+</dd>
+<dt>X_train: numpy.ndarray of shape (m, n)</dt><dd><p>Training dataset</p>
+</dd>
+<dt>Y_train: numpy.ndarray of shape (m,1)</dt><dd><p>Training target</p>
+</dd>
+<dt>X_val: numpy.ndarray of shape (x, y)</dt><dd><p>Validation dataset</p>
+</dd>
+<dt>Y_val: numpy.ndarray of shape (x,1)</dt><dd><p>Validation target</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the score of the trained algorithm over the validation dataset, trained model</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>variable, model</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pspso.pspso.rebuildmodel">
+<em class="property">static </em><code class="sig-name descname">rebuildmodel</code><span class="sig-paren">(</span><em class="sig-param">estimator</em>, <em class="sig-param">pos</em>, <em class="sig-param">task</em>, <em class="sig-param">score</em>, <em class="sig-param">X_train</em>, <em class="sig-param">Y_train</em>, <em class="sig-param">X_val</em>, <em class="sig-param">Y_val</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.rebuildmodel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to rebuild the model after selecting the parameters.</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>

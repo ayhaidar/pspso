@@ -120,6 +120,11 @@ License
 Summary
 ==================
 
+.. automodule:: pspso
+
+
+.. autoclass:: pspso
+    :members:
 
 
 Indices and tables
