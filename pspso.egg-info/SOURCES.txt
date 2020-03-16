@@ -1,0 +1,9 @@
+README.md
+setup.py
+pspso/__init__.py
+pspso/pspso.py
+pspso.egg-info/PKG-INFO
+pspso.egg-info/SOURCES.txt
+pspso.egg-info/dependency_links.txt
+pspso.egg-info/requires.txt
+pspso.egg-info/top_level.txt

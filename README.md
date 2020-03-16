@@ -27,9 +27,9 @@ params = {"optimizer":['adam','nadam','sgd','adadelta'],
     "activation": ['sigmoid','tanh','relu']}
 task='binary classification'
 score='auc'
-number_of_particles=10
-number_of_iterations=15
-p=pspso.pspso('mlp',params,task,score)
+number_of_particles=4
+number_of_iterations=5
+p=pspso('mlp',params,task,score)
 p.fitpspso(X_train,Y_train,X_val,Y_val,number_of_particles=number_of_particles,
                number_of_iterations=number_of_iterations)
 p.printresults()
