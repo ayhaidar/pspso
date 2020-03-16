@@ -5,4 +5,4 @@ Created on Sat Mar 14 18:28:52 2020
 @author: AliHaidar
 """
 
-from .pspso import pspso
+from .pspso import (pspso)
