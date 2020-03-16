@@ -1,0 +1,455 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Welcome to pspso’s documentation! &mdash; pspso 0.0.5 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="#" class="icon icon-home"> pspso
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Welcome to pspso’s documentation!</a></li>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#usage">Usage</a><ul>
+<li><a class="reference internal" href="#mlp-example">MLP Example</a></li>
+<li><a class="reference internal" href="#xgboost-example">XGBoost Example</a></li>
+<li><a class="reference internal" href="#details">Details</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#contributing">Contributing</a></li>
+<li><a class="reference internal" href="#license">License</a></li>
+<li><a class="reference internal" href="#module-pspso">Summary</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">pspso</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#">Docs</a> &raquo;</li>
+        
+      <li>Welcome to pspso’s documentation!</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="welcome-to-pspso-s-documentation">
+<h1>Welcome to pspso’s documentation!<a class="headerlink" href="#welcome-to-pspso-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>pspso is a python library for selecting machine learning algorithms
+parameters. The first version supports two single algorithms:
+Multi-Layer Perceptron (MLP) and Support Vector Machine (SVM). It
+supports two ensembles: Extreme Gradient Boosting (XGBoost) and Gradient
+Boosting Decision Trees (GBDT).</p>
+</div>
+<div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>Use the package manager <a class="reference external" href="https://pip.pypa.io/en/stable/">pip</a> to
+install pspso.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install pspso
+</pre></div>
+</div>
+</div>
+<div class="section" id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="mlp-example">
+<h2>MLP Example<a class="headerlink" href="#mlp-example" title="Permalink to this headline">¶</a></h2>
+<p>pspso is used to select the machine learning algorithms parameters. It
+is assumed that the user has already processed and prepared the training
+and validation datasets. Below is an example for using the pso to select
+the parameters of the MLP. It should be noticed that pspso handles the
+MLP random weights intialization issue that may cause losing the best
+solution in consecutive iterations.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pspso</span> <span class="kn">import</span> <span class="n">pspso</span>
+<span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;optimizer&quot;</span><span class="p">:[</span><span class="s1">&#39;adam&#39;</span><span class="p">,</span><span class="s1">&#39;nadam&#39;</span><span class="p">,</span><span class="s1">&#39;sgd&#39;</span><span class="p">,</span><span class="s1">&#39;adadelta&#39;</span><span class="p">],</span>
+    <span class="s2">&quot;learning_rate&quot;</span><span class="p">:</span>  <span class="p">[</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.2</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>
+    <span class="s2">&quot;hiddenactivation&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;sigmoid&#39;</span><span class="p">,</span><span class="s1">&#39;tanh&#39;</span><span class="p">,</span><span class="s1">&#39;relu&#39;</span><span class="p">],</span>
+    <span class="s2">&quot;activation&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;sigmoid&#39;</span><span class="p">,</span><span class="s1">&#39;tanh&#39;</span><span class="p">,</span><span class="s1">&#39;relu&#39;</span><span class="p">]}</span>
+<span class="n">task</span><span class="o">=</span><span class="s1">&#39;binary classification&#39;</span>
+<span class="n">score</span><span class="o">=</span><span class="s1">&#39;auc&#39;</span>
+<span class="n">number_of_particles</span><span class="o">=</span><span class="mi">4</span>
+<span class="n">number_of_iterations</span><span class="o">=</span><span class="mi">5</span>
+<span class="n">p</span><span class="o">=</span><span class="n">pspso</span><span class="p">(</span><span class="s1">&#39;mlp&#39;</span><span class="p">,</span><span class="n">params</span><span class="p">,</span><span class="n">task</span><span class="p">,</span><span class="n">score</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">fitpspso</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span><span class="n">Y_train</span><span class="p">,</span><span class="n">X_val</span><span class="p">,</span><span class="n">Y_val</span><span class="p">,</span><span class="n">number_of_particles</span><span class="o">=</span><span class="n">number_of_particles</span><span class="p">,</span>
+               <span class="n">number_of_iterations</span><span class="o">=</span><span class="n">number_of_iterations</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">printresults</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>In this example, four parameters were examined: optimizer,
+learning_rate, hiddenactivation, and activation. The number of neurons
+in the hidden layer was kept as default.</p>
+</div>
+<div class="section" id="xgboost-example">
+<h2>XGBoost Example<a class="headerlink" href="#xgboost-example" title="Permalink to this headline">¶</a></h2>
+<p>Five parameters of the xgboost are searched and explored.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pspso</span> <span class="kn">import</span> <span class="n">pspso</span>
+<span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;objective&quot;</span><span class="p">:[</span><span class="s1">&#39;reg:tweedie&#39;</span><span class="p">,</span><span class="s2">&quot;reg:linear&quot;</span><span class="p">,</span><span class="s2">&quot;reg:gamma&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;learning_rate&quot;</span><span class="p">:</span>  <span class="p">[</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.2</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>
+        <span class="s2">&quot;max_depth&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
+        <span class="s2">&quot;n_estimators&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">200</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
+        <span class="s2">&quot;subsample&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]}</span>
+<span class="n">task</span><span class="o">=</span><span class="s2">&quot;regression&quot;</span>
+<span class="n">score</span><span class="o">=</span><span class="s2">&quot;rmse&quot;</span>
+<span class="n">number_of_particles</span><span class="o">=</span><span class="mi">20</span>
+<span class="n">number_of_iterations</span><span class="o">=</span><span class="mi">40</span>
+<span class="n">p</span><span class="o">=</span><span class="n">pspso</span><span class="p">(</span><span class="s1">&#39;xgboost&#39;</span><span class="p">,</span><span class="n">params</span><span class="p">,</span><span class="n">task</span><span class="p">,</span><span class="n">score</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">fitpspso</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span><span class="n">Y_train</span><span class="p">,</span><span class="n">X_val</span><span class="p">,</span><span class="n">Y_val</span><span class="p">,</span>
+                           <span class="n">number_of_particles</span><span class="o">=</span><span class="n">number_of_particles</span><span class="p">,</span>
+                           <span class="n">number_of_iterations</span><span class="o">=</span><span class="n">number_of_iterations</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;PSO search:&quot;</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">printresults</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="details">
+<h2>Details<a class="headerlink" href="#details" title="Permalink to this headline">¶</a></h2>
+<p>The user is given the chance to handle some of the default parameters
+such as the number of epochs. The user can modify this by changing a
+pspso class intance. For e.g., if you need to change the number of
+epochs from 50 to 10 for an MLP training:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pspso</span> <span class="kn">import</span> <span class="n">pspso</span>
+<span class="n">task</span><span class="o">=</span><span class="s1">&#39;binary classification&#39;</span>
+<span class="n">score</span><span class="o">=</span><span class="s1">&#39;auc&#39;</span>
+<span class="n">p</span><span class="o">=</span><span class="n">pspso</span><span class="o">.</span><span class="n">pspso</span><span class="p">(</span><span class="s1">&#39;mlp&#39;</span><span class="p">,</span><span class="n">params</span><span class="p">,</span><span class="n">task</span><span class="p">,</span><span class="n">score</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">defaultparams</span><span class="p">[</span><span class="s1">&#39;epochs&#39;</span><span class="p">]</span><span class="o">=</span><span class="mi">10</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="contributing">
+<h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h1>
+<p>Pull requests are welcome. For major changes, please open an issue first
+to discuss what you would like to change.</p>
+<p>Please make sure to update tests as appropriate.</p>
+</div>
+<div class="section" id="license">
+<h1>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h1>
+<p>MIT License</p>
+<p>Copyright (c) [2020] [Ali Haidar]</p>
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the “Software”), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.</p>
+<p>THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.</p>
+</div>
+<div class="section" id="module-pspso">
+<span id="summary"></span><h1>Summary<a class="headerlink" href="#module-pspso" title="Permalink to this headline">¶</a></h1>
+<p>Created on Sat Mar 14 18:28:52 2020</p>
+<p>&#64;author: AliHaidar</p>
+<dl class="class">
+<dt id="pspso.pspso">
+<em class="property">class </em><code class="sig-prename descclassname">pspso.</code><code class="sig-name descname">pspso</code><span class="sig-paren">(</span><em class="sig-param">estimator='xgboost'</em>, <em class="sig-param">params=None</em>, <em class="sig-param">task='regression'</em>, <em class="sig-param">score='rmse'</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class searches for algorithm parameters by using the Particle Swarm Optimization (PSO) algorithm.</p>
+<dl class="method">
+<dt id="pspso.pspso.decode_parameters">
+<em class="property">static </em><code class="sig-name descname">decode_parameters</code><span class="sig-paren">(</span><em class="sig-param">particle</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.decode_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decodes the parameters of a list into a meaningful set of parameters.
+To decode a particle, we need the following global variables:</p>
+<blockquote>
+<div><p>global variable parameters
+global variable defaultparameters
+global variable paramdetails
+global variable rounding</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="pspso.pspso.f">
+<em class="property">static </em><code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param">q</em>, <em class="sig-param">estimator</em>, <em class="sig-param">task</em>, <em class="sig-param">score</em>, <em class="sig-param">X_train</em>, <em class="sig-param">Y_train</em>, <em class="sig-param">X_val</em>, <em class="sig-param">Y_val</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.f" title="Permalink to this definition">¶</a></dt>
+<dd><p>Higher-level method to do forward_prop in the
+whole swarm.</p>
+<dl class="simple">
+<dt>x: numpy.ndarray of shape (n_particles, dimensions)</dt><dd><p>The swarm that will perform the search</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The computed loss for each particle</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray of shape (n_particles, )</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pspso.pspso.fitgridsearch">
+<code class="sig-name descname">fitgridsearch</code><span class="sig-paren">(</span><em class="sig-param">X_train=None</em>, <em class="sig-param">Y_train=None</em>, <em class="sig-param">X_val=None</em>, <em class="sig-param">Y_val=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.fitgridsearch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Grid search was implemented to match the training process with pspso and for comparison purposes.
+I have to traverse each value between x_min, x_max. Create a list seperating rounding value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pspso.pspso.fitrandomsearch">
+<code class="sig-name descname">fitrandomsearch</code><span class="sig-paren">(</span><em class="sig-param">X_train=None</em>, <em class="sig-param">Y_train=None</em>, <em class="sig-param">X_val=None</em>, <em class="sig-param">Y_val=None</em>, <em class="sig-param">number_of_attempts=20</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.fitrandomsearch" title="Permalink to this definition">¶</a></dt>
+<dd><p>With Random search, the process is done for number of times specified by a parameter in the function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pspso.pspso.forward_prop_gbdt">
+<em class="property">static </em><code class="sig-name descname">forward_prop_gbdt</code><span class="sig-paren">(</span><em class="sig-param">particle</em>, <em class="sig-param">task</em>, <em class="sig-param">score</em>, <em class="sig-param">X_train</em>, <em class="sig-param">Y_train</em>, <em class="sig-param">X_val</em>, <em class="sig-param">Y_val</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.forward_prop_gbdt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the fitness value of the encoded parameters in variable particle.
+The particle is decoded into parameters of the gbdt. Then, The gbdt is trained and the score is sent back to the fitness function.</p>
+<dl class="simple">
+<dt>particle: list of values (n dimensions)</dt><dd><p>A particle in the swarm</p>
+</dd>
+<dt>task: regression, binary classification, or binary classification r</dt><dd><p>the task to be conducted</p>
+</dd>
+<dt>score: rmse (regression), auc (binary classification), acc (binary classification)</dt><dd><p>the type of evaluation</p>
+</dd>
+<dt>X_train: numpy.ndarray of shape (m, n)</dt><dd><p>Training dataset</p>
+</dd>
+<dt>Y_train: numpy.ndarray of shape (m,1)</dt><dd><p>Training target</p>
+</dd>
+<dt>X_val: numpy.ndarray of shape (x, y)</dt><dd><p>Validation dataset</p>
+</dd>
+<dt>Y_val: numpy.ndarray of shape (x,1)</dt><dd><p>Validation target</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the score of the trained algorithm over the validation dataset, trained model</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>variable, model</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pspso.pspso.forward_prop_mlp">
+<em class="property">static </em><code class="sig-name descname">forward_prop_mlp</code><span class="sig-paren">(</span><em class="sig-param">particle</em>, <em class="sig-param">task</em>, <em class="sig-param">score</em>, <em class="sig-param">X_train</em>, <em class="sig-param">Y_train</em>, <em class="sig-param">X_val</em>, <em class="sig-param">Y_val</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.forward_prop_mlp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train the MLP after the decoding the parameters in variable particle.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pspso.pspso.forward_prop_svm">
+<em class="property">static </em><code class="sig-name descname">forward_prop_svm</code><span class="sig-paren">(</span><em class="sig-param">particle</em>, <em class="sig-param">task</em>, <em class="sig-param">score</em>, <em class="sig-param">X_train</em>, <em class="sig-param">Y_train</em>, <em class="sig-param">X_val</em>, <em class="sig-param">Y_val</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.forward_prop_svm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train the SVM after decoding the parameters in variable particle.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pspso.pspso.forward_prop_xgboost">
+<em class="property">static </em><code class="sig-name descname">forward_prop_xgboost</code><span class="sig-paren">(</span><em class="sig-param">particle</em>, <em class="sig-param">task</em>, <em class="sig-param">score</em>, <em class="sig-param">X_train</em>, <em class="sig-param">Y_train</em>, <em class="sig-param">X_val</em>, <em class="sig-param">Y_val</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.forward_prop_xgboost" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function accepts the particle from the PSO fitness function.
+The particle is decoded into parameters of the XGBoost.
+This function is similar to forward_prop_gbdt
+The gbdt is trained and the score is sent back to the fitness function.</p>
+<dl class="simple">
+<dt>particle: list of values (n dimensions)</dt><dd><p>A particle in the swarm</p>
+</dd>
+<dt>task: regression, binary classification, or binary classification r</dt><dd><p>the task to be conducted</p>
+</dd>
+<dt>score: rmse (regression), auc (binary classification), acc (binary classification)</dt><dd><p>the type of evaluation</p>
+</dd>
+<dt>X_train: numpy.ndarray of shape (m, n)</dt><dd><p>Training dataset</p>
+</dd>
+<dt>Y_train: numpy.ndarray of shape (m,1)</dt><dd><p>Training target</p>
+</dd>
+<dt>X_val: numpy.ndarray of shape (x, y)</dt><dd><p>Validation dataset</p>
+</dd>
+<dt>Y_val: numpy.ndarray of shape (x,1)</dt><dd><p>Validation target</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the score of the trained algorithm over the validation dataset, trained model</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>variable, model</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pspso.pspso.rebuildmodel">
+<em class="property">static </em><code class="sig-name descname">rebuildmodel</code><span class="sig-paren">(</span><em class="sig-param">estimator</em>, <em class="sig-param">pos</em>, <em class="sig-param">task</em>, <em class="sig-param">score</em>, <em class="sig-param">X_train</em>, <em class="sig-param">Y_train</em>, <em class="sig-param">X_val</em>, <em class="sig-param">Y_val</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.rebuildmodel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to rebuild the model after selecting the parameters.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Ali Haidar
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
