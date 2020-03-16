@@ -80,12 +80,14 @@
             
               <!-- Local TOC -->
               <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Welcome to pspso’s documentation!</a></li>
+<li><a class="reference internal" href="#">Welcome to pspso’s documentation!</a><ul>
 <li><a class="reference internal" href="#installation">Installation</a></li>
 <li><a class="reference internal" href="#usage">Usage</a><ul>
 <li><a class="reference internal" href="#mlp-example">MLP Example</a></li>
 <li><a class="reference internal" href="#xgboost-example">XGBoost Example</a></li>
 <li><a class="reference internal" href="#details">Details</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a class="reference internal" href="#contributing">Contributing</a></li>
@@ -158,14 +160,15 @@
             
   <div class="section" id="welcome-to-pspso-s-documentation">
 <h1>Welcome to pspso’s documentation!<a class="headerlink" href="#welcome-to-pspso-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
 <p>pspso is a python library for selecting machine learning algorithms
 parameters. The first version supports two single algorithms:
 Multi-Layer Perceptron (MLP) and Support Vector Machine (SVM). It
 supports two ensembles: Extreme Gradient Boosting (XGBoost) and Gradient
 Boosting Decision Trees (GBDT).</p>
-</div>
 <div class="section" id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <p>Use the package manager <a class="reference external" href="https://pip.pypa.io/en/stable/">pip</a> to
 install pspso.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install pspso
@@ -173,9 +176,9 @@ install pspso.</p>
 </div>
 </div>
 <div class="section" id="usage">
-<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="mlp-example">
-<h2>MLP Example<a class="headerlink" href="#mlp-example" title="Permalink to this headline">¶</a></h2>
+<h3>MLP Example<a class="headerlink" href="#mlp-example" title="Permalink to this headline">¶</a></h3>
 <p>pspso is used to select the machine learning algorithms parameters. It
 is assumed that the user has already processed and prepared the training
 and validation datasets. Below is an example for using the pso to select
@@ -202,7 +205,7 @@ learning_rate, hiddenactivation, and activation. The number of neurons
 in the hidden layer was kept as default.</p>
 </div>
 <div class="section" id="xgboost-example">
-<h2>XGBoost Example<a class="headerlink" href="#xgboost-example" title="Permalink to this headline">¶</a></h2>
+<h3>XGBoost Example<a class="headerlink" href="#xgboost-example" title="Permalink to this headline">¶</a></h3>
 <p>Five parameters of the xgboost are searched and explored.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pspso</span> <span class="kn">import</span> <span class="n">pspso</span>
 <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
@@ -225,7 +228,7 @@ in the hidden layer was kept as default.</p>
 </div>
 </div>
 <div class="section" id="details">
-<h2>Details<a class="headerlink" href="#details" title="Permalink to this headline">¶</a></h2>
+<h3>Details<a class="headerlink" href="#details" title="Permalink to this headline">¶</a></h3>
 <p>The user is given the chance to handle some of the default parameters
 such as the number of epochs. The user can modify this by changing a
 pspso class intance. For e.g., if you need to change the number of
@@ -239,6 +242,7 @@ epochs from 50 to 10 for an MLP training:</p>
 </div>
 </div>
 </div>
+</div>
 <div class="section" id="contributing">
 <h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h1>
 <p>Pull requests are welcome. For major changes, please open an issue first
@@ -247,23 +251,7 @@ to discuss what you would like to change.</p>
 </div>
 <div class="section" id="license">
 <h1>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h1>
-<p>MIT License</p>
-<p>Copyright (c) [2020] [Ali Haidar]</p>
-<p>Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the “Software”), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:</p>
-<p>The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.</p>
-<p>THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.</p>
+<p><a class="reference external" href="https://choosealicense.com/licenses/mit/">MIT</a></p>
 </div>
 <div class="section" id="module-pspso">
 <span id="summary"></span><h1>Summary<a class="headerlink" href="#module-pspso" title="Permalink to this headline">¶</a></h1>

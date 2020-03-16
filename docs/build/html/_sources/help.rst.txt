@@ -1,3 +1,0 @@
-Help
-====
-This is the help rst file

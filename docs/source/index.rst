@@ -6,7 +6,9 @@
 Welcome to pspso's documentation!
 =================================
 
-
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
    
    
 pspso is a python library for selecting machine learning algorithms
@@ -16,8 +18,7 @@ supports two ensembles: Extreme Gradient Boosting (XGBoost) and Gradient
 Boosting Decision Trees (GBDT).
 
 Installation
-==================
-
+------------
 
 Use the package manager `pip <https://pip.pypa.io/en/stable/>`__ to
 install pspso.
@@ -27,8 +28,7 @@ install pspso.
     pip install pspso
 
 Usage
-==================
-
+-----
 
 MLP Example
 ~~~~~~~~~~~
@@ -113,32 +113,15 @@ Please make sure to update tests as appropriate.
 License
 ==================
 
-MIT License
+`MIT <https://choosealicense.com/licenses/mit/>`__
 
-Copyright (c) [2020] [Ali Haidar]
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
 
 Summary
 ==================
 
 .. automodule:: pspso
+
 
 .. autoclass:: pspso
     :members:

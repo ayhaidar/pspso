@@ -1,7 +1,0 @@
-Summary
-==================
-
-.. automodule:: pspso
-
-.. autoclass:: pspso
-    :members:
