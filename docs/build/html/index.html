@@ -255,8 +255,13 @@ to discuss what you would like to change.</p>
 </div>
 <div class="section" id="module-pspso">
 <span id="summary"></span><h1>Summary<a class="headerlink" href="#module-pspso" title="Permalink to this headline">¶</a></h1>
-<p>Created on Sat Mar 14 18:28:52 2020</p>
+<p>Created on Wed Jan 15 08:53:50 2020</p>
 <p>&#64;author: AliHaidar</p>
+<p>This package allows using PSO for optimizing Machine Learning algorithms parameters.
+Four algorithms were initiated in the first study: MLP, SVM, XGBoost, GBDT
+The class contains various static classes, to allow running seperate functions alone.
+In some cases, i was forced to follow the hardest way since I didnt want to modify any part of the package
+that supports pso (pwswarms)</p>
 <dl class="class">
 <dt id="pspso.pspso">
 <em class="property">class </em><code class="sig-prename descclassname">pspso.</code><code class="sig-name descname">pspso</code><span class="sig-paren">(</span><em class="sig-param">estimator='xgboost'</em>, <em class="sig-param">params=None</em>, <em class="sig-param">task='regression'</em>, <em class="sig-param">score='rmse'</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso" title="Permalink to this definition">¶</a></dt>
