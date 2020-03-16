@@ -267,6 +267,12 @@ that supports pso (pwswarms)</p>
 <em class="property">class </em><code class="sig-prename descclassname">pspso.</code><code class="sig-name descname">pspso</code><span class="sig-paren">(</span><em class="sig-param">estimator='xgboost'</em>, <em class="sig-param">params=None</em>, <em class="sig-param">task='regression'</em>, <em class="sig-param">score='rmse'</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class searches for algorithm parameters by using the Particle Swarm Optimization (PSO) algorithm.</p>
 <dl class="method">
+<dt id="pspso.pspso.calculatecombinations">
+<code class="sig-name descname">calculatecombinations</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.calculatecombinations" title="Permalink to this definition">¶</a></dt>
+<dd><p>generate combinations</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="pspso.pspso.decode_parameters">
 <em class="property">static </em><code class="sig-name descname">decode_parameters</code><span class="sig-paren">(</span><em class="sig-param">particle</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.decode_parameters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decodes the parameters of a list into a meaningful set of parameters.
@@ -284,16 +290,14 @@ global variable rounding</p>
 <em class="property">static </em><code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param">q</em>, <em class="sig-param">estimator</em>, <em class="sig-param">task</em>, <em class="sig-param">score</em>, <em class="sig-param">X_train</em>, <em class="sig-param">Y_train</em>, <em class="sig-param">X_val</em>, <em class="sig-param">Y_val</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.f" title="Permalink to this definition">¶</a></dt>
 <dd><p>Higher-level method to do forward_prop in the
 whole swarm.</p>
+<p>Inputs</p>
 <dl class="simple">
 <dt>x: numpy.ndarray of shape (n_particles, dimensions)</dt><dd><p>The swarm that will perform the search</p>
 </dd>
 </dl>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The computed loss for each particle</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>numpy.ndarray of shape (n_particles, )</p>
+<p>Returns</p>
+<dl class="simple">
+<dt>numpy.ndarray of shape (n_particles, )</dt><dd><p>The computed loss for each particle</p>
 </dd>
 </dl>
 </dd></dl>
@@ -303,6 +307,12 @@ whole swarm.</p>
 <code class="sig-name descname">fitgridsearch</code><span class="sig-paren">(</span><em class="sig-param">X_train=None</em>, <em class="sig-param">Y_train=None</em>, <em class="sig-param">X_val=None</em>, <em class="sig-param">Y_val=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.fitgridsearch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Grid search was implemented to match the training process with pspso and for comparison purposes.
 I have to traverse each value between x_min, x_max. Create a list seperating rounding value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pspso.pspso.fitpspso">
+<code class="sig-name descname">fitpspso</code><span class="sig-paren">(</span><em class="sig-param">X_train=None</em>, <em class="sig-param">Y_train=None</em>, <em class="sig-param">X_val=None</em>, <em class="sig-param">Y_val=None</em>, <em class="sig-param">number_of_particles=2</em>, <em class="sig-param">number_of_iterations=2</em>, <em class="sig-param">options={'c1': 0.5</em>, <em class="sig-param">'c2': 0.3</em>, <em class="sig-param">'w': 0.4}</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.fitpspso" title="Permalink to this definition">¶</a></dt>
+<dd><p>fitpso search</p>
 </dd></dl>
 
 <dl class="method">
@@ -316,6 +326,7 @@ I have to traverse each value between x_min, x_max. Create a list seperating rou
 <em class="property">static </em><code class="sig-name descname">forward_prop_gbdt</code><span class="sig-paren">(</span><em class="sig-param">particle</em>, <em class="sig-param">task</em>, <em class="sig-param">score</em>, <em class="sig-param">X_train</em>, <em class="sig-param">Y_train</em>, <em class="sig-param">X_val</em>, <em class="sig-param">Y_val</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.forward_prop_gbdt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the fitness value of the encoded parameters in variable particle.
 The particle is decoded into parameters of the gbdt. Then, The gbdt is trained and the score is sent back to the fitness function.</p>
+<p>Inputs</p>
 <dl class="simple">
 <dt>particle: list of values (n dimensions)</dt><dd><p>A particle in the swarm</p>
 </dd>
@@ -332,12 +343,9 @@ The particle is decoded into parameters of the gbdt. Then, The gbdt is trained a
 <dt>Y_val: numpy.ndarray of shape (x,1)</dt><dd><p>Validation target</p>
 </dd>
 </dl>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>the score of the trained algorithm over the validation dataset, trained model</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>variable, model</p>
+<p>Returns</p>
+<dl class="simple">
+<dt>variable, model</dt><dd><p>the score of the trained algorithm over the validation dataset, trained model</p>
 </dd>
 </dl>
 </dd></dl>
@@ -361,6 +369,7 @@ The particle is decoded into parameters of the gbdt. Then, The gbdt is trained a
 The particle is decoded into parameters of the XGBoost.
 This function is similar to forward_prop_gbdt
 The gbdt is trained and the score is sent back to the fitness function.</p>
+<p>Inputs</p>
 <dl class="simple">
 <dt>particle: list of values (n dimensions)</dt><dd><p>A particle in the swarm</p>
 </dd>
@@ -377,14 +386,23 @@ The gbdt is trained and the score is sent back to the fitness function.</p>
 <dt>Y_val: numpy.ndarray of shape (x,1)</dt><dd><p>Validation target</p>
 </dd>
 </dl>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>the score of the trained algorithm over the validation dataset, trained model</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>variable, model</p>
+<p>Returns</p>
+<dl class="simple">
+<dt>variable, model</dt><dd><p>the score of the trained algorithm over the validation dataset, trained model</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pspso.pspso.printresults">
+<code class="sig-name descname">printresults</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.printresults" title="Permalink to this definition">¶</a></dt>
+<dd><p>print results</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pspso.pspso.readparameters">
+<em class="property">static </em><code class="sig-name descname">readparameters</code><span class="sig-paren">(</span><em class="sig-param">params=None</em>, <em class="sig-param">estimator=None</em>, <em class="sig-param">task=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.readparameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>read the parameters provided by the user.</p>
 </dd></dl>
 
 <dl class="method">

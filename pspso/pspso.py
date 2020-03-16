@@ -107,7 +107,7 @@ class pspso:
         The particle is decoded into parameters of the gbdt. Then, The gbdt is trained and the score is sent back to the fitness function.
         
         Inputs
-        ------
+        
         particle: list of values (n dimensions)
             A particle in the swarm
         
@@ -130,7 +130,7 @@ class pspso:
             Validation target
     
         Returns
-        -------
+       
         variable, model
             the score of the trained algorithm over the validation dataset, trained model
 
@@ -187,7 +187,7 @@ class pspso:
         The gbdt is trained and the score is sent back to the fitness function.
         
         Inputs
-        ------
+        
         particle: list of values (n dimensions)
             A particle in the swarm
         
@@ -210,7 +210,7 @@ class pspso:
             Validation target
     
         Returns
-        -------
+        
         variable, model
             the score of the trained algorithm over the validation dataset, trained model
 
@@ -376,12 +376,12 @@ class pspso:
         whole swarm.
     
         Inputs
-        ------
+        
         x: numpy.ndarray of shape (n_particles, dimensions)
             The swarm that will perform the search
     
         Returns
-        -------
+        
         numpy.ndarray of shape (n_particles, )
             The computed loss for each particle
         """
@@ -428,7 +428,8 @@ class pspso:
 
     @staticmethod
     def rebuildmodel(estimator,pos,task,score,X_train,Y_train,X_val,Y_val):
-      """Used to rebuild the model after selecting the parameters. 
+      """Used to rebuild the model after selecting the parameters.
+      
       """
       if estimator=='xgboost':
           met,model=pspso.forward_prop_xgboost(pos,task,score,X_train,Y_train,X_val,Y_val)
@@ -441,6 +442,9 @@ class pspso:
       return met,model
   
     def fitpspso(self, X_train=None, Y_train=None, X_val=None,Y_val=None,number_of_particles=2, number_of_iterations=2, options = {'c1': 0.5, 'c2': 0.3, 'w': 0.4}):
+        """fitpso search
+        
+        """
         print("Running PSO Search .....")
         self.selectiontype= "PSO" # selection type
         self.number_of_particles=number_of_particles # the number of particles of the PSO
@@ -560,6 +564,9 @@ class pspso:
         return self.pos,self.cost,self.duration,self.model,self.combinations,self.results
     
     def printresults(self):
+        """print results
+        
+        """
         print("Estimator: " + self.estimator)
         print("Task: "+ self.task)
         print("Selection type: "+ str(self.selectiontype))
@@ -578,6 +585,9 @@ class pspso:
         
         
     def calculatecombinations(self):
+        """generate combinations
+        
+        """
         index=0
         thedict={}
         #I have to traverse each value between x_min, x_max. Create a list seperating rounding value.
@@ -596,6 +606,9 @@ class pspso:
     
     @staticmethod
     def readparameters(params=None,estimator=None, task=None):
+        """read the parameters provided by the user.
+        
+        """
         if params ==None:
             if estimator == 'xgboost':
                 if task == 'binary classification':
