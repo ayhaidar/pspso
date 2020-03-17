@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6730) (preloaded format=pdflatex 2020.3.17)  17 MAR 2020 15:40
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6730) (preloaded format=pdflatex 2020.3.17)  17 MAR 2020 21:12
 entering extended mode
 **./pspso.tex
 (pspso.tex
@@ -946,65 +946,65 @@ LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <10> not available
 ] [2
 
 ]
-LaTeX Font Info:    Try loading font information for TS1+ptm on input line 100.
+Chapter 1.
+LaTeX Font Info:    Try loading font information for TS1+ptm on input line 106.
 
 
 (C:\Users\AliHaidar\Anaconda3\Library\miktex\texmfs\install\tex\latex\psnfss\ts
 1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
-) [1] [2
-
-]
-Chapter 1.
-LaTeX Font Info:    Try loading font information for T1+pcr on input line 137.
+)
+LaTeX Font Info:    Try loading font information for T1+pcr on input line 143.
 
 (C:\Users\AliHaidar\Anaconda3\Library\miktex\texmfs\install\tex\latex\psnfss\t1
 pcr.fd
 File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
-) [3] [4
+) [1
+
+] [2
 
 ]
 Chapter 2.
 LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <9> not available
-(Font)              Font shape `T1/pcr/b/n' tried instead on input line 155.
-LaTeX Font Info:    Try loading font information for TS1+pcr on input line 156.
+(Font)              Font shape `T1/pcr/b/n' tried instead on input line 161.
+LaTeX Font Info:    Try loading font information for TS1+pcr on input line 162.
 
 
 (C:\Users\AliHaidar\Anaconda3\Library\miktex\texmfs\install\tex\latex\psnfss\ts
 1pcr.fd
 File: ts1pcr.fd 2001/06/04 font definitions for TS1/pcr.
-) [5] [6]
+) [3] [4]
 LaTeX Font Info:    Font shape `T1/pcr/m/it' in size <9> not available
-(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 260.
- [7] [8
+(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 266.
+ [5] [6
 
 ]
 Chapter 3.
 LaTeX Font Info:    Font shape `T1/pcr/m/it' in size <10> not available
-(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 308.
-[9] [10
+(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 314.
+[7] [8
 
 ]
 Chapter 4.
 LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <10> not available
-(Font)              Font shape `T1/pcr/b/n' tried instead on input line 373.
-[11] [12]
+(Font)              Font shape `T1/pcr/b/n' tried instead on input line 379.
+[9] [10]
 Chapter 5.
-[13
+[11
 
-] [14
+] [12
 
 ]
 Chapter 6.
-[15] [16
+[13] [14
 
 ]
 Chapter 7.
-[17] [18
+[15] [16
 
 ]
 Chapter 8.
-(pspso.ind [19] [20
+(pspso.ind [17] [18
 
 ]
 Underfull \hbox (badness 10000) in paragraph at lines 23--24
@@ -1012,24 +1012,24 @@ Underfull \hbox (badness 10000) in paragraph at lines 23--24
 spso static
  []
 
-[21
+[19
 
 
 ])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 660.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 660.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 666.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 666.
  (pspso.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 660.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 660.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 666.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 666.
 Package rerunfilecheck Info: File `pspso.out' has not changed.
-(rerunfilecheck)             Checksum: D3753FD1200105D614474E91708E4034;2277.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 660.
+(rerunfilecheck)             Checksum: CC4B85F041B7917B78C96BC95CE8D35D;2560.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 666.
  ) 
 Here is how much of TeX's memory you used:
- 13545 strings out of 494872
- 196946 string characters out of 3176772
- 309676 words of memory out of 3000000
- 16758 multiletter control sequences out of 15000+200000
+ 13549 strings out of 494872
+ 197029 string characters out of 3176772
+ 309754 words of memory out of 3000000
+ 16762 multiletter control sequences out of 15000+200000
  51624 words of font info for 77 fonts, out of 3000000 for 9000
  15 hyphenation exceptions out of 8191
  43i,11n,45p,533b,554s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -1048,9 +1048,9 @@ stall/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Users/AliHaidar/Anaconda3/Library
 /utmb8a.pfb><C:/Users/AliHaidar/Anaconda3/Library/miktex/texmfs/install/fonts/t
 ype1/urw/times/utmr8a.pfb><C:/Users/AliHaidar/Anaconda3/Library/miktex/texmfs/i
 nstall/fonts/type1/urw/times/utmri8a.pfb>
-Output written on pspso.pdf (25 pages, 175156 bytes).
+Output written on pspso.pdf (23 pages, 175282 bytes).
 PDF statistics:
- 309 PDF objects out of 1000 (max. 8388607)
+ 310 PDF objects out of 1000 (max. 8388607)
  61 named destinations out of 1000 (max. 500000)
- 173 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 189 words of extra memory for PDF output out of 10000 (max. 10000000)
 

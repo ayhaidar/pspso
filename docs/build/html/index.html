@@ -80,15 +80,17 @@
             
               <!-- Local TOC -->
               <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Welcome to pspso’s documentation!</a><ul>
+<li><a class="reference internal" href="#">Welcome to pspso’s documentation!</a></li>
+<li><a class="reference internal" href="#overview-and-installation">Overview and Installation</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
 <li><a class="reference internal" href="#installation">Installation</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#usage">Usage</a><ul>
 <li><a class="reference internal" href="#mlp-example">MLP Example</a></li>
 <li><a class="reference internal" href="#xgboost-example">XGBoost Example</a></li>
 <li><a class="reference internal" href="#user-input">User Input</a></li>
 <li><a class="reference internal" href="#training-details">Training details</a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li><a class="reference internal" href="#functions">Functions</a><ul>
@@ -173,8 +175,11 @@
             
   <div class="section" id="welcome-to-pspso-s-documentation">
 <h1>Welcome to pspso’s documentation!<a class="headerlink" href="#welcome-to-pspso-s-documentation" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
 </div>
+<div class="section" id="overview-and-installation">
+<h1>Overview and Installation<a class="headerlink" href="#overview-and-installation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>pspso is a python library for selecting machine learning algorithms
 parameters. The first version supports two single algorithms:
 Multi-Layer Perceptron (MLP) and Support Vector Machine (SVM). It
@@ -203,6 +208,7 @@ Boosting Decision Trees (GBDT).</p>
 </div></blockquote>
 </li>
 </ul>
+</div>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <p>Use the package manager <a class="reference external" href="https://pip.pypa.io/en/stable/">pip</a> to
@@ -211,10 +217,11 @@ install pspso.</p>
 </pre></div>
 </div>
 </div>
+</div>
 <div class="section" id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="mlp-example">
-<h3>MLP Example<a class="headerlink" href="#mlp-example" title="Permalink to this headline">¶</a></h3>
+<h2>MLP Example<a class="headerlink" href="#mlp-example" title="Permalink to this headline">¶</a></h2>
 <p>pspso is used to select the machine learning algorithms parameters. It
 is assumed that the user has already processed and prepared the training
 and validation datasets. Below is an example for using the pso to select
@@ -241,7 +248,7 @@ learning_rate, hiddenactivation, and activation. The number of neurons
 in the hidden layer was kept as default.</p>
 </div>
 <div class="section" id="xgboost-example">
-<h3>XGBoost Example<a class="headerlink" href="#xgboost-example" title="Permalink to this headline">¶</a></h3>
+<h2>XGBoost Example<a class="headerlink" href="#xgboost-example" title="Permalink to this headline">¶</a></h2>
 <p>Five parameters of the xgboost are searched and explored.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pspso</span> <span class="kn">import</span> <span class="n">pspso</span>
 <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
@@ -264,7 +271,7 @@ in the hidden layer was kept as default.</p>
 </div>
 </div>
 <div class="section" id="user-input">
-<h3>User Input<a class="headerlink" href="#user-input" title="Permalink to this headline">¶</a></h3>
+<h2>User Input<a class="headerlink" href="#user-input" title="Permalink to this headline">¶</a></h2>
 <p>Pspso allows the user to provide a range of parameters for exploration.
 The parameters vary between each algorithm.
 For this current version, up to 5 paramaters can be explored at the same time.
@@ -297,7 +304,7 @@ The order of the values inside the list affect the position of the value in the 
 By that, the lowest n_estimators will be 2, the highest to be examined is 200, and each possible value is rounded to an integer value ( 0 decimal points).</p>
 </div>
 <div class="section" id="training-details">
-<h3>Training details<a class="headerlink" href="#training-details" title="Permalink to this headline">¶</a></h3>
+<h2>Training details<a class="headerlink" href="#training-details" title="Permalink to this headline">¶</a></h2>
 <p>The user is given the chance to handle some of the default parameters
 such as the number of epochs. The user can modify this by changing a
 pspso class intance. For e.g., if you need to change the number of
@@ -324,7 +331,6 @@ epochs from 50 to 10 for an MLP training:</p>
 <span class="n">p</span><span class="o">=</span><span class="n">pspso</span><span class="o">.</span><span class="n">pspso</span><span class="p">(</span><span class="s1">&#39;xgboost&#39;</span><span class="p">,</span><span class="bp">None</span><span class="p">,</span><span class="n">task</span><span class="p">,</span><span class="n">score</span><span class="p">)</span>
 <span class="n">p</span><span class="o">.</span><span class="n">early_stopping</span><span class="o">=</span><span class="mi">10</span>
 </pre></div>
-</div>
 </div>
 </div>
 </div>
@@ -587,6 +593,8 @@ SOFTWARE.</p>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
+<div class="toctree-wrapper compound">
+</div>
 </div>
 
 

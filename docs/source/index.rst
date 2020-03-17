@@ -6,11 +6,11 @@
 Welcome to pspso's documentation!
 =================================
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-   
-   
+Overview and Installation
+=========================
+
+Overview
+------------  
 pspso is a python library for selecting machine learning algorithms
 parameters. The first version supports two single algorithms:
 Multi-Layer Perceptron (MLP) and Support Vector Machine (SVM). It
@@ -46,10 +46,10 @@ install pspso.
     pip install pspso
 
 Usage
------
+=================================
 
 MLP Example
-~~~~~~~~~~~
+------------
 
 pspso is used to select the machine learning algorithms parameters. It
 is assumed that the user has already processed and prepared the training
@@ -79,7 +79,7 @@ learning\_rate, hiddenactivation, and activation. The number of neurons
 in the hidden layer was kept as default.
 
 XGBoost Example
-~~~~~~~~~~~~~~~
+---------------
 
 Five parameters of the xgboost are searched and explored.
 
@@ -104,7 +104,7 @@ Five parameters of the xgboost are searched and explored.
 	p.printresults()
 
 User Input
-~~~~~~~~~~
+----------
 
 Pspso allows the user to provide a range of parameters for exploration.
 The parameters vary between each algorithm. 
@@ -148,7 +148,7 @@ By that, the lowest n_estimators will be 2, the highest to be examined is 200, a
 
 
 Training details
-~~~~~~~~~~~~~~~~~~
+-----------------
 
 The user is given the chance to handle some of the default parameters
 such as the number of epochs. The user can modify this by changing a
@@ -295,3 +295,8 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:

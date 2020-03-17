@@ -5,31 +5,31 @@
 \let\spxextra \sphinxstyleindexextra
 
   \bigletter C
-  \item \spxentry{calculatecombinations()}\spxextra{pspso.pspso method}, \hyperpage{11}
+  \item \spxentry{calculatecombinations()}\spxextra{pspso.pspso method}, \hyperpage{9}
 
   \indexspace
   \bigletter D
-  \item \spxentry{decode\_parameters()}\spxextra{pspso.pspso static method}, \hyperpage{11}
+  \item \spxentry{decode\_parameters()}\spxextra{pspso.pspso static method}, \hyperpage{9}
 
   \indexspace
   \bigletter F
-  \item \spxentry{f()}\spxextra{pspso.pspso static method}, \hyperpage{11}
-  \item \spxentry{fitpsgrid()}\spxextra{pspso.pspso method}, \hyperpage{11}
-  \item \spxentry{fitpspso()}\spxextra{pspso.pspso method}, \hyperpage{11}
-  \item \spxentry{fitpsrandom()}\spxextra{pspso.pspso method}, \hyperpage{11}
-  \item \spxentry{forward\_prop\_gbdt()}\spxextra{pspso.pspso static method}, \hyperpage{11}
-  \item \spxentry{forward\_prop\_mlp()}\spxextra{pspso.pspso static method}, \hyperpage{12}
-  \item \spxentry{forward\_prop\_svm()}\spxextra{pspso.pspso static method}, \hyperpage{12}
-  \item \spxentry{forward\_prop\_xgboost()}\spxextra{pspso.pspso static method}, \hyperpage{12}
+  \item \spxentry{f()}\spxextra{pspso.pspso static method}, \hyperpage{9}
+  \item \spxentry{fitpsgrid()}\spxextra{pspso.pspso method}, \hyperpage{9}
+  \item \spxentry{fitpspso()}\spxextra{pspso.pspso method}, \hyperpage{9}
+  \item \spxentry{fitpsrandom()}\spxextra{pspso.pspso method}, \hyperpage{9}
+  \item \spxentry{forward\_prop\_gbdt()}\spxextra{pspso.pspso static method}, \hyperpage{9}
+  \item \spxentry{forward\_prop\_mlp()}\spxextra{pspso.pspso static method}, \hyperpage{10}
+  \item \spxentry{forward\_prop\_svm()}\spxextra{pspso.pspso static method}, \hyperpage{10}
+  \item \spxentry{forward\_prop\_xgboost()}\spxextra{pspso.pspso static method}, \hyperpage{10}
 
   \indexspace
   \bigletter P
-  \item \spxentry{printresults()}\spxextra{pspso.pspso method}, \hyperpage{12}
-  \item \spxentry{pspso}\spxextra{class in pspso}, \hyperpage{11}
+  \item \spxentry{printresults()}\spxextra{pspso.pspso method}, \hyperpage{10}
+  \item \spxentry{pspso}\spxextra{class in pspso}, \hyperpage{9}
 
   \indexspace
   \bigletter R
-  \item \spxentry{readparameters()}\spxextra{pspso.pspso static method}, \hyperpage{12}
-  \item \spxentry{rebuildmodel()}\spxextra{pspso.pspso static method}, \hyperpage{12}
+  \item \spxentry{readparameters()}\spxextra{pspso.pspso static method}, \hyperpage{10}
+  \item \spxentry{rebuildmodel()}\spxextra{pspso.pspso static method}, \hyperpage{10}
 
 \end{sphinxtheindex}
