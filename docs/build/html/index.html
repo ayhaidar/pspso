@@ -85,19 +85,27 @@
 <li><a class="reference internal" href="#usage">Usage</a><ul>
 <li><a class="reference internal" href="#mlp-example">MLP Example</a></li>
 <li><a class="reference internal" href="#xgboost-example">XGBoost Example</a></li>
-<li><a class="reference internal" href="#details">Details</a></li>
+<li><a class="reference internal" href="#user-input">User Input</a></li>
+<li><a class="reference internal" href="#training-details">Training details</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#contributing">Contributing</a></li>
-<li><a class="reference internal" href="#license">License</a></li>
 <li><a class="reference internal" href="#functions">Functions</a><ul>
 <li><a class="reference internal" href="#ml-algorithms-functions">ML Algorithms Functions</a></li>
 <li><a class="reference internal" href="#selection-functions">Selection Functions</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#summary">Summary</a></li>
+<li><a class="reference internal" href="#future-work">Future Work</a><ul>
+<li><a class="reference internal" href="#additional-parameters">Additional Parameters</a></li>
+<li><a class="reference internal" href="#new-algorithms">New Algorithms</a></li>
+<li><a class="reference internal" href="#crossvalidation">Crossvalidation</a></li>
+<li><a class="reference internal" href="#multi-class-classification">Multi-Class Classification</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#contributing">Contributing</a></li>
+<li><a class="reference internal" href="#license">License</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 </div>
@@ -172,6 +180,29 @@ parameters. The first version supports two single algorithms:
 Multi-Layer Perceptron (MLP) and Support Vector Machine (SVM). It
 supports two ensembles: Extreme Gradient Boosting (XGBoost) and Gradient
 Boosting Decision Trees (GBDT).</p>
+<p>Two types of machine learning tasks are supported by pspso:</p>
+<ul class="simple">
+<li><p>Regression.</p></li>
+<li><p>Binary classification.</p></li>
+</ul>
+<p>Three scores can be used with the first version of pspso:</p>
+<ul>
+<li><p><strong>Regression</strong> :</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Root Mean Square Error (RMSE) for regression tasks</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Binary Classication</strong> :</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Area under the Curve (AUC) of the Receiver Operating Characteristic (ROC)</p></li>
+<li><p>Accuracy</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <p>Use the package manager <a class="reference external" href="https://pip.pypa.io/en/stable/">pip</a> to
@@ -232,8 +263,41 @@ in the hidden layer was kept as default.</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="details">
-<h3>Details<a class="headerlink" href="#details" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="user-input">
+<h3>User Input<a class="headerlink" href="#user-input" title="Permalink to this headline">¶</a></h3>
+<p>Pspso allows the user to provide a range of parameters for exploration.
+The parameters vary between each algorithm.
+For this current version, up to 5 paramaters can be explored at the same time.
+The user can provide an empty set of parameters. By that, a default search space is created.</p>
+<p><strong>How are the parameters encoded ?</strong></p>
+<p>The parameters are encoded in json object that consists of <em>key,value</em> pairs:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;objective&quot;</span><span class="p">:[</span><span class="s1">&#39;reg:tweedie&#39;</span><span class="p">,</span><span class="s2">&quot;reg:linear&quot;</span><span class="p">,</span><span class="s2">&quot;reg:gamma&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;learning_rate&quot;</span><span class="p">:</span>  <span class="p">[</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.2</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>
+        <span class="s2">&quot;max_depth&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
+        <span class="s2">&quot;n_estimators&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">200</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
+        <span class="s2">&quot;subsample&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]}</span>
+</pre></div>
+</div>
+<p>The key can be any parameter belonging to to the algorithm under investigation.
+The value is a list.
+Pspso will check the type of the first element in the list, which will determine if the values of the parameter are categorical or numerical.</p>
+<p><strong>Categorical Parameters</strong></p>
+<p>If the parameter values are <em>categorical</em>, string values are expected to be found in the list, as shown in <em>objective</em> parameter.
+The values in the list will be automatically mapped into a list of integers, where each integer represents a value in the original list.
+The order of the values inside the list affect the position of the value in the search space.</p>
+<p><strong>Numerical Parameters</strong></p>
+<p>On the other side, if the parameter is numerical, a list with three elements is expected [lb,ub, rv]:</p>
+<ul class="simple">
+<li><p><strong>lb</strong>: repesents the lowest value in the search space</p></li>
+<li><p><strong>ub</strong>: represents the maximum value in the search space</p></li>
+<li><p><strong>rv</strong>: represents the number of decimal points the parameter values are rounded to before being added for training the algorithm</p></li>
+</ul>
+<p>For e.g if you want pspso to select n_estimators, you add the following list [2,200,0] as in the example.
+By that, the lowest n_estimators will be 2, the highest to be examined is 200, and each possible value is rounded to an integer value ( 0 decimal points).</p>
+</div>
+<div class="section" id="training-details">
+<h3>Training details<a class="headerlink" href="#training-details" title="Permalink to this headline">¶</a></h3>
 <p>The user is given the chance to handle some of the default parameters
 such as the number of epochs. The user can modify this by changing a
 pspso class intance. For e.g., if you need to change the number of
@@ -241,37 +305,28 @@ epochs from 50 to 10 for an MLP training:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pspso</span> <span class="kn">import</span> <span class="n">pspso</span>
 <span class="n">task</span><span class="o">=</span><span class="s1">&#39;binary classification&#39;</span>
 <span class="n">score</span><span class="o">=</span><span class="s1">&#39;auc&#39;</span>
-<span class="n">p</span><span class="o">=</span><span class="n">pspso</span><span class="o">.</span><span class="n">pspso</span><span class="p">(</span><span class="s1">&#39;mlp&#39;</span><span class="p">,</span><span class="n">params</span><span class="p">,</span><span class="n">task</span><span class="p">,</span><span class="n">score</span><span class="p">)</span>
+<span class="n">p</span><span class="o">=</span><span class="n">pspso</span><span class="o">.</span><span class="n">pspso</span><span class="p">(</span><span class="s1">&#39;mlp&#39;</span><span class="p">,</span><span class="bp">None</span><span class="p">,</span><span class="n">task</span><span class="p">,</span><span class="n">score</span><span class="p">)</span><span class="c1"># in case of empty set of params (None) default search space is loaded</span>
 <span class="n">p</span><span class="o">.</span><span class="n">defaultparams</span><span class="p">[</span><span class="s1">&#39;epochs&#39;</span><span class="p">]</span><span class="o">=</span><span class="mi">10</span>
+</pre></div>
+</div>
+<p>The verbosity can be modified for any algorithm, which allows showing details of the training process:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pspso</span> <span class="kn">import</span> <span class="n">pspso</span>
+<span class="n">task</span><span class="o">=</span><span class="s1">&#39;binary classification&#39;</span>
+<span class="n">score</span><span class="o">=</span><span class="s1">&#39;auc&#39;</span>
+<span class="n">p</span><span class="o">=</span><span class="n">pspso</span><span class="o">.</span><span class="n">pspso</span><span class="p">(</span><span class="s1">&#39;mlp&#39;</span><span class="p">,</span><span class="bp">None</span><span class="p">,</span><span class="n">task</span><span class="p">,</span><span class="n">score</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">verbosity</span><span class="o">=</span><span class="mi">1</span>
+</pre></div>
+</div>
+<p>Early stopping rounds for supporting algorithm can be modified, default is 60:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pspso</span> <span class="kn">import</span> <span class="n">pspso</span>
+<span class="n">task</span><span class="o">=</span><span class="s1">&#39;binary classification&#39;</span>
+<span class="n">score</span><span class="o">=</span><span class="s1">&#39;auc&#39;</span>
+<span class="n">p</span><span class="o">=</span><span class="n">pspso</span><span class="o">.</span><span class="n">pspso</span><span class="p">(</span><span class="s1">&#39;xgboost&#39;</span><span class="p">,</span><span class="bp">None</span><span class="p">,</span><span class="n">task</span><span class="p">,</span><span class="n">score</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">early_stopping</span><span class="o">=</span><span class="mi">10</span>
 </pre></div>
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="contributing">
-<h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h1>
-<p>Pull requests are welcome. For major changes, please open an issue first
-to discuss what you would like to change.</p>
-<p>Please make sure to update tests as appropriate.</p>
-</div>
-<div class="section" id="license">
-<h1>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h1>
-<p>Copyright (c) [2020] [Ali Haidar]</p>
-<p>Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the “Software”), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:</p>
-<p>The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.</p>
-<p>THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.</p>
 </div>
 <div class="section" id="functions">
 <h1>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h1>
@@ -472,6 +527,58 @@ The gbdt is trained and the score is sent back to the fitness function.</p>
 
 </dd></dl>
 
+</div>
+<div class="section" id="future-work">
+<h1>Future Work<a class="headerlink" href="#future-work" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="additional-parameters">
+<h2>Additional Parameters<a class="headerlink" href="#additional-parameters" title="Permalink to this headline">¶</a></h2>
+<p>To add new parameters to the currently supported algorithms, two functions should be updated</p>
+<p>The <strong>read_params</strong> function should include default details about the parameter,
+The <strong>forward_prop_algorithmname</strong> function should add the parameter to the initialization process</p>
+</div>
+<div class="section" id="new-algorithms">
+<h2>New Algorithms<a class="headerlink" href="#new-algorithms" title="Permalink to this headline">¶</a></h2>
+<p>Adding a new algorithm is more complex as you will be required to add an objective function that will detail the training and evaluation process.</p>
+<p>New Optimizers
+Two main optimizers are currently supported. These algorithms are built in the pyswams function.</p>
+<p>The default is globalbest pso, however the user can specify the local pso
+The pso parameters are set to default in each case and can be modified by the user.</p>
+</div>
+<div class="section" id="crossvalidation">
+<h2>Crossvalidation<a class="headerlink" href="#crossvalidation" title="Permalink to this headline">¶</a></h2>
+<p>We are working towards adding the cross validation support that will take the training data and number of folds, then split the records and train each fold. Finally, the average performance is retuned to the user.</p>
+</div>
+<div class="section" id="multi-class-classification">
+<h2>Multi-Class Classification<a class="headerlink" href="#multi-class-classification" title="Permalink to this headline">¶</a></h2>
+<p>We are also working on adding multi-class classification and data oversampling techniques.</p>
+</div>
+</div>
+<div class="section" id="contributing">
+<h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h1>
+<p>Pull requests are welcome. For major changes, please open an issue first
+to discuss what you would like to change.</p>
+<p>Please make sure to update tests as appropriate.</p>
+<p>We are working towards adding the cross validation support that will take the training data and number of folds, then split the records and train each fold. Finally, the average performance is retuned to the user.</p>
+<p>We are also working on adding multi-class classification and data oversampling techniques.</p>
+</div>
+<div class="section" id="license">
+<h1>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h1>
+<p>Copyright (c) [2020] [Ali Haidar]</p>
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the “Software”), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.</p>
+<p>THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.</p>
 </div>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>

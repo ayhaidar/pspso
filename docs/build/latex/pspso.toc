@@ -1,0 +1,20 @@
+\babel@toc {english}{}
+\contentsline {chapter}{\numberline {1}Installation}{3}{chapter.1}
+\contentsline {chapter}{\numberline {2}Usage}{5}{chapter.2}
+\contentsline {section}{\numberline {2.1}MLP Example}{5}{section.2.1}
+\contentsline {section}{\numberline {2.2}XGBoost Example}{5}{section.2.2}
+\contentsline {section}{\numberline {2.3}User Input}{6}{section.2.3}
+\contentsline {section}{\numberline {2.4}Training details}{7}{section.2.4}
+\contentsline {chapter}{\numberline {3}Functions}{9}{chapter.3}
+\contentsline {section}{\numberline {3.1}ML Algorithms Functions}{9}{section.3.1}
+\contentsline {section}{\numberline {3.2}Selection Functions}{9}{section.3.2}
+\contentsline {chapter}{\numberline {4}Summary}{11}{chapter.4}
+\contentsline {chapter}{\numberline {5}Future Work}{13}{chapter.5}
+\contentsline {section}{\numberline {5.1}Additional Parameters}{13}{section.5.1}
+\contentsline {section}{\numberline {5.2}New Algorithms}{13}{section.5.2}
+\contentsline {section}{\numberline {5.3}Crossvalidation}{13}{section.5.3}
+\contentsline {section}{\numberline {5.4}Multi\sphinxhyphen {}Class Classification}{13}{section.5.4}
+\contentsline {chapter}{\numberline {6}Contributing}{15}{chapter.6}
+\contentsline {chapter}{\numberline {7}License}{17}{chapter.7}
+\contentsline {chapter}{\numberline {8}Indices and tables}{19}{chapter.8}
+\contentsline {chapter}{Index}{21}{section*.17}
