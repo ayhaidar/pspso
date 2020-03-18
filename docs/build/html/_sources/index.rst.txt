@@ -2,6 +2,10 @@
    sphinx-quickstart on Mon Mar 16 12:41:49 2020.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
+   
+.. image:: ../../LOGO.png
+    :align: center
+    :alt: alternate text
 
 Welcome to pspso's documentation!
 =================================
@@ -23,7 +27,7 @@ Two types of machine learning tasks are supported by pspso:
 
 * Binary classification.
 
-Three scores can be used with the first version of pspso:
+Three scores are supported in the first version of pspso:
 
 * **Regression** :
 
@@ -53,10 +57,18 @@ MLP Example
 
 pspso is used to select the machine learning algorithms parameters. It
 is assumed that the user has already processed and prepared the training
-and validation datasets. Below is an example for using the pso to select
+and validation datasets, which are usually used to build the model.
+Below is an example for using the pspso to select
 the parameters of the MLP. It should be noticed that pspso handles the
 MLP random weights intialization issue that may cause losing the best
 solution in consecutive iterations.
+
+The following example demonstrates the selection process of the MLP parameters.
+The params variable details the parameters utilized for selection.
+The task and the score are defined as binary classification and score.
+Then, the PSO is used to select the parameters of the MLP. 
+Results will be provided back to user. 
+It should be mentioned that the number of neurons has been left as a default value and was not given for selection in this example. 
 
 .. code:: python
 
@@ -75,13 +87,23 @@ solution in consecutive iterations.
     p.printresults()
 
 In this example, four parameters were examined: optimizer,
-learning\_rate, hiddenactivation, and activation. The number of neurons
+learning_rate, hiddenactivation, and activation. The number of neurons
 in the hidden layer was kept as default.
 
 XGBoost Example
 ---------------
 
-Five parameters of the xgboost are searched and explored.
+The XGBoost is an implementation of boosting decision trees. 
+It is assumed that at this stage the user has already prepared the training and validation cohorts.
+Five parameters were utilized for selection: objective, learning rate, maximum depth, number of estimators, and subsample.
+Three categorical values were selected for the objective parameter. 
+The learning rate parameter values range between 0.01 and 0.2 with 2 decimal point, 
+maximum depth ranges between 1 and 10 with 0 decimal points (1,2,3,4,5,6,7,8,9,10), etc. 
+The task and score are selected as regression and RMSE respectively. 
+The number of particles and number of iterations can be left as default values if needed.
+Then, a pspso instance is created. By applying the fitpspso function, the selection process is applied. 
+Finally, results are printed back to the user. 
+The best model, best parameters, score, time, and other details will be saved in the created instance for the user to check.
 
 .. code:: python
 
@@ -105,13 +127,22 @@ Five parameters of the xgboost are searched and explored.
 
 User Input
 ----------
+The user enters the type of the algorithm ('mlp','svm','xgboost','gbdt'); the task type ('binary classification',
+'regression'), score ('rmse','acc', or 'auc'). The user can keep the parameters variable empty, where a default set of parameters and ranges is loaded 
+for each algorithm.
+
+.. code:: python
+
+    from pspso import pspso
+    task='binary classification'
+    score='auc'
+    p=pspso.pspso('xgboost',None,task,score)
+	
 
 Pspso allows the user to provide a range of parameters for exploration.
 The parameters vary between each algorithm. 
 For this current version, up to 5 paramaters can be explored at the same time. 
-The user can provide an empty set of parameters. By that, a default search space is created.
 
-**How are the parameters encoded ?**
 
 The parameters are encoded in json object that consists of *key,value* pairs:
 
@@ -147,12 +178,12 @@ By that, the lowest n_estimators will be 2, the highest to be examined is 200, a
 
 
 
-Training details
+Other parameters
 -----------------
 
 The user is given the chance to handle some of the default parameters
-such as the number of epochs. The user can modify this by changing a
-pspso class intance. For e.g., if you need to change the number of
+such as the number of epochs in the MLP. The user can modify this by changing a
+pspso class instance. For e.g., to change the number of
 epochs from 50 to 10 for an MLP training:
 
 .. code:: python
@@ -184,6 +215,9 @@ Early stopping rounds for supporting algorithm can be modified, default is 60:
     p.early_stopping=10
 
 
+
+
+
 Functions
 ==================
 
@@ -209,9 +243,37 @@ Selection Functions
 	fitpspso
 	fitpsgrid
 	fitpsrandom
-    
+	
+The fitpsrandom() and fitpsgrid() were implmented as two default selection methods. 
+With fit random search, the number of attempts to be tried is added by the user as a variable. 
+In grid search, all the possible combinations are created and investigated by the package. 
+These functions follow the same encoding schema used in fitpspso(), and were basically added for comparison.
 
-Summary
+Parameters Encoding/Decoding Functions
+--------------------------------------
+
+.. currentmodule:: pspso.pspso
+
+.. autosummary:: 
+
+	readparameters
+	decode_parameters
+	
+Other Functions
+-------------------------
+
+.. currentmodule:: pspso.pspso
+
+.. autosummary:: 
+
+	f
+	rebuildmodel
+	printresults
+	calculatecombinations
+
+  
+
+Module Summary
 ==================
 
 .. currentmodule:: pspso
@@ -289,14 +351,3 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:

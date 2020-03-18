@@ -1,10 +1,10 @@
 # Fdb version 3
-["makeindex pspso.idx"] 1584439927 "pspso.idx" "pspso.ind" "pspso" 1584439933
-  "pspso.idx" 1584439933 1798 ee59b5da4f0f0da9ae3f89768a67cc52 "pdflatex"
+["makeindex pspso.idx"] 1584497721 "pspso.idx" "pspso.ind" "pspso" 1584497727
+  "pspso.idx" 1584497727 1806 29c1e64d90752405358e412323b72945 "pdflatex"
   (generated)
   "pspso.ilg"
   "pspso.ind"
-["pdflatex"] 1584439930 "pspso.tex" "pspso.pdf" "pspso" 1584439933
+["pdflatex"] 1584497724 "pspso.tex" "pspso.pdf" "pspso" 1584497727
   "C:/Users/AliHaidar/Anaconda3/Library/miktex/texmfs/install/fonts/enc/dvips/base/8r.enc" 1458473887 4993 80dc9bab7f31fb78a000ccfed0e27cab ""
   "C:/Users/AliHaidar/Anaconda3/Library/miktex/texmfs/install/fonts/tfm/adobe/courier/pcrb8r.tfm" 1136765053 1292 3059476c50a24578715759f22652f3d0 ""
   "C:/Users/AliHaidar/Anaconda3/Library/miktex/texmfs/install/fonts/tfm/adobe/courier/pcrb8t.tfm" 1136765053 1384 87406e4336af44af883a035f17f319d9 ""
@@ -168,21 +168,22 @@
   "C:/Users/AliHaidar/AppData/Roaming/MiKTeX/2.9/tex/latex/varwidth/varwidth.sty" 1238469540 10894 d359a13923460b2a73d4312d613554c8 ""
   "C:/Users/AliHaidar/AppData/Roaming/MiKTeX/2.9/tex/latex/wrapfig/wrapfig.sty" 1044403200 26220 3701aebf80ccdef248c0c20dd062fea9 ""
   "C:/Users/AliHaidar/AppData/Roaming/MiKTeX/2.9/tex/latex/xcolor/xcolor.sty" 1463139181 57049 34128738f682d033422ca125f82e5d62 ""
+  "LOGO.png" 1584497401 164776 195886b7207c763cb9a864e96b66764c ""
   "footnotehyper-sphinx.sty" 1578414205 8888 1bbd7bdeae8c8bed1d10d551bddb1cc9 ""
-  "pspso.aux" 1584439933 5969 ba5bcfbced5e0016e5b51fb1718b3610 "pdflatex"
-  "pspso.ind" 1584439927 1506 0d5ac5f71257b62a371f57fccf7a5b7e "makeindex pspso.idx"
-  "pspso.out" 1584439933 2560 8e1c7c18fc0019d1a615bd554d05e419 "pdflatex"
-  "pspso.tex" 1584439922 31300 982c7517e3e81f4d7af756ff4f58d606 ""
-  "pspso.toc" 1584439933 1548 88d224adb2be9806c8491bd90b78ee67 "pdflatex"
+  "pspso.aux" 1584497727 6420 2cf7b5f7d0fd31541cc6af4f7a053e06 "pdflatex"
+  "pspso.ind" 1584497722 1514 fd37c950f52c71547d0a62a1b0c13a02 "makeindex pspso.idx"
+  "pspso.out" 1584497727 2843 16e1f17c02ceafe69bc395ff735fe1bc "pdflatex"
+  "pspso.tex" 1584497717 35865 5c5817c2c5765bc62403b199774b8117 ""
+  "pspso.toc" 1584497727 1655 98149adec190dc154daf338601e74d9a "pdflatex"
   "sphinx.sty" 1578414205 81878 44d14f90f8cb22a202794c148df60b64 ""
-  "sphinxhighlight.sty" 1584439922 8242 38a433148fcb7611515a989ff1750dd5 ""
+  "sphinxhighlight.sty" 1584497717 8242 38a433148fcb7611515a989ff1750dd5 ""
   "sphinxmanual.cls" 1578414205 4236 124cd90deb92742b5d3922bfc2cd70c0 ""
-  "sphinxmessages.sty" 1584439922 765 3f5fcd6cdd7964ed608767954a8ced6f ""
+  "sphinxmessages.sty" 1584497717 765 3f5fcd6cdd7964ed608767954a8ced6f ""
   "sphinxmulticell.sty" 1578414205 14606 0b6edc2b1a83546ed92026d1f6a311b5 ""
   (generated)
-  "pspso.log"
-  "pspso.out"
   "pspso.aux"
+  "pspso.out"
+  "pspso.log"
+  "pspso.toc"
   "pspso.pdf"
   "pspso.idx"
-  "pspso.toc"

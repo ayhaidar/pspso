@@ -90,15 +90,17 @@
 <li><a class="reference internal" href="#mlp-example">MLP Example</a></li>
 <li><a class="reference internal" href="#xgboost-example">XGBoost Example</a></li>
 <li><a class="reference internal" href="#user-input">User Input</a></li>
-<li><a class="reference internal" href="#training-details">Training details</a></li>
+<li><a class="reference internal" href="#other-parameters">Other parameters</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#functions">Functions</a><ul>
 <li><a class="reference internal" href="#ml-algorithms-functions">ML Algorithms Functions</a></li>
 <li><a class="reference internal" href="#selection-functions">Selection Functions</a></li>
+<li><a class="reference internal" href="#parameters-encoding-decoding-functions">Parameters Encoding/Decoding Functions</a></li>
+<li><a class="reference internal" href="#other-functions">Other Functions</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#summary">Summary</a></li>
+<li><a class="reference internal" href="#module-summary">Module Summary</a></li>
 <li><a class="reference internal" href="#future-work">Future Work</a><ul>
 <li><a class="reference internal" href="#additional-parameters">Additional Parameters</a></li>
 <li><a class="reference internal" href="#new-algorithms">New Algorithms</a></li>
@@ -108,7 +110,6 @@
 </li>
 <li><a class="reference internal" href="#contributing">Contributing</a></li>
 <li><a class="reference internal" href="#license">License</a></li>
-<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 </div>
             
@@ -173,7 +174,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="welcome-to-pspso-s-documentation">
+  <img alt="alternate text" class="align-center" src="_images/LOGO.png" />
+<div class="section" id="welcome-to-pspso-s-documentation">
 <h1>Welcome to pspso’s documentation!<a class="headerlink" href="#welcome-to-pspso-s-documentation" title="Permalink to this headline">¶</a></h1>
 </div>
 <div class="section" id="overview-and-installation">
@@ -190,7 +192,7 @@ Boosting Decision Trees (GBDT).</p>
 <li><p>Regression.</p></li>
 <li><p>Binary classification.</p></li>
 </ul>
-<p>Three scores can be used with the first version of pspso:</p>
+<p>Three scores are supported in the first version of pspso:</p>
 <ul>
 <li><p><strong>Regression</strong> :</p>
 <blockquote>
@@ -224,10 +226,17 @@ install pspso.</p>
 <h2>MLP Example<a class="headerlink" href="#mlp-example" title="Permalink to this headline">¶</a></h2>
 <p>pspso is used to select the machine learning algorithms parameters. It
 is assumed that the user has already processed and prepared the training
-and validation datasets. Below is an example for using the pso to select
+and validation datasets, which are usually used to build the model.
+Below is an example for using the pspso to select
 the parameters of the MLP. It should be noticed that pspso handles the
 MLP random weights intialization issue that may cause losing the best
 solution in consecutive iterations.</p>
+<p>The following example demonstrates the selection process of the MLP parameters.
+The params variable details the parameters utilized for selection.
+The task and the score are defined as binary classification and score.
+Then, the PSO is used to select the parameters of the MLP.
+Results will be provided back to user.
+It should be mentioned that the number of neurons has been left as a default value and was not given for selection in this example.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pspso</span> <span class="kn">import</span> <span class="n">pspso</span>
 <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;optimizer&quot;</span><span class="p">:[</span><span class="s1">&#39;adam&#39;</span><span class="p">,</span><span class="s1">&#39;nadam&#39;</span><span class="p">,</span><span class="s1">&#39;sgd&#39;</span><span class="p">,</span><span class="s1">&#39;adadelta&#39;</span><span class="p">],</span>
     <span class="s2">&quot;learning_rate&quot;</span><span class="p">:</span>  <span class="p">[</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.2</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>
@@ -249,7 +258,17 @@ in the hidden layer was kept as default.</p>
 </div>
 <div class="section" id="xgboost-example">
 <h2>XGBoost Example<a class="headerlink" href="#xgboost-example" title="Permalink to this headline">¶</a></h2>
-<p>Five parameters of the xgboost are searched and explored.</p>
+<p>The XGBoost is an implementation of boosting decision trees.
+It is assumed that at this stage the user has already prepared the training and validation cohorts.
+Five parameters were utilized for selection: objective, learning rate, maximum depth, number of estimators, and subsample.
+Three categorical values were selected for the objective parameter.
+The learning rate parameter values range between 0.01 and 0.2 with 2 decimal point,
+maximum depth ranges between 1 and 10 with 0 decimal points (1,2,3,4,5,6,7,8,9,10), etc.
+The task and score are selected as regression and RMSE respectively.
+The number of particles and number of iterations can be left as default values if needed.
+Then, a pspso instance is created. By applying the fitpspso function, the selection process is applied.
+Finally, results are printed back to the user.
+The best model, best parameters, score, time, and other details will be saved in the created instance for the user to check.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pspso</span> <span class="kn">import</span> <span class="n">pspso</span>
 <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s2">&quot;objective&quot;</span><span class="p">:[</span><span class="s1">&#39;reg:tweedie&#39;</span><span class="p">,</span><span class="s2">&quot;reg:linear&quot;</span><span class="p">,</span><span class="s2">&quot;reg:gamma&quot;</span><span class="p">],</span>
@@ -272,11 +291,18 @@ in the hidden layer was kept as default.</p>
 </div>
 <div class="section" id="user-input">
 <h2>User Input<a class="headerlink" href="#user-input" title="Permalink to this headline">¶</a></h2>
+<p>The user enters the type of the algorithm (‘mlp’,’svm’,’xgboost’,’gbdt’); the task type (‘binary classification’,
+‘regression’), score (‘rmse’,’acc’, or ‘auc’). The user can keep the parameters variable empty, where a default set of parameters and ranges is loaded
+for each algorithm.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pspso</span> <span class="kn">import</span> <span class="n">pspso</span>
+<span class="n">task</span><span class="o">=</span><span class="s1">&#39;binary classification&#39;</span>
+<span class="n">score</span><span class="o">=</span><span class="s1">&#39;auc&#39;</span>
+<span class="n">p</span><span class="o">=</span><span class="n">pspso</span><span class="o">.</span><span class="n">pspso</span><span class="p">(</span><span class="s1">&#39;xgboost&#39;</span><span class="p">,</span><span class="bp">None</span><span class="p">,</span><span class="n">task</span><span class="p">,</span><span class="n">score</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>Pspso allows the user to provide a range of parameters for exploration.
 The parameters vary between each algorithm.
-For this current version, up to 5 paramaters can be explored at the same time.
-The user can provide an empty set of parameters. By that, a default search space is created.</p>
-<p><strong>How are the parameters encoded ?</strong></p>
+For this current version, up to 5 paramaters can be explored at the same time.</p>
 <p>The parameters are encoded in json object that consists of <em>key,value</em> pairs:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;objective&quot;</span><span class="p">:[</span><span class="s1">&#39;reg:tweedie&#39;</span><span class="p">,</span><span class="s2">&quot;reg:linear&quot;</span><span class="p">,</span><span class="s2">&quot;reg:gamma&quot;</span><span class="p">],</span>
@@ -303,11 +329,11 @@ The order of the values inside the list affect the position of the value in the 
 <p>For e.g if you want pspso to select n_estimators, you add the following list [2,200,0] as in the example.
 By that, the lowest n_estimators will be 2, the highest to be examined is 200, and each possible value is rounded to an integer value ( 0 decimal points).</p>
 </div>
-<div class="section" id="training-details">
-<h2>Training details<a class="headerlink" href="#training-details" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="other-parameters">
+<h2>Other parameters<a class="headerlink" href="#other-parameters" title="Permalink to this headline">¶</a></h2>
 <p>The user is given the chance to handle some of the default parameters
-such as the number of epochs. The user can modify this by changing a
-pspso class intance. For e.g., if you need to change the number of
+such as the number of epochs in the MLP. The user can modify this by changing a
+pspso class instance. For e.g., to change the number of
 epochs from 50 to 10 for an MLP training:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pspso</span> <span class="kn">import</span> <span class="n">pspso</span>
 <span class="n">task</span><span class="o">=</span><span class="s1">&#39;binary classification&#39;</span>
@@ -378,10 +404,54 @@ epochs from 50 to 10 for an MLP training:</p>
 </tr>
 </tbody>
 </table>
+<p>The fitpsrandom() and fitpsgrid() were implmented as two default selection methods.
+With fit random search, the number of attempts to be tried is added by the user as a variable.
+In grid search, all the possible combinations are created and investigated by the package.
+These functions follow the same encoding schema used in fitpspso(), and were basically added for comparison.</p>
+</div>
+<div class="section" id="parameters-encoding-decoding-functions">
+<h2>Parameters Encoding/Decoding Functions<a class="headerlink" href="#parameters-encoding-decoding-functions" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pspso.pspso.readparameters" title="pspso.pspso.readparameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">readparameters</span></code></a>([params, estimator, task])</p></td>
+<td><p>read the parameters provided by the user.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pspso.pspso.decode_parameters" title="pspso.pspso.decode_parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">decode_parameters</span></code></a>(particle)</p></td>
+<td><p>Decodes the parameters of a list into a meaningful set of parameters.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="other-functions">
+<h2>Other Functions<a class="headerlink" href="#other-functions" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pspso.pspso.f" title="pspso.pspso.f"><code class="xref py py-obj docutils literal notranslate"><span class="pre">f</span></code></a>(q, estimator, task, score, X_train, …)</p></td>
+<td><p>Higher-level method to do forward_prop in the whole swarm.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pspso.pspso.rebuildmodel" title="pspso.pspso.rebuildmodel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rebuildmodel</span></code></a>(estimator, pos, task, score, …)</p></td>
+<td><p>Used to rebuild the model after selecting the parameters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pspso.pspso.printresults" title="pspso.pspso.printresults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">printresults</span></code></a>()</p></td>
+<td><p>print results</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pspso.pspso.calculatecombinations" title="pspso.pspso.calculatecombinations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculatecombinations</span></code></a>()</p></td>
+<td><p>generate combinations</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
-<div class="section" id="summary">
-<h1>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-summary">
+<h1>Module Summary<a class="headerlink" href="#module-summary" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="pspso.pspso">
 <em class="property">class </em><code class="sig-prename descclassname">pspso.</code><code class="sig-name descname">pspso</code><span class="sig-paren">(</span><em class="sig-param">estimator='xgboost'</em>, <em class="sig-param">params=None</em>, <em class="sig-param">task='regression'</em>, <em class="sig-param">score='rmse'</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso" title="Permalink to this definition">¶</a></dt>
@@ -585,16 +655,6 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.</p>
-</div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
-</ul>
-<div class="toctree-wrapper compound">
-</div>
 </div>
 
 
