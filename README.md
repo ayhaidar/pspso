@@ -221,30 +221,6 @@ p=pspso.pspso('xgboost',None,task,score)
 p.early_stopping=10
 ```
 
-Functions
-=========
-
-ML Algorithms Functions
------------------------
-
-Selection Functions
--------------------
-
-The fitpsrandom() and fitpsgrid() were implmented as two default
-selection methods. With fit random search, the number of attempts to be
-tried is added by the user as a variable. In grid search, all the
-possible combinations are created and investigated by the package. These
-functions follow the same encoding schema used in fitpspso(), and were
-basically added for comparison.
-
-Parameters Encoding/Decoding Functions
---------------------------------------
-
-Other Functions
----------------
-
-Module Summary
-==============
 
 Future Work
 ===========
