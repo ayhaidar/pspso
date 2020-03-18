@@ -24,7 +24,7 @@ copyright = '2020, Ali Haidar'
 author = 'Ali Haidar'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.5'
+release = '0.0.7'
 
 
 # -- General configuration ---------------------------------------------------
