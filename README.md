@@ -1,4 +1,4 @@
-![image](LOGO.png%0A%20:align:%20center%0A%20:alt:%20alternate%20text)
+![image](LOGO.png)
 
 Welcome to pspso's documentation!
 =================================
