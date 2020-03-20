@@ -182,7 +182,7 @@
 <h1>Overview and Installation<a class="headerlink" href="#overview-and-installation" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
-<p>pspso is a python library for selecting machine learning algorithms
+<p><strong>pspso</strong> is a python library for selecting machine learning algorithms
 parameters. The first version supports two single algorithms:
 Multi-Layer Perceptron (MLP) and Support Vector Machine (SVM). It
 supports two ensembles: Extreme Gradient Boosting (XGBoost) and Gradient
@@ -224,7 +224,7 @@ install pspso.</p>
 <h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="mlp-example">
 <h2>MLP Example<a class="headerlink" href="#mlp-example" title="Permalink to this headline">¶</a></h2>
-<p>pspso is used to select the machine learning algorithms parameters. It
+<p><strong>pspso</strong> is used to select the machine learning algorithms parameters. It
 is assumed that the user has already processed and prepared the training
 and validation datasets, which are usually used to build the model.
 Below is an example for using the pspso to select
@@ -371,10 +371,10 @@ epochs from 50 to 10 for an MLP training:</p>
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pspso.pspso.forward_prop_gbdt" title="pspso.pspso.forward_prop_gbdt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">forward_prop_gbdt</span></code></a>(particle, task, score, …)</p></td>
-<td><p>Calculates the fitness value of the encoded parameters in variable particle.</p></td>
+<td><p>Train the GBDT after decoding the parameters in variable particle.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pspso.pspso.forward_prop_xgboost" title="pspso.pspso.forward_prop_xgboost"><code class="xref py py-obj docutils literal notranslate"><span class="pre">forward_prop_xgboost</span></code></a>(particle, task, score, …)</p></td>
-<td><p>This function accepts the particle from the PSO fitness function.</p></td>
+<td><p>Train the XGBoost after decoding the parameters in variable particle.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pspso.pspso.forward_prop_svm" title="pspso.pspso.forward_prop_svm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">forward_prop_svm</span></code></a>(particle, task, score, …)</p></td>
 <td><p>Train the SVM after decoding the parameters in variable particle.</p></td>
@@ -394,13 +394,13 @@ epochs from 50 to 10 for an MLP training:</p>
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pspso.pspso.fitpspso" title="pspso.pspso.fitpspso"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fitpspso</span></code></a>([X_train, Y_train, X_val, Y_val, …])</p></td>
-<td><p>fitpso search</p></td>
+<td><p>Select the algorithm parameters based on PSO.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pspso.pspso.fitpsgrid" title="pspso.pspso.fitpsgrid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fitpsgrid</span></code></a>([X_train, Y_train, X_val, Y_val])</p></td>
-<td><p>Grid search was implemented to match the training process with pspso and for comparison purposes.</p></td>
+<td><p>Select the algorithm parameters based on Grid search.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pspso.pspso.fitpsrandom" title="pspso.pspso.fitpsrandom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fitpsrandom</span></code></a>([X_train, Y_train, X_val, …])</p></td>
-<td><p>With Random search, the process is done for number of times specified by a parameter in the function.</p></td>
+<td><p>Select the algorithm parameters based on radnom search.</p></td>
 </tr>
 </tbody>
 </table>
@@ -418,7 +418,7 @@ These functions follow the same encoding schema used in fitpspso(), and were bas
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pspso.pspso.readparameters" title="pspso.pspso.readparameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">readparameters</span></code></a>([params, estimator, task])</p></td>
-<td><p>read the parameters provided by the user.</p></td>
+<td><p>Read the parameters provided by the user.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pspso.pspso.decode_parameters" title="pspso.pspso.decode_parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">decode_parameters</span></code></a>(particle)</p></td>
 <td><p>Decodes the parameters of a list into a meaningful set of parameters.</p></td>
@@ -441,10 +441,10 @@ These functions follow the same encoding schema used in fitpspso(), and were bas
 <td><p>Used to rebuild the model after selecting the parameters.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pspso.pspso.printresults" title="pspso.pspso.printresults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">printresults</span></code></a>()</p></td>
-<td><p>print results</p></td>
+<td><p>Print the results found in the pspso instance.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pspso.pspso.calculatecombinations" title="pspso.pspso.calculatecombinations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculatecombinations</span></code></a>()</p></td>
-<td><p>generate combinations</p></td>
+<td><p>A function that will generate all the possible combinations in the search space.</p></td>
 </tr>
 </tbody>
 </table>
@@ -459,20 +459,21 @@ These functions follow the same encoding schema used in fitpspso(), and were bas
 <dl class="method">
 <dt id="pspso.pspso.calculatecombinations">
 <code class="sig-name descname">calculatecombinations</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.calculatecombinations" title="Permalink to this definition">¶</a></dt>
-<dd><p>generate combinations</p>
+<dd><p>A function that will generate all the possible combinations in the search space.
+Used mainly with grid search</p>
+<p>Returns</p>
+<dl class="simple">
+<dt>combinations: list</dt><dd><p>A list that contains all the possible combinations.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pspso.pspso.decode_parameters">
 <em class="property">static </em><code class="sig-name descname">decode_parameters</code><span class="sig-paren">(</span><em class="sig-param">particle</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.decode_parameters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decodes the parameters of a list into a meaningful set of parameters.
-To decode a particle, we need the following global variables:</p>
-<blockquote>
-<div><p>global variable parameters
-global variable defaultparameters
-global variable paramdetails
-global variable rounding</p>
-</div></blockquote>
+To decode a particle, we need the following global variables:parameters,
+defaultparameters, paramdetails, and rounding.</p>
 </dd></dl>
 
 <dl class="method">
@@ -495,26 +496,88 @@ whole swarm.</p>
 <dl class="method">
 <dt id="pspso.pspso.fitpsgrid">
 <code class="sig-name descname">fitpsgrid</code><span class="sig-paren">(</span><em class="sig-param">X_train=None</em>, <em class="sig-param">Y_train=None</em>, <em class="sig-param">X_val=None</em>, <em class="sig-param">Y_val=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.fitpsgrid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Grid search was implemented to match the training process with pspso and for comparison purposes.
+<dd><p>Select the algorithm parameters based on Grid search.</p>
+<p>Grid search was implemented to match the training process with pspso and for comparison purposes.
 I have to traverse each value between x_min, x_max. Create a list seperating rounding value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pspso.pspso.fitpspso">
-<code class="sig-name descname">fitpspso</code><span class="sig-paren">(</span><em class="sig-param">X_train=None</em>, <em class="sig-param">Y_train=None</em>, <em class="sig-param">X_val=None</em>, <em class="sig-param">Y_val=None</em>, <em class="sig-param">number_of_particles=2</em>, <em class="sig-param">number_of_iterations=2</em>, <em class="sig-param">options={'c1': 0.5</em>, <em class="sig-param">'c2': 0.3</em>, <em class="sig-param">'w': 0.4}</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.fitpspso" title="Permalink to this definition">¶</a></dt>
-<dd><p>fitpso search</p>
+<code class="sig-name descname">fitpspso</code><span class="sig-paren">(</span><em class="sig-param">X_train=None</em>, <em class="sig-param">Y_train=None</em>, <em class="sig-param">X_val=None</em>, <em class="sig-param">Y_val=None</em>, <em class="sig-param">number_of_particles=5</em>, <em class="sig-param">number_of_iterations=10</em>, <em class="sig-param">options={'c1': 1.49618</em>, <em class="sig-param">'c2': 1.49618</em>, <em class="sig-param">'w': 0.7298}</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.fitpspso" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select the algorithm parameters based on PSO.</p>
+<p>Inputs</p>
+<dl class="simple">
+<dt>X_train: numpy.ndarray of shape (a,b)</dt><dd><p>Contains the training input features, a is the number of samples, b is the number of features</p>
+</dd>
+<dt>Y_train: numpy.ndarray of shape (a,1)</dt><dd><p>Contains the training target, a is the number of samples</p>
+</dd>
+<dt>X_train: numpy.ndarray of shape (c,b)</dt><dd><p>Contains the validation input features, c is the number of samples, b is the number of features</p>
+</dd>
+<dt>Y_train: numpy.ndarray of shape (c,1)</dt><dd><p>Contains the training target, c is the number of samples</p>
+</dd>
+<dt>number_of_particles: integer</dt><dd><p>number of particles in the PSO search space.</p>
+</dd>
+<dt>number_of_iterations: integer</dt><dd><p>number of iterations.</p>
+</dd>
+<dt>options: dictionary</dt><dd><p>A key,value dict of PSO parameters c1,c2, and w</p>
+</dd>
+</dl>
+<p>Returns</p>
+<dl class="simple">
+<dt>pos: list</dt><dd><p>The encoded parameters of the best solution</p>
+</dd>
+<dt>cost: float</dt><dd><p>The score of the best solution</p>
+</dd>
+<dt>duration: float</dt><dd><p>The time taken to conduct random search.</p>
+</dd>
+<dt>model:</dt><dd><p>The best model generated via random search</p>
+</dd>
+<dt>combinations: list of lists</dt><dd><p>The combinations examined during random search</p>
+</dd>
+<dt>results: list</dt><dd><p>The score of each combination in combinations list</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pspso.pspso.fitpsrandom">
 <code class="sig-name descname">fitpsrandom</code><span class="sig-paren">(</span><em class="sig-param">X_train=None</em>, <em class="sig-param">Y_train=None</em>, <em class="sig-param">X_val=None</em>, <em class="sig-param">Y_val=None</em>, <em class="sig-param">number_of_attempts=20</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.fitpsrandom" title="Permalink to this definition">¶</a></dt>
-<dd><p>With Random search, the process is done for number of times specified by a parameter in the function.</p>
+<dd><p>Select the algorithm parameters based on radnom search.</p>
+<p>With Random search, the process is done for number of times specified by a parameter in the function.</p>
+<p>Inputs</p>
+<dl class="simple">
+<dt>X_train: numpy.ndarray of shape (a,b)</dt><dd><p>Contains the training input features, a is the number of samples, b is the number of features</p>
+</dd>
+<dt>Y_train: numpy.ndarray of shape (a,1)</dt><dd><p>Contains the training target, a is the number of samples</p>
+</dd>
+<dt>X_train: numpy.ndarray of shape (c,b)</dt><dd><p>Contains the validation input features, c is the number of samples, b is the number of features</p>
+</dd>
+<dt>Y_train: numpy.ndarray of shape (c,1)</dt><dd><p>Contains the training target, c is the number of samples</p>
+</dd>
+<dt>number_of_attempts: integer</dt><dd><p>The number of times random search to be tried.</p>
+</dd>
+</dl>
+<p>Returns</p>
+<dl class="simple">
+<dt>pos: list</dt><dd><p>The encoded parameters of the best solution</p>
+</dd>
+<dt>cost: float</dt><dd><p>The score of the best solution</p>
+</dd>
+<dt>duration: float</dt><dd><p>The time taken to conduct random search.</p>
+</dd>
+<dt>model:</dt><dd><p>The best model generated via random search</p>
+</dd>
+<dt>combinations: list of lists</dt><dd><p>The combinations examined during random search</p>
+</dd>
+<dt>results: list</dt><dd><p>The score of each combination in combinations list</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pspso.pspso.forward_prop_gbdt">
 <em class="property">static </em><code class="sig-name descname">forward_prop_gbdt</code><span class="sig-paren">(</span><em class="sig-param">particle</em>, <em class="sig-param">task</em>, <em class="sig-param">score</em>, <em class="sig-param">X_train</em>, <em class="sig-param">Y_train</em>, <em class="sig-param">X_val</em>, <em class="sig-param">Y_val</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.forward_prop_gbdt" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the fitness value of the encoded parameters in variable particle.
+<dd><p>Train the GBDT after decoding the parameters in variable particle.
 The particle is decoded into parameters of the gbdt. Then, The gbdt is trained and the score is sent back to the fitness function.</p>
 <p>Inputs</p>
 <dl class="simple">
@@ -555,7 +618,7 @@ The particle is decoded into parameters of the gbdt. Then, The gbdt is trained a
 <dl class="method">
 <dt id="pspso.pspso.forward_prop_xgboost">
 <em class="property">static </em><code class="sig-name descname">forward_prop_xgboost</code><span class="sig-paren">(</span><em class="sig-param">particle</em>, <em class="sig-param">task</em>, <em class="sig-param">score</em>, <em class="sig-param">X_train</em>, <em class="sig-param">Y_train</em>, <em class="sig-param">X_val</em>, <em class="sig-param">Y_val</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.forward_prop_xgboost" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function accepts the particle from the PSO fitness function.
+<dd><p>Train the XGBoost after decoding the parameters in variable particle.
 The particle is decoded into parameters of the XGBoost.
 This function is similar to forward_prop_gbdt
 The gbdt is trained and the score is sent back to the fitness function.</p>
@@ -586,13 +649,44 @@ The gbdt is trained and the score is sent back to the fitness function.</p>
 <dl class="method">
 <dt id="pspso.pspso.printresults">
 <code class="sig-name descname">printresults</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.printresults" title="Permalink to this definition">¶</a></dt>
-<dd><p>print results</p>
+<dd><p>Print the results found in the pspso instance. Expected to print general details
+like estimator, task, selection type, number of attempts examined, total number of
+combinations, position of the best solution, score of the best solution, parameters,
+details about the pso algorithm.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pspso.pspso.readparameters">
 <em class="property">static </em><code class="sig-name descname">readparameters</code><span class="sig-paren">(</span><em class="sig-param">params=None</em>, <em class="sig-param">estimator=None</em>, <em class="sig-param">task=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.readparameters" title="Permalink to this definition">¶</a></dt>
-<dd><p>read the parameters provided by the user.</p>
+<dd><p>Read the parameters provided by the user.</p>
+<p>Inputs</p>
+<dl class="simple">
+<dt>params: dictionary of key,values added by the user</dt><dd><p>This dictionary determines the parameters and ranges of parameters the user wants to selection values from.</p>
+</dd>
+<dt>estimator: string value</dt><dd><p>A string value that determines the estimator: ‘mlp’,’xgboost’,’svm’, or ‘gbdt’</p>
+</dd>
+<dt>task: string value</dt><dd><p>A string valeu that determines the task under consideration: ‘regression’ or ‘binary classification’</p>
+</dd>
+</dl>
+<p>Returns</p>
+<dl class="simple">
+<dt>parameters</dt><dd><p>The parameters selected by the user</p>
+</dd>
+<dt>defaultparams</dt><dd><p>Default parameters</p>
+</dd>
+<dt>x_min: list</dt><dd><p>The lower bounds of the parameters search space</p>
+</dd>
+<dt>x_max: list</dt><dd><p>The upper bounds of the parameters search space</p>
+</dd>
+<dt>rounding: list</dt><dd><p>The rounding value in each dimension of the search space</p>
+</dd>
+<dt>bounds: dict</dt><dd><p>A dictionary of the lower and upper bounds</p>
+</dd>
+<dt>dimensions: integer</dt><dd><p>Dimensions of the search space</p>
+</dd>
+<dt>params: Dict</dt><dd><p>Dict given by the author</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">

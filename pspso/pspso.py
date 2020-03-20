@@ -72,12 +72,8 @@ class pspso:
     @staticmethod
     def decode_parameters(particle):
         """Decodes the parameters of a list into a meaningful set of parameters.
-        To decode a particle, we need the following global variables: 
-            
-            global variable parameters
-            global variable defaultparameters
-            global variable paramdetails
-            global variable rounding
+        To decode a particle, we need the following global variables:parameters,
+        defaultparameters, paramdetails, and rounding.
         """
         decodeddict={}
         # read each value in the particle
@@ -103,7 +99,7 @@ class pspso:
          
     @staticmethod
     def forward_prop_gbdt(particle,task,score,X_train,Y_train,X_val,Y_val):
-        """Calculates the fitness value of the encoded parameters in variable particle.
+        """Train the GBDT after decoding the parameters in variable particle.
         The particle is decoded into parameters of the gbdt. Then, The gbdt is trained and the score is sent back to the fitness function.
         
         Inputs
@@ -181,7 +177,7 @@ class pspso:
         
     @staticmethod
     def forward_prop_xgboost(particle,task,score,X_train,Y_train,X_val,Y_val):
-        """This function accepts the particle from the PSO fitness function.
+        """Train the XGBoost after decoding the parameters in variable particle.
         The particle is decoded into parameters of the XGBoost.
         This function is similar to forward_prop_gbdt
         The gbdt is trained and the score is sent back to the fitness function.
@@ -441,8 +437,51 @@ class pspso:
           return pspso.best_paricle_cost_ann,pspso.best_model_ann
       return met,model
   
-    def fitpspso(self, X_train=None, Y_train=None, X_val=None,Y_val=None,number_of_particles=2, number_of_iterations=2, options = {'c1': 0.5, 'c2': 0.3, 'w': 0.4}):
-        """fitpso search
+    def fitpspso(self, X_train=None, Y_train=None, X_val=None,Y_val=None,number_of_particles=5, number_of_iterations=10, options = {'c1':  1.49618, 'c2':  1.49618, 'w': 0.7298}):
+        """Select the algorithm parameters based on PSO.
+        
+        Inputs
+        
+        X_train: numpy.ndarray of shape (a,b) 
+            Contains the training input features, a is the number of samples, b is the number of features
+            
+        Y_train: numpy.ndarray of shape (a,1) 
+            Contains the training target, a is the number of samples
+            
+        X_train: numpy.ndarray of shape (c,b) 
+            Contains the validation input features, c is the number of samples, b is the number of features
+            
+        Y_train: numpy.ndarray of shape (c,1) 
+            Contains the training target, c is the number of samples
+            
+        number_of_particles: integer
+            number of particles in the PSO search space.
+            
+        number_of_iterations: integer
+            number of iterations.
+
+        options: dictionary
+            A key,value dict of PSO parameters c1,c2, and w
+            
+        Returns
+        
+        pos: list
+           The encoded parameters of the best solution
+       
+        cost: float
+            The score of the best solution
+            
+        duration: float
+            The time taken to conduct random search.
+            
+        model: 
+            The best model generated via random search
+            
+        combinations: list of lists
+            The combinations examined during random search
+            
+        results: list
+            The score of each combination in combinations list
         
         """
         print("Running PSO Search .....")
@@ -474,7 +513,9 @@ class pspso:
     
     
     def fitpsgrid(self,X_train=None, Y_train=None, X_val=None,Y_val=None ):
-        """ Grid search was implemented to match the training process with pspso and for comparison purposes.
+        """ Select the algorithm parameters based on Grid search.
+        
+        Grid search was implemented to match the training process with pspso and for comparison purposes.
         I have to traverse each value between x_min, x_max. Create a list seperating rounding value.
         
         
@@ -519,7 +560,46 @@ class pspso:
     
     
     def fitpsrandom(self,X_train=None, Y_train=None, X_val=None,Y_val=None,number_of_attempts=20 ):
-        """With Random search, the process is done for number of times specified by a parameter in the function.
+        """Select the algorithm parameters based on radnom search.
+        
+        With Random search, the process is done for number of times specified by a parameter in the function.
+        
+        Inputs
+        
+        X_train: numpy.ndarray of shape (a,b) 
+            Contains the training input features, a is the number of samples, b is the number of features
+            
+        Y_train: numpy.ndarray of shape (a,1) 
+            Contains the training target, a is the number of samples
+            
+        X_train: numpy.ndarray of shape (c,b) 
+            Contains the validation input features, c is the number of samples, b is the number of features
+            
+        Y_train: numpy.ndarray of shape (c,1) 
+            Contains the training target, c is the number of samples
+            
+        number_of_attempts: integer
+            The number of times random search to be tried.
+            
+        Returns
+        
+        pos: list
+           The encoded parameters of the best solution
+       
+        cost: float
+            The score of the best solution
+            
+        duration: float
+            The time taken to conduct random search.
+            
+        model: 
+            The best model generated via random search
+            
+        combinations: list of lists
+            The combinations examined during random search
+            
+        results: list
+            The score of each combination in combinations list
         
         """
         print("Running Random Search .....")
@@ -564,7 +644,10 @@ class pspso:
         return self.pos,self.cost,self.duration,self.model,self.combinations,self.results
     
     def printresults(self):
-        """print results
+        """Print the results found in the pspso instance. Expected to print general details
+        like estimator, task, selection type, number of attempts examined, total number of 
+        combinations, position of the best solution, score of the best solution, parameters,
+        details about the pso algorithm.
         
         """
         print("Estimator: " + self.estimator)
@@ -585,7 +668,13 @@ class pspso:
         
         
     def calculatecombinations(self):
-        """generate combinations
+        """A function that will generate all the possible combinations in the search space. 
+        Used mainly with grid search
+        
+        Returns
+        
+        combinations: list
+            A list that contains all the possible combinations.
         
         """
         index=0
@@ -606,7 +695,45 @@ class pspso:
     
     @staticmethod
     def readparameters(params=None,estimator=None, task=None):
-        """read the parameters provided by the user.
+        """Read the parameters provided by the user.
+        
+        Inputs
+        
+        params: dictionary of key,values added by the user
+            This dictionary determines the parameters and ranges of parameters the user wants to selection values from.
+            
+        estimator: string value
+            A string value that determines the estimator: 'mlp','xgboost','svm', or 'gbdt'
+            
+        task: string value
+            A string valeu that determines the task under consideration: 'regression' or 'binary classification'
+        
+    
+        Returns
+        
+        parameters
+            The parameters selected by the user
+            
+        defaultparams
+            Default parameters
+            
+        x_min: list
+            The lower bounds of the parameters search space
+            
+        x_max: list
+            The upper bounds of the parameters search space
+            
+        rounding: list
+            The rounding value in each dimension of the search space
+        
+        bounds: dict
+            A dictionary of the lower and upper bounds
+        
+        dimensions: integer
+            Dimensions of the search space
+        
+        params: Dict
+            Dict given by the author
         
         """
         if params ==None:

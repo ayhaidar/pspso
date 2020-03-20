@@ -13,11 +13,11 @@
 \contentsline {section}{\numberline {3.3}Parameters Encoding/Decoding Functions}{9}{section.3.3}
 \contentsline {section}{\numberline {3.4}Other Functions}{10}{section.3.4}
 \contentsline {chapter}{\numberline {4}Module Summary}{11}{chapter.4}
-\contentsline {chapter}{\numberline {5}Future Work}{13}{chapter.5}
-\contentsline {section}{\numberline {5.1}Additional Parameters}{13}{section.5.1}
-\contentsline {section}{\numberline {5.2}New Algorithms}{13}{section.5.2}
-\contentsline {section}{\numberline {5.3}Crossvalidation}{13}{section.5.3}
-\contentsline {section}{\numberline {5.4}Multi\sphinxhyphen {}Class Classification}{13}{section.5.4}
-\contentsline {chapter}{\numberline {6}Contributing}{15}{chapter.6}
-\contentsline {chapter}{\numberline {7}License}{17}{chapter.7}
-\contentsline {chapter}{Index}{19}{section*.17}
+\contentsline {chapter}{\numberline {5}Future Work}{15}{chapter.5}
+\contentsline {section}{\numberline {5.1}Additional Parameters}{15}{section.5.1}
+\contentsline {section}{\numberline {5.2}New Algorithms}{15}{section.5.2}
+\contentsline {section}{\numberline {5.3}Crossvalidation}{15}{section.5.3}
+\contentsline {section}{\numberline {5.4}Multi\sphinxhyphen {}Class Classification}{15}{section.5.4}
+\contentsline {chapter}{\numberline {6}Contributing}{17}{chapter.6}
+\contentsline {chapter}{\numberline {7}License}{19}{chapter.7}
+\contentsline {chapter}{Index}{21}{section*.17}

@@ -16,20 +16,20 @@
   \item \spxentry{f()}\spxextra{pspso.pspso static method}, \hyperpage{11}
   \item \spxentry{fitpsgrid()}\spxextra{pspso.pspso method}, \hyperpage{11}
   \item \spxentry{fitpspso()}\spxextra{pspso.pspso method}, \hyperpage{11}
-  \item \spxentry{fitpsrandom()}\spxextra{pspso.pspso method}, \hyperpage{11}
-  \item \spxentry{forward\_prop\_gbdt()}\spxextra{pspso.pspso static method}, \hyperpage{11}
-  \item \spxentry{forward\_prop\_mlp()}\spxextra{pspso.pspso static method}, \hyperpage{12}
-  \item \spxentry{forward\_prop\_svm()}\spxextra{pspso.pspso static method}, \hyperpage{12}
-  \item \spxentry{forward\_prop\_xgboost()}\spxextra{pspso.pspso static method}, \hyperpage{12}
+  \item \spxentry{fitpsrandom()}\spxextra{pspso.pspso method}, \hyperpage{12}
+  \item \spxentry{forward\_prop\_gbdt()}\spxextra{pspso.pspso static method}, \hyperpage{12}
+  \item \spxentry{forward\_prop\_mlp()}\spxextra{pspso.pspso static method}, \hyperpage{13}
+  \item \spxentry{forward\_prop\_svm()}\spxextra{pspso.pspso static method}, \hyperpage{13}
+  \item \spxentry{forward\_prop\_xgboost()}\spxextra{pspso.pspso static method}, \hyperpage{13}
 
   \indexspace
   \bigletter P
-  \item \spxentry{printresults()}\spxextra{pspso.pspso method}, \hyperpage{12}
+  \item \spxentry{printresults()}\spxextra{pspso.pspso method}, \hyperpage{13}
   \item \spxentry{pspso}\spxextra{class in pspso}, \hyperpage{11}
 
   \indexspace
   \bigletter R
-  \item \spxentry{readparameters()}\spxextra{pspso.pspso static method}, \hyperpage{12}
-  \item \spxentry{rebuildmodel()}\spxextra{pspso.pspso static method}, \hyperpage{12}
+  \item \spxentry{readparameters()}\spxextra{pspso.pspso static method}, \hyperpage{13}
+  \item \spxentry{rebuildmodel()}\spxextra{pspso.pspso static method}, \hyperpage{13}
 
 \end{sphinxtheindex}

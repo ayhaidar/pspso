@@ -72,7 +72,7 @@
 
 
 \title{pspso}
-\date{Mar 19, 2020}
+\date{Mar 20, 2020}
 \release{0.0.7}
 \author{Ali Haidar}
 \newcommand{\sphinxlogo}{\vbox{}}
@@ -96,7 +96,7 @@
 
 \section{Overview}
 \label{\detokenize{index:overview}}
-pspso is a python library for selecting machine learning algorithms
+\sphinxstylestrong{pspso} is a python library for selecting machine learning algorithms
 parameters. The first version supports two single algorithms:
 Multi\sphinxhyphen{}Layer Perceptron (MLP) and Support Vector Machine (SVM). It
 supports two ensembles: Extreme Gradient Boosting (XGBoost) and Gradient
@@ -151,7 +151,7 @@ pip install pspso
 
 \section{MLP Example}
 \label{\detokenize{index:mlp-example}}
-pspso is used to select the machine learning algorithms parameters. It
+\sphinxstylestrong{pspso} is used to select the machine learning algorithms parameters. It
 is assumed that the user has already processed and prepared the training
 and validation datasets, which are usually used to build the model.
 Below is an example for using the pspso to select
@@ -340,12 +340,12 @@ Early stopping rounds for supporting algorithm can be modified, default is 60:
 
 {\hyperref[\detokenize{index:pspso.pspso.forward_prop_gbdt}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{forward\_prop\_gbdt}}}}}(particle, task, score, …)
 &
-Calculates the fitness value of the encoded parameters in variable particle.
+Train the GBDT after decoding the parameters in variable particle.
 \\
 \hline
 {\hyperref[\detokenize{index:pspso.pspso.forward_prop_xgboost}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{forward\_prop\_xgboost}}}}}(particle, task, score, …)
 &
-This function accepts the particle from the PSO fitness function.
+Train the XGBoost after decoding the parameters in variable particle.
 \\
 \hline
 {\hyperref[\detokenize{index:pspso.pspso.forward_prop_svm}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{forward\_prop\_svm}}}}}(particle, task, score, …)
@@ -383,17 +383,17 @@ Train the MLP after the decoding the parameters in variable particle.
 
 {\hyperref[\detokenize{index:pspso.pspso.fitpspso}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{fitpspso}}}}}({[}X\_train, Y\_train, X\_val, Y\_val, …{]})
 &
-fitpso search
+Select the algorithm parameters based on PSO.
 \\
 \hline
 {\hyperref[\detokenize{index:pspso.pspso.fitpsgrid}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{fitpsgrid}}}}}({[}X\_train, Y\_train, X\_val, Y\_val{]})
 &
-Grid search was implemented to match the training process with pspso and for comparison purposes.
+Select the algorithm parameters based on Grid search.
 \\
 \hline
 {\hyperref[\detokenize{index:pspso.pspso.fitpsrandom}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{fitpsrandom}}}}}({[}X\_train, Y\_train, X\_val, …{]})
 &
-With Random search, the process is done for number of times specified by a parameter in the function.
+Select the algorithm parameters based on radnom search.
 \\
 \hline
 \end{longtable}\sphinxatlongtableend\end{savenotes}
@@ -426,7 +426,7 @@ These functions follow the same encoding schema used in fitpspso(), and were bas
 
 {\hyperref[\detokenize{index:pspso.pspso.readparameters}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{readparameters}}}}}({[}params, estimator, task{]})
 &
-read the parameters provided by the user.
+Read the parameters provided by the user.
 \\
 \hline
 {\hyperref[\detokenize{index:pspso.pspso.decode_parameters}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{decode\_parameters}}}}}(particle)
@@ -469,12 +469,12 @@ Used to rebuild the model after selecting the parameters.
 \hline
 {\hyperref[\detokenize{index:pspso.pspso.printresults}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{printresults}}}}}()
 &
-print results
+Print the results found in the pspso instance.
 \\
 \hline
 {\hyperref[\detokenize{index:pspso.pspso.calculatecombinations}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{calculatecombinations}}}}}()
 &
-generate combinations
+A function that will generate all the possible combinations in the search space.
 \\
 \hline
 \end{longtable}\sphinxatlongtableend\end{savenotes}
@@ -490,7 +490,15 @@ This class searches for algorithm parameters by using the Particle Swarm Optimiz
 
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{index:pspso.pspso.calculatecombinations}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{calculatecombinations}}}{}{}
-generate combinations
+A function that will generate all the possible combinations in the search space.
+Used mainly with grid search
+
+Returns
+\begin{description}
+\item[{combinations: list}] \leavevmode
+A list that contains all the possible combinations.
+
+\end{description}
 
 \end{fulllineitems}
 
@@ -499,14 +507,8 @@ generate combinations
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{index:pspso.pspso.decode_parameters}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{static }}\sphinxbfcode{\sphinxupquote{decode\_parameters}}}{\emph{particle}}{}
 Decodes the parameters of a list into a meaningful set of parameters.
-To decode a particle, we need the following global variables:
-\begin{quote}
-
-global variable parameters
-global variable defaultparameters
-global variable paramdetails
-global variable rounding
-\end{quote}
+To decode a particle, we need the following global variables:parameters,
+defaultparameters, paramdetails, and rounding.
 
 \end{fulllineitems}
 
@@ -537,6 +539,8 @@ The computed loss for each particle
 
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{index:pspso.pspso.fitpsgrid}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{fitpsgrid}}}{\emph{X\_train=None}, \emph{Y\_train=None}, \emph{X\_val=None}, \emph{Y\_val=None}}{}
+Select the algorithm parameters based on Grid search.
+
 Grid search was implemented to match the training process with pspso and for comparison purposes.
 I have to traverse each value between x\_min, x\_max. Create a list seperating rounding value.
 
@@ -545,8 +549,55 @@ I have to traverse each value between x\_min, x\_max. Create a list seperating r
 \index{fitpspso() (pspso.pspso method)@\spxentry{fitpspso()}\spxextra{pspso.pspso method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{index:pspso.pspso.fitpspso}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{fitpspso}}}{\emph{X\_train=None}, \emph{Y\_train=None}, \emph{X\_val=None}, \emph{Y\_val=None}, \emph{number\_of\_particles=2}, \emph{number\_of\_iterations=2}, \emph{options=\{\textquotesingle{}c1\textquotesingle{}: 0.5}, \emph{\textquotesingle{}c2\textquotesingle{}: 0.3}, \emph{\textquotesingle{}w\textquotesingle{}: 0.4\}}}{}
-fitpso search
+\phantomsection\label{\detokenize{index:pspso.pspso.fitpspso}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{fitpspso}}}{\emph{X\_train=None}, \emph{Y\_train=None}, \emph{X\_val=None}, \emph{Y\_val=None}, \emph{number\_of\_particles=5}, \emph{number\_of\_iterations=10}, \emph{options=\{\textquotesingle{}c1\textquotesingle{}: 1.49618}, \emph{\textquotesingle{}c2\textquotesingle{}: 1.49618}, \emph{\textquotesingle{}w\textquotesingle{}: 0.7298\}}}{}
+Select the algorithm parameters based on PSO.
+
+Inputs
+\begin{description}
+\item[{X\_train: numpy.ndarray of shape (a,b)}] \leavevmode
+Contains the training input features, a is the number of samples, b is the number of features
+
+\item[{Y\_train: numpy.ndarray of shape (a,1)}] \leavevmode
+Contains the training target, a is the number of samples
+
+\item[{X\_train: numpy.ndarray of shape (c,b)}] \leavevmode
+Contains the validation input features, c is the number of samples, b is the number of features
+
+\item[{Y\_train: numpy.ndarray of shape (c,1)}] \leavevmode
+Contains the training target, c is the number of samples
+
+\item[{number\_of\_particles: integer}] \leavevmode
+number of particles in the PSO search space.
+
+\item[{number\_of\_iterations: integer}] \leavevmode
+number of iterations.
+
+\item[{options: dictionary}] \leavevmode
+A key,value dict of PSO parameters c1,c2, and w
+
+\end{description}
+
+Returns
+\begin{description}
+\item[{pos: list}] \leavevmode
+The encoded parameters of the best solution
+
+\item[{cost: float}] \leavevmode
+The score of the best solution
+
+\item[{duration: float}] \leavevmode
+The time taken to conduct random search.
+
+\item[{model:}] \leavevmode
+The best model generated via random search
+
+\item[{combinations: list of lists}] \leavevmode
+The combinations examined during random search
+
+\item[{results: list}] \leavevmode
+The score of each combination in combinations list
+
+\end{description}
 
 \end{fulllineitems}
 
@@ -554,7 +605,50 @@ fitpso search
 
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{index:pspso.pspso.fitpsrandom}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{fitpsrandom}}}{\emph{X\_train=None}, \emph{Y\_train=None}, \emph{X\_val=None}, \emph{Y\_val=None}, \emph{number\_of\_attempts=20}}{}
+Select the algorithm parameters based on radnom search.
+
 With Random search, the process is done for number of times specified by a parameter in the function.
+
+Inputs
+\begin{description}
+\item[{X\_train: numpy.ndarray of shape (a,b)}] \leavevmode
+Contains the training input features, a is the number of samples, b is the number of features
+
+\item[{Y\_train: numpy.ndarray of shape (a,1)}] \leavevmode
+Contains the training target, a is the number of samples
+
+\item[{X\_train: numpy.ndarray of shape (c,b)}] \leavevmode
+Contains the validation input features, c is the number of samples, b is the number of features
+
+\item[{Y\_train: numpy.ndarray of shape (c,1)}] \leavevmode
+Contains the training target, c is the number of samples
+
+\item[{number\_of\_attempts: integer}] \leavevmode
+The number of times random search to be tried.
+
+\end{description}
+
+Returns
+\begin{description}
+\item[{pos: list}] \leavevmode
+The encoded parameters of the best solution
+
+\item[{cost: float}] \leavevmode
+The score of the best solution
+
+\item[{duration: float}] \leavevmode
+The time taken to conduct random search.
+
+\item[{model:}] \leavevmode
+The best model generated via random search
+
+\item[{combinations: list of lists}] \leavevmode
+The combinations examined during random search
+
+\item[{results: list}] \leavevmode
+The score of each combination in combinations list
+
+\end{description}
 
 \end{fulllineitems}
 
@@ -562,7 +656,7 @@ With Random search, the process is done for number of times specified by a param
 
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{index:pspso.pspso.forward_prop_gbdt}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{static }}\sphinxbfcode{\sphinxupquote{forward\_prop\_gbdt}}}{\emph{particle}, \emph{task}, \emph{score}, \emph{X\_train}, \emph{Y\_train}, \emph{X\_val}, \emph{Y\_val}}{}
-Calculates the fitness value of the encoded parameters in variable particle.
+Train the GBDT after decoding the parameters in variable particle.
 The particle is decoded into parameters of the gbdt. Then, The gbdt is trained and the score is sent back to the fitness function.
 
 Inputs
@@ -619,7 +713,7 @@ Train the SVM after decoding the parameters in variable particle.
 
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{index:pspso.pspso.forward_prop_xgboost}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{static }}\sphinxbfcode{\sphinxupquote{forward\_prop\_xgboost}}}{\emph{particle}, \emph{task}, \emph{score}, \emph{X\_train}, \emph{Y\_train}, \emph{X\_val}, \emph{Y\_val}}{}
-This function accepts the particle from the PSO fitness function.
+Train the XGBoost after decoding the parameters in variable particle.
 The particle is decoded into parameters of the XGBoost.
 This function is similar to forward\_prop\_gbdt
 The gbdt is trained and the score is sent back to the fitness function.
@@ -662,7 +756,10 @@ the score of the trained algorithm over the validation dataset, trained model
 
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{index:pspso.pspso.printresults}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{printresults}}}{}{}
-print results
+Print the results found in the pspso instance. Expected to print general details
+like estimator, task, selection type, number of attempts examined, total number of
+combinations, position of the best solution, score of the best solution, parameters,
+details about the pso algorithm.
 
 \end{fulllineitems}
 
@@ -670,7 +767,48 @@ print results
 
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{index:pspso.pspso.readparameters}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{static }}\sphinxbfcode{\sphinxupquote{readparameters}}}{\emph{params=None}, \emph{estimator=None}, \emph{task=None}}{}
-read the parameters provided by the user.
+Read the parameters provided by the user.
+
+Inputs
+\begin{description}
+\item[{params: dictionary of key,values added by the user}] \leavevmode
+This dictionary determines the parameters and ranges of parameters the user wants to selection values from.
+
+\item[{estimator: string value}] \leavevmode
+A string value that determines the estimator: ‘mlp’,’xgboost’,’svm’, or ‘gbdt’
+
+\item[{task: string value}] \leavevmode
+A string valeu that determines the task under consideration: ‘regression’ or ‘binary classification’
+
+\end{description}
+
+Returns
+\begin{description}
+\item[{parameters}] \leavevmode
+The parameters selected by the user
+
+\item[{defaultparams}] \leavevmode
+Default parameters
+
+\item[{x\_min: list}] \leavevmode
+The lower bounds of the parameters search space
+
+\item[{x\_max: list}] \leavevmode
+The upper bounds of the parameters search space
+
+\item[{rounding: list}] \leavevmode
+The rounding value in each dimension of the search space
+
+\item[{bounds: dict}] \leavevmode
+A dictionary of the lower and upper bounds
+
+\item[{dimensions: integer}] \leavevmode
+Dimensions of the search space
+
+\item[{params: Dict}] \leavevmode
+Dict given by the author
+
+\end{description}
 
 \end{fulllineitems}
 

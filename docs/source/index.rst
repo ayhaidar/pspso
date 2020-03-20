@@ -15,7 +15,7 @@ Overview and Installation
 
 Overview
 ------------  
-pspso is a python library for selecting machine learning algorithms
+**pspso** is a python library for selecting machine learning algorithms
 parameters. The first version supports two single algorithms:
 Multi-Layer Perceptron (MLP) and Support Vector Machine (SVM). It
 supports two ensembles: Extreme Gradient Boosting (XGBoost) and Gradient
@@ -55,7 +55,7 @@ Usage
 MLP Example
 ------------
 
-pspso is used to select the machine learning algorithms parameters. It
+**pspso** is used to select the machine learning algorithms parameters. It
 is assumed that the user has already processed and prepared the training
 and validation datasets, which are usually used to build the model.
 Below is an example for using the pspso to select

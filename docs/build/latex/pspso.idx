@@ -4,11 +4,11 @@
 \indexentry{f() (pspso.pspso static method)@\spxentry{f()}\spxextra{pspso.pspso static method}|hyperpage}{11}
 \indexentry{fitpsgrid() (pspso.pspso method)@\spxentry{fitpsgrid()}\spxextra{pspso.pspso method}|hyperpage}{11}
 \indexentry{fitpspso() (pspso.pspso method)@\spxentry{fitpspso()}\spxextra{pspso.pspso method}|hyperpage}{11}
-\indexentry{fitpsrandom() (pspso.pspso method)@\spxentry{fitpsrandom()}\spxextra{pspso.pspso method}|hyperpage}{11}
-\indexentry{forward\_prop\_gbdt() (pspso.pspso static method)@\spxentry{forward\_prop\_gbdt()}\spxextra{pspso.pspso static method}|hyperpage}{11}
-\indexentry{forward\_prop\_mlp() (pspso.pspso static method)@\spxentry{forward\_prop\_mlp()}\spxextra{pspso.pspso static method}|hyperpage}{12}
-\indexentry{forward\_prop\_svm() (pspso.pspso static method)@\spxentry{forward\_prop\_svm()}\spxextra{pspso.pspso static method}|hyperpage}{12}
-\indexentry{forward\_prop\_xgboost() (pspso.pspso static method)@\spxentry{forward\_prop\_xgboost()}\spxextra{pspso.pspso static method}|hyperpage}{12}
-\indexentry{printresults() (pspso.pspso method)@\spxentry{printresults()}\spxextra{pspso.pspso method}|hyperpage}{12}
-\indexentry{readparameters() (pspso.pspso static method)@\spxentry{readparameters()}\spxextra{pspso.pspso static method}|hyperpage}{12}
-\indexentry{rebuildmodel() (pspso.pspso static method)@\spxentry{rebuildmodel()}\spxextra{pspso.pspso static method}|hyperpage}{12}
+\indexentry{fitpsrandom() (pspso.pspso method)@\spxentry{fitpsrandom()}\spxextra{pspso.pspso method}|hyperpage}{12}
+\indexentry{forward\_prop\_gbdt() (pspso.pspso static method)@\spxentry{forward\_prop\_gbdt()}\spxextra{pspso.pspso static method}|hyperpage}{12}
+\indexentry{forward\_prop\_mlp() (pspso.pspso static method)@\spxentry{forward\_prop\_mlp()}\spxextra{pspso.pspso static method}|hyperpage}{13}
+\indexentry{forward\_prop\_svm() (pspso.pspso static method)@\spxentry{forward\_prop\_svm()}\spxextra{pspso.pspso static method}|hyperpage}{13}
+\indexentry{forward\_prop\_xgboost() (pspso.pspso static method)@\spxentry{forward\_prop\_xgboost()}\spxextra{pspso.pspso static method}|hyperpage}{13}
+\indexentry{printresults() (pspso.pspso method)@\spxentry{printresults()}\spxextra{pspso.pspso method}|hyperpage}{13}
+\indexentry{readparameters() (pspso.pspso static method)@\spxentry{readparameters()}\spxextra{pspso.pspso static method}|hyperpage}{13}
+\indexentry{rebuildmodel() (pspso.pspso static method)@\spxentry{rebuildmodel()}\spxextra{pspso.pspso static method}|hyperpage}{13}
