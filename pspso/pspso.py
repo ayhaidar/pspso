@@ -35,7 +35,7 @@ class pspso:
     best_particle_position_ann=None
        
     verbose=0
-    early_stopping=60
+    early_stopping=20
     
     defaultparams= None #contains the default parameters of the algorithm that were not selected for optimization, or cant be selected for optimization
     parameters=None #contains the list of the parameters selected for optimization
@@ -66,9 +66,184 @@ class pspso:
         self.duration=None
         self.rmse=None
         self.optimizer=None
-        pspso.parameters,pspso.defaultparams,self.x_min,self.x_max,pspso.rounding,self.bounds, self.dimensions,pspso.paramdetails=pspso.readparameters(params,self.estimator,self.task)
+        pspso.parameters,pspso.defaultparams,self.x_min,self.x_max,pspso.rounding,self.bounds, self.dimensions,pspso.paramdetails=pspso.read_parameters(params,self.estimator,self.task)
 
-
+    @staticmethod
+    def get_default_search_space(estimator,task):
+        """Create a dictionary of default parameters if the user didnt provide parameters.
+        
+        Inputs
+        
+        estimator: string value
+            A string value that determines the estimator: 'mlp','xgboost','svm', or 'gbdt'
+            
+        task: string value
+            A string value that determines the task under consideration: 'regression' or 'binary classification'
+        
+    
+        Returns
+        
+        params: Dictionary
+            A dictionary that contains default parameters to be used. 
+            
+        """
+        if estimator == 'xgboost':
+            if task == 'binary classification':
+                params = {"learning_rate":  [0.1,0.3,2],
+                  "max_depth": [1,10,0],
+                  "n_estimators": [2,70,0],
+                  "subsample": [0.7,1,2]}
+            else:
+                params = {"objective": ["reg:linear","reg:tweedie","reg:gamma"],
+                  "learning_rate":  [0.1,0.3,2],
+                  "max_depth": [1,10,0],
+                  "n_estimators": [2,70,0],
+                  "subsample": [0.7,1,2]}
+        elif estimator == 'gbdt':
+            if task == 'binary classification':
+                params = {"learning_rate":  [0.1,0.3,2],
+                  "max_depth": [1,10,0],
+                  "n_estimators": [2,70,0],
+                  "subsample": [0.7,1,2]}
+            else:
+                params = {"objective": ["tweedie","gamma"],
+                  "learning_rate":  [0.1,0.3,2],
+                  "max_depth": [1,10,0],
+                  "n_estimators": [2,70,0],
+                  "subsample": [0.7,1,2]}
+        elif estimator == 'svm':
+            params = {"kernel": ["linear", "rbf", "poly"] ,
+                  "gamma":  [0.1,10,1],
+                  "C": [0.1,10,1],
+                  "degree": [0,6,0]}
+        elif estimator == 'mlp':
+            params = {"optimizer": ["RMSprop", "adam", "sgd",'adamax','nadam','adadelta'] ,
+                  "learning_rate":  [0.1,0.3,2],
+                  "neurons": [1,40,0],
+                  "hiddenactivation": ['relu','sigmoid','tanh'],
+                  "activation":['relu','sigmoid','tanh']}   
+        return params
+    
+    @staticmethod
+    def get_default_params(estimator, task):
+        """Set the default parameters of the estimator. 
+        This function assigns the default parameters for the user.
+        Each algorithm has a set of parameters. To allow the user to search for some parameters
+        instead of the supported parameters, this function is used to assign a default value for each parameter. 
+        In addition, it gets other parameters for each algorithm. For e.g, it returns the number of epochs, batch_size, and loss for the mlp. 
+        
+        Inputs
+        
+        estimator: string value
+            A string value that determines the estimator: 'mlp','xgboost','svm', or 'gbdt'
+            
+        task: string value
+            A string value that determines the task under consideration: 'regression' or 'binary classification'
+        
+    
+        Returns
+        
+        defaultparams: Dictionary
+            A dictionary that contains default parameters to be used.
+        """
+        
+        defaultparams= {}
+        if estimator == 'xgboost':
+            defaultparams.update({'learning_rate':0.01,'max_depth':6,'n_estimators':40,'subsample':0.99})
+            if task =='binary classification': # default activation
+                defaultparams.update({'objective':'binary:logistic','eval_metric':["aucpr","auc"]})
+            elif task =='regression':
+                defaultparams.update({'objective':'reg:tweedie','eval_metric':["rmse"]})    
+        elif estimator == 'gbdt':
+            if task =='regression':
+                defaultparams['objective'] = 'tweedie' 
+                eval_metric ='rmse'
+            elif task =='binary classification':
+                defaultparams['objective'] = 'binary'
+                eval_metric ='auc' 
+            defaultparams.update({'learning_rate':0.01,'max_depth':6,'n_estimators':40,'subsample':0.99,
+                                  'boosting_type':'gbdt','metric':eval_metric,'verbose':pspso.verbose})
+                
+        elif estimator == 'mlp':
+            #steps_per_epoch=4000 // batch_size
+            defaultparams.update({'batch_size':12,'epochs':50,'shuffle':True,
+                                  'neurons':13,'hiddenactivation':'sigmoid',
+                                  'activation':'sigmoid','learning_rate':0.01,
+                                  'mode':'auto'})#batchsize, epochs, and shuffling default values.
+            if task =='binary classification': # set the optimizer based on the task
+                defaultparams.update({'optimizer':'adam','metrics':['binary_accuracy'],'loss':'binary_crossentropy'})  
+            elif task=='regression':
+                defaultparams.update({'optimizer':'RMSprop','metrics':['mse'],'loss':'mse'}) 
+        elif estimator == 'svm':
+            defaultparams.update({'kernel':'rbf','C':5,'gamma':5})
+        
+        return defaultparams
+        
+    
+    @staticmethod
+    def read_parameters(params=None,estimator=None, task=None):
+        """Read the parameters provided by the user.
+        
+        Inputs
+        
+        params: dictionary of key,values added by the user
+            This dictionary determines the parameters and ranges of parameters the user wants to selection values from.
+            
+        estimator: string value
+            A string value that determines the estimator: 'mlp','xgboost','svm', or 'gbdt'
+            
+        task: string value
+            A string value that determines the task under consideration: 'regression' or 'binary classification'
+        
+    
+        Returns
+        
+        parameters
+            The parameters selected by the user
+            
+        defaultparams
+            Default parameters
+            
+        x_min: list
+            The lower bounds of the parameters search space
+            
+        x_max: list
+            The upper bounds of the parameters search space
+            
+        rounding: list
+            The rounding value in each dimension of the search space
+        
+        bounds: dict
+            A dictionary of the lower and upper bounds
+        
+        dimensions: integer
+            Dimensions of the search space
+        
+        params: Dict
+            Dict given by the author
+        
+        """
+        if params == None:
+            params=pspso.get_default_search_space(estimator,task)
+        x_min,x_max,rounding,parameters=[],[],[],[]
+        for key in params:
+            if all(isinstance(item, str) for item in params[key]):
+                of=params[key]
+                x_min.append(0)
+                x_max.append(len(of)-1)
+                parameters.append(key)
+                rounding.append(0)
+            else:
+                thelist=params[key]
+                x_min.append(thelist[0])
+                x_max.append(thelist[1])
+                parameters.append(key)
+                rounding.append(thelist[2])
+        bounds = (np.asarray(x_min), np.asarray(x_max))   
+        dimensions=len(x_min)
+        defaultparams=pspso.get_default_params(estimator, task)                              
+        return parameters,defaultparams, x_min,x_max,rounding,bounds, dimensions,params
+    
     @staticmethod
     def decode_parameters(particle):
         """Decodes the parameters of a list into a meaningful set of parameters.
@@ -92,7 +267,7 @@ class pspso:
             else:
                 #get the rounding for the parameter
                 decodeddict[key] =round(particlevalueatd,pspso.rounding[pspso.parameters.index(key)])
-                if pspso.rounding[pspso.parameters.index(key)] ==0:
+                if pspso.rounding[pspso.parameters.index(key)] == 0:
                     decodeddict[key]=int(decodeddict[key])#neurons, max_depth, estimators should be integers
         return decodeddict
         
@@ -107,7 +282,7 @@ class pspso:
         particle: list of values (n dimensions)
             A particle in the swarm
         
-        task: regression, binary classification, or binary classification r
+        task: regression, binary classification
             the task to be conducted 
             
         score: rmse (regression), auc (binary classification), acc (binary classification)
@@ -134,13 +309,6 @@ class pspso:
         decodedparams = pspso.decode_parameters(particle)
         modelparameters = {**pspso.defaultparams,**decodedparams}
         try:
-            if task =='regression':# if it is a regression task
-                eval_metric ='rmse'
-            elif task =='binary classification':
-                eval_metric ='auc' 
-            modelparameters['boosting_type'] = 'gbdt'
-            modelparameters['metric'] = eval_metric
-            modelparameters['verbose'] = pspso.verbose
             if modelparameters['subsample'] ==1: # Note: to enable bagging, bagging_fraction(subsample_freq) should be set to value smaller than 1.0 as well
                 modelparameters['subsample_freq'] =0 #disable bagging
             else:
@@ -150,24 +318,12 @@ class pspso:
             val_data = lightgbm.Dataset(X_val, label=np.squeeze(Y_val))#evaluation set.
             gbm_n_estimators=modelparameters['n_estimators']
             del modelparameters['n_estimators']
-            gbm = lightgbm.train(modelparameters,
+            model = lightgbm.train(modelparameters,
                                  train_data,
                                  valid_sets=val_data,
                                  num_boost_round=gbm_n_estimators,verbose_eval=False,
                                  early_stopping_rounds=pspso.early_stopping)
-            preds_val=gbm.predict(X_val)# predict output
-            if score =='rmse':  # if the score is rmse, calculate it and return it with the model
-                met = np.sqrt(mean_squared_error(Y_val, preds_val))
-                return met,gbm
-            if score == 'acc':#since it is a minimization task, we return 1-acc
-                preds_val = gbm.predict(X_val) # since it is using the gbdt model, output will be one columns
-                met = accuracy_score(Y_val,np.round(preds_val))# need to round since gbdtModel is used not LGBMClassifier
-                return 1-met,gbm
-            elif score == 'auc':
-                preds_val = gbm.predict(X_val)#generate the probabilities 
-                fpr, tpr, thresholds = roc_curve(Y_val, preds_val)
-                met = auc(fpr, tpr)
-                return 1-met,gbm
+            return pspso.predict(model,'gbdt',task, score,X_val,Y_val),model
         except Exception as e:
             print('Got an exception in training gbdt')
             print(e)
@@ -187,7 +343,7 @@ class pspso:
         particle: list of values (n dimensions)
             A particle in the swarm
         
-        task: regression, binary classification, or binary classification r
+        task: regression, binary classification
             the task to be conducted 
             
         score: rmse (regression), auc (binary classification), acc (binary classification)
@@ -211,55 +367,26 @@ class pspso:
             the score of the trained algorithm over the validation dataset, trained model
 
         """         
-        xgb_model=None
+        model=None 
         eval_set = [(X_val, Y_val)]#eval set is the same in regression and classification
         try:
-            if task =='regression':# if it is a regression task, will use the XGBRegressor
-                eval_metric=["rmse"]
-            elif task =='binary classification' or task == 'binary classification r':
-                eval_metric=["aucpr","auc"]#since it is a classification task, we used auc. its always better to use auc
-                
             decodedparams = pspso.decode_parameters(particle)
             modelparameters = {**pspso.defaultparams,**decodedparams}
-            #print(modelparameters)
-            #create the model
             if task !='binary classification':
-                xgb_model = xgb.XGBRegressor(objective =modelparameters['objective'],  
+                model = xgb.XGBRegressor(objective =modelparameters['objective'],  
                               learning_rate = modelparameters['learning_rate'],                        
                               max_depth = int(modelparameters['max_depth']) ,
                               n_estimators = int(modelparameters['n_estimators']),
                               subsample=modelparameters['subsample'])
             else : # if it is a binary classification task, will use XGBClassifier, note the different decoder since we have objective as fixed this time.
-                xgb_model = xgb.XGBClassifier(objective =modelparameters['objective'],  
+                model = xgb.XGBClassifier(objective =modelparameters['objective'],  
                               learning_rate = modelparameters['learning_rate'],                        
                               max_depth = int(modelparameters['max_depth']) ,
                               n_estimators = int(modelparameters['n_estimators']),
                               subsample=modelparameters['subsample'])
             
-            xgb_model.fit(X_train,Y_train,early_stopping_rounds=pspso.early_stopping,eval_set=eval_set,eval_metric=eval_metric,verbose=pspso.verbose )
-            
-            if score =='rmse':# based on the score, measure the fitness of the solution
-                preds_val = xgb_model.predict(X_val)# predict output in xgboost regression
-                met = np.sqrt(mean_squared_error(Y_val, preds_val)) # calculate the rmse 
-                return met,xgb_model # return rmse plus model
-            elif score == 'acc' and task =='binary classification': # if it is accuracy
-                preds_val = xgb_model.predict(X_val)  # one column with acc, will generate labels with function predict() in xgboost
-                met = accuracy_score(Y_val,preds_val) # measure accuracy
-                return 1-met,xgb_model # return accuracy with the model created.
-            elif score == 'auc' and task =='binary classification': # if the score is area under the curve of the recevier operating characteristic
-                preds_val = xgb_model.predict_proba(X_val)# predict_proba() will return two columns representing each class probability
-                fpr, tpr, thresholds = roc_curve(Y_val, preds_val[:,1]) 
-                met = auc(fpr, tpr)# calculate auc using roc_curve and auc in sklearn.metrics class
-                return 1-met,xgb_model # return auc plus the model created. 
-            elif score == 'acc' and task =='binary classification r': #calculate accuracy
-                preds_val = xgb_model.predict(X_val)# expected one column as it is a refression explicitly
-                met = accuracy_score(Y_val,np.round(preds_val))# I have to round the output to obtain labels. 
-                return 1-met,xgb_model
-            elif score =='auc' and task =='binary classification r':
-                preds_val = xgb_model.predict(X_val)# expected one column as it is a refression explicitly
-                fpr, tpr, thresholds = roc_curve(Y_val, preds_val) # outputs are actually probabilities
-                met = auc(fpr, tpr)
-                return 1-met,xgb_model
+            model.fit(X_train,Y_train,early_stopping_rounds=pspso.early_stopping,eval_set=eval_set,eval_metric=modelparameters['eval_metric'],verbose=pspso.verbose )
+            return pspso.predict(model,'xgboost',task, score,X_val,Y_val),model
         except Exception as e:
             print('An exception occured in XGBoost training.')
             print(e)
@@ -270,35 +397,20 @@ class pspso:
       """Train the SVM after decoding the parameters in variable particle.
       
       """
-      print("SVM")
       try:
           decodedparams = pspso.decode_parameters(particle)
           modelparameters = { **pspso.defaultparams,**decodedparams}
-          
           if task == 'regression': # if it is a regression task, use SVR
               if modelparameters['kernel']!='poly': # the fourth parameter is only usable with kernel being polynomial : 'poly'
-                  sv = SVR(kernel=modelparameters['kernel'], C=modelparameters['C'],gamma=modelparameters['gamma']).fit(X_train, np.squeeze(Y_train))
+                  model = SVR(kernel=modelparameters['kernel'], C=modelparameters['C'],gamma=modelparameters['gamma']).fit(X_train, np.squeeze(Y_train))
               else:
-                  sv = SVR(kernel=modelparameters['kernel'], C=modelparameters['C'],gamma=modelparameters['gamma'],degree=modelparameters['degree']).fit(X_train, np.squeeze(Y_train))
-              preds_val = sv.predict(X_val)
-              if score == 'rmse': # if score is rmse
-                  met = np.sqrt(mean_squared_error(np.squeeze(Y_val), preds_val)) # calculate rmse
-                  return met,sv # return rmse with the generated svm model
+                  model = SVR(kernel=modelparameters['kernel'], C=modelparameters['C'],gamma=modelparameters['gamma'],degree=modelparameters['degree']).fit(X_train, np.squeeze(Y_train))
           elif task == 'binary classification': # if it is a binary classification task, use SVC
               if modelparameters['kernel']!='poly':
-                  sv = SVC(kernel=modelparameters['kernel'], C=modelparameters['C'],gamma=modelparameters['gamma'],probability=True).fit(X_train, np.squeeze(Y_train))
+                  model = SVC(kernel=modelparameters['kernel'], C=modelparameters['C'],gamma=modelparameters['gamma'],probability=True).fit(X_train, np.squeeze(Y_train))
               else:
-                  sv = SVC(kernel=modelparameters['kernel'], C=modelparameters['C'],gamma=modelparameters['gamma'],degree=modelparameters['degree'],probability=True).fit(X_train, np.squeeze(Y_train))
-              
-              if score == 'acc':
-                  preds_val = sv.predict(X_val)# expecting labels column
-                  met = accuracy_score(Y_val,preds_val)# measure accuracy 
-                  return 1-met,sv # retun accuracy with the generated svm model
-              elif score == 'auc':
-                  preds_val = sv.predict_proba(X_val)#generate the probabilities using the function predict_proba()
-                  fpr, tpr, thresholds = roc_curve(Y_val, preds_val[:,1]) #apply to get the prob of class 1
-                  met = auc(fpr, tpr)
-                  return 1-met,sv # return the auc with the generated model
+                  model = SVC(kernel=modelparameters['kernel'], C=modelparameters['C'],gamma=modelparameters['gamma'],degree=modelparameters['degree'],probability=True).fit(X_train, np.squeeze(Y_train))
+          return pspso.predict(model,'svm',task, score,X_val,Y_val),model
                          
       except Exception as e:
           print(e)
@@ -313,28 +425,14 @@ class pspso:
       """
       try:
           decodedparams = pspso.decode_parameters(particle)
-          modelparameters = {**pspso.defaultparams,**decodedparams}
-          if task == 'regression':
-              loss='mse'
-              metrics=['mse','mae']
-              mode= 'auto'
-          elif task == 'binary classification':
-              loss = 'binary_crossentropy'
-              metrics=['binary_accuracy']
-              mode= 'auto'
-          elif task == 'binary classification r':
-              loss = 'mse'
-              metrics=['mse']
-              mode= 'auto'
-              
+          modelparameters = {**pspso.defaultparams,**decodedparams}              
           model=Sequential()
           model.add(Dense(int(modelparameters['neurons']), input_dim=X_train.shape[1], activation=modelparameters['hiddenactivation']))#particle,task='regression',score='rmse',X_train,Y_train,X_val,Y_val
           model.add(Dense(1, activation=modelparameters['activation']))#kernel_initializer='lecun_uniform',bias_initializer='zeros'
-          model.compile(loss=loss, optimizer=modelparameters['optimizer'], metrics=metrics)
+          model.compile(loss=modelparameters['loss'], optimizer=modelparameters['optimizer'], metrics=modelparameters['metrics'])
           model.optimizer.lr=modelparameters['learning_rate']
-          #print(model.optimizer.lr)
           #checkpoint=ModelCheckpoint('mlp.h5',monitor='val_loss',verbose=pspso.verbose,save_best_only=True,mode=mode)
-          es = EarlyStopping(monitor='val_loss', mode=mode, verbose=pspso.verbose,patience=pspso.early_stopping)
+          es = EarlyStopping(monitor='val_loss', mode=modelparameters['mode'], verbose=pspso.verbose,patience=pspso.early_stopping)
           #callbacks_list=[checkpoint,es]   
           callbacks_list=[es] 
           history=model.fit(X_train,
@@ -345,21 +443,10 @@ class pspso:
                             validation_data=(X_val,Y_val),
                             callbacks=callbacks_list,
                             verbose=pspso.verbose)
-          #model.load_weights('C:/Users/AliHaidar/Desktop/python/ML_PSO/mlp.h5')
+          #model.load_weights('mlp.h5')
           #model.compile(loss=loss, optimizer=modelparameters['optimizer'], metrics=metrics)
-          if task == 'regression':
-              preds_val = model.predict(X_val)
-              if score == 'rmse':
-                  met = np.sqrt(mean_squared_error(Y_val, preds_val))
-                  return met,model,history
-          elif task == 'binary classification' or task == 'binary classification r':
-              preds_val = model.predict(X_val)# predict output,one value expected since we have one neuron in last layer
-              if score == 'acc':                  
-                  met = accuracy_score(Y_val,np.round(preds_val))
-              elif score == 'auc':
-                  fpr, tpr, thresholds = roc_curve(Y_val, preds_val)
-                  met = auc(fpr, tpr)
-              return 1-met,model,history              
+          return pspso.predict(model,'mlp',task, score,X_val,Y_val),model,history
+            
       except Exception as e:
           print("An exception occured in MLP training.")
           print(e)
@@ -437,7 +524,7 @@ class pspso:
           return pspso.best_paricle_cost_ann,pspso.best_model_ann
       return met,model
   
-    def fitpspso(self, X_train=None, Y_train=None, X_val=None,Y_val=None,number_of_particles=5, number_of_iterations=10, options = {'c1':  1.49618, 'c2':  1.49618, 'w': 0.7298}):
+    def fitpspso(self, X_train=None, Y_train=None, X_val=None,Y_val=None,psotype='global',number_of_particles=5, number_of_iterations=10, options = {'c1':  1.49618, 'c2':  1.49618, 'w': 0.7298}):
         """Select the algorithm parameters based on PSO.
         
         Inputs
@@ -488,6 +575,7 @@ class pspso:
         self.selectiontype= "PSO" # selection type
         self.number_of_particles=number_of_particles # the number of particles of the PSO
         self.number_of_iterations=number_of_iterations # the number of iterations in the pso
+        self.psotype=psotype
         self.options=options # parameters of the PSO
         self.number_of_attempts=self.number_of_iterations *self.number_of_particles # max number of attempts to find a solution
         self.totalnbofcombinations= len(self.calculatecombinations())
@@ -498,7 +586,10 @@ class pspso:
         
         kwargs = {"estimator":self.estimator, "task":self.task, "score":self.score, "X_train" : X_train, "Y_train" : Y_train, 
                   "X_val" : X_val,"Y_val":Y_val}
-        self.optimizer = ps.single.GlobalBestPSO(n_particles=self.number_of_particles, dimensions=self.dimensions, options=self.options,bounds=self.bounds)
+        if psotype =='global':
+            self.optimizer = ps.single.GlobalBestPSO(n_particles=self.number_of_particles, dimensions=self.dimensions, options=self.options,bounds=self.bounds)
+        elif psotype =='local':
+            self.optimizer = ps.single.LocalBestPSO(n_particles=self.number_of_particles, dimensions=self.dimensions, options=self.options,bounds=self.bounds)
         start=time.time()
         #Perform optimization by using the optimize class
         self.cost, self.pos = self.optimizer.optimize(pspso.f, iters=self.number_of_iterations,**kwargs)
@@ -643,7 +734,7 @@ class pspso:
         self.duration=end-start   
         return self.pos,self.cost,self.duration,self.model,self.combinations,self.results
     
-    def printresults(self):
+    def print_results(self):
         """Print the results found in the pspso instance. Expected to print general details
         like estimator, task, selection type, number of attempts examined, total number of 
         combinations, position of the best solution, score of the best solution, parameters,
@@ -654,19 +745,16 @@ class pspso:
         print("Task: "+ self.task)
         print("Selection type: "+ str(self.selectiontype))
         print("Number of attempts:" + str(self.number_of_attempts))
-        print("Maximum number of combinations: " + str(self.totalnbofcombinations))
-        print("Global best position: " + str(self.pos))
-        print("Global best cost: " +str(round(self.cost,4)))
+        print("Total number of combinations: " + str(self.totalnbofcombinations))
         print("Parameters:")
         print(pspso.decode_parameters(self.pos))
+        print("Global best position: " + str(self.pos))
+        print("Global best cost: " +str(round(self.cost,4)))
         print("Time taken to find the set of parameters: "+ str(self.duration))
         if self.selectiontype == "PSO":
             print("Number of particles: " +str(self.number_of_particles))
             print("Number of iterations: "+ str(self.number_of_iterations))
             
-        
-        
-        
     def calculatecombinations(self):
         """A function that will generate all the possible combinations in the search space. 
         Used mainly with grid search
@@ -694,144 +782,74 @@ class pspso:
         return combinations
     
     @staticmethod
-    def readparameters(params=None,estimator=None, task=None):
-        """Read the parameters provided by the user.
+    def predict(model,estimator,task, score,X_val,Y_val):
+        """A function used to release the score of a model. 
+        If the score is rmse, the value is released. 
+        If the score is acc (accuracy), 1-acc is returned back since pso applies a minimization task.
+        If the score is auc, 1-auc is returned back since pso applies a minization task
+        
+        This class is static and can be used to test the model accuracy over the hold-out sample once the selection process is finalized. 
         
         Inputs
         
-        params: dictionary of key,values added by the user
-            This dictionary determines the parameters and ranges of parameters the user wants to selection values from.
-            
+        model: 
+            A trained model
+                    
         estimator: string value
             A string value that determines the estimator: 'mlp','xgboost','svm', or 'gbdt'
             
         task: string value
-            A string valeu that determines the task under consideration: 'regression' or 'binary classification'
+            A string value that determines the task under consideration: 'regression' or 'binary classification'
         
-    
+        score: string value
+            Determines the score ('rmse','auc','acc')
+            
+        X_val: numpy.ndarray
+            Input features
+            
+        Y_val: numpy.ndarray
+            Target
+            
+            
         Returns
         
-        parameters
-            The parameters selected by the user
-            
-        defaultparams
-            Default parameters
-            
-        x_min: list
-            The lower bounds of the parameters search space
-            
-        x_max: list
-            The upper bounds of the parameters search space
-            
-        rounding: list
-            The rounding value in each dimension of the search space
-        
-        bounds: dict
-            A dictionary of the lower and upper bounds
-        
-        dimensions: integer
-            Dimensions of the search space
-        
-        params: Dict
-            Dict given by the author
-        
+        met: float
+           Score value of the model
+
         """
-        if params ==None:
-            if estimator == 'xgboost':
-                if task == 'binary classification':
-                    params = {"learning_rate":  [0.1,0.3,2],
-                      "max_depth": [1,10,0],
-                      "n_estimators": [2,70,0],
-                      "subsample": [0.7,1,2]}
-                else:
-                    params = {"objective": ["reg:linear","reg:tweedie","reg:gamma"],
-                      "learning_rate":  [0.1,0.3,2],
-                      "max_depth": [1,10,0],
-                      "n_estimators": [2,70,0],
-                      "subsample": [0.7,1,2]}
-            elif estimator == 'gbdt':
-                if task == 'binary classification':
-                    params = {"learning_rate":  [0.1,0.3,2],
-                      "max_depth": [1,10,0],
-                      "n_estimators": [2,70,0],
-                      "subsample": [0.7,1,2]}
-                else:
-                    params = {"objective": ["tweedie","gamma"],
-                      "learning_rate":  [0.1,0.3,2],
-                      "max_depth": [1,10,0],
-                      "n_estimators": [2,70,0],
-                      "subsample": [0.7,1,2]}
-            elif estimator == 'svm':
-                params = {"kernel": ["linear", "rbf", "poly"] ,
-                      "gamma":  [0.1,10,1],
-                      "C": [0.1,10,1],
-                      "degree": [0,6,0]}
-            elif estimator == 'mlp':
-                params = {"optimizer": ["RMSprop", "adam", "sgd",'adamax','nadam','adadelta'] ,
-                      "learning_rate":  [0.1,2,2],
-                      "neurons": [1,40,0],
-                      "hiddenactivation": ['relu','sigmoid','tanh'],
-                      "activation":['relu','sigmoid','tanh']}
-        x_min=[]
-        x_max=[]
-        rounding=[]
         
-        #params to be searched for
-        parameters=[]
-        for key in params:
-            if key == 'objective' or key == 'optimizer' or key =='hiddenactivation' or key == 'activation' or key == 'kernel': #categorical variables mainly
-                of=params[key]
-                x_min.append(0)
-                x_max.append(len(of)-1)
-                parameters.append(key)
-                rounding.append(0)
-            elif key == 'learning_rate' or key=='max_depth' or key=='n_estimators' or key== 'subsample' or key=='neurons' or key =='C' or key =='gamma' or key=='degree':
-                thelist=params[key]
-                x_min.append(thelist[0])
-                x_max.append(thelist[1])
-                parameters.append(key)
-                rounding.append(thelist[2])
-        bounds = (np.asarray(x_min), np.asarray(x_max))   
-        dimensions=len(x_min)
+        if score=='rmse':
+            preds_val=model.predict(X_val)# predict output
+            met = np.sqrt(mean_squared_error(Y_val, preds_val))
+            return met
+        if task =='binary classification' and (estimator =='gbdt' or estimator =='mlp'):
+            #gbdt and mlp has same way of prediction.
+            # since it is using the gbdt model, output will be one column
+            #and for the mlp, since sigmoid, tanh, or relu then one output. No softmax here.
+            preds_val=model.predict(X_val)# predict output
+            if score == 'acc':#since it is a minimization task, we return 1-acc
+                met = accuracy_score(Y_val,np.round(preds_val))# need to round since gbdtModel is used not LGBMClassifier
+                return 1-met
+            elif score == 'auc':
+                fpr, tpr, thresholds = roc_curve(Y_val, preds_val)
+                met = auc(fpr, tpr)
+                return 1-met   
+        elif task =='binary classification' and (estimator== 'xgboost' or estimator =='svm'):
+            # XGBOOST classifier and svm has same way of prediction.
+            if score == 'acc': # if it is accuracy
+                preds_val = model.predict(X_val)  # one column with acc, will generate labels with function predict() in xgboost
+                met = accuracy_score(Y_val,preds_val) # measure accuracy
+                return 1-met
+            elif score == 'auc': # if the score is area under the curve of the recevier operating characteristic
+                preds_val = model.predict_proba(X_val)# predict_proba() will return two columns representing each class probability
+                fpr, tpr, thresholds = roc_curve(Y_val, preds_val[:,1]) 
+                met = auc(fpr, tpr)# calculate auc using roc_curve and auc in sklearn.metrics class
+                return 1-met
+
         
-        defaultparams= {}
-        if estimator == 'xgboost':
-            if task =='binary classification': # default activation
-                defaultparams['objective'] = 'binary:logistic'
-            else:
-                defaultparams['objective'] = 'reg:tweedie' 
-            defaultparams['learning_rate']=0.01# default learning rate
-            defaultparams['max_depth']=6# default max depth
-            defaultparams['n_estimators']=40 # default number of estimators
-            defaultparams['subsample']=0.99 # default subsample 
-        elif estimator == 'gbdt':
-            if task =='binary classification': # default activation
-                defaultparams['objective'] = 'binary'
-            else:
-                defaultparams['objective'] = 'tweedie' 
-            defaultparams['learning_rate']=0.01# default learning rate
-            defaultparams['max_depth']=6# default max depth
-            defaultparams['n_estimators']=40 # default number of estimators
-            defaultparams['subsample']=0.99 # default subsample 
-        elif estimator == 'mlp':
-            #steps_per_epoch=4000 // batch_size
-            defaultparams['batch_size']=12 # batch size of neural network based models
-            defaultparams['epochs']=50 # default number of epochs of neural network based models
-            defaultparams['shuffle']=True # true to shuffle the training data
-            if task =='binary classification': # set the optimizer based on the task
-                defaultparams['optimizer']='Adam'
-            else:
-                defaultparams['optimizer']='RMSprop'
-            defaultparams['neurons'] =13 # default nb of neurons
-            defaultparams['hiddenactivation']='sigmoid' # default value of hidden activation functions
-            defaultparams['activation']='sigmoid' #default value of output activation function
-            defaultparams['learning_rate']=0.01 # default learning rate
-        elif estimator == 'svm':
-            defaultparams['kernel']= 'rbf'
-            defaultparams['C']= 5
-            defaultparams['gamma'] =5
-                 
-                
-        return parameters,defaultparams, x_min,x_max,rounding,bounds, dimensions,params
+        
+        
+    
+
     
     

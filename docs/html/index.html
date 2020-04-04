@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Welcome to pspso’s documentation! &mdash; pspso 0.0.7 documentation</title>
+  <title>Welcome to pspso’s documentation! &mdash; pspso 0.0.8 documentation</title>
   
 
   
@@ -87,16 +87,16 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#usage">Usage</a><ul>
-<li><a class="reference internal" href="#mlp-example">MLP Example</a></li>
-<li><a class="reference internal" href="#xgboost-example">XGBoost Example</a></li>
+<li><a class="reference internal" href="#mlp-example-binary-classification">MLP Example (Binary Classification)</a></li>
+<li><a class="reference internal" href="#xgboost-example-binary-classification">XGBoost Example (Binary Classification)</a></li>
+<li><a class="reference internal" href="#xgboost-example-regression">XGBoost Example (Regression)</a></li>
 <li><a class="reference internal" href="#user-input">User Input</a></li>
-<li><a class="reference internal" href="#other-parameters">Other parameters</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#functions">Functions</a><ul>
 <li><a class="reference internal" href="#ml-algorithms-functions">ML Algorithms Functions</a></li>
 <li><a class="reference internal" href="#selection-functions">Selection Functions</a></li>
-<li><a class="reference internal" href="#parameters-encoding-decoding-functions">Parameters Encoding/Decoding Functions</a></li>
+<li><a class="reference internal" href="#parameters-functions">Parameters Functions</a></li>
 <li><a class="reference internal" href="#other-functions">Other Functions</a></li>
 </ul>
 </li>
@@ -197,7 +197,7 @@ Boosting Decision Trees (GBDT).</p>
 <li><p><strong>Regression</strong> :</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>Root Mean Square Error (RMSE) for regression tasks</p></li>
+<li><p>Root Mean Square Error (RMSE)</p></li>
 </ul>
 </div></blockquote>
 </li>
@@ -222,70 +222,137 @@ install pspso.</p>
 </div>
 <div class="section" id="usage">
 <h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="mlp-example">
-<h2>MLP Example<a class="headerlink" href="#mlp-example" title="Permalink to this headline">¶</a></h2>
-<p><strong>pspso</strong> is used to select the machine learning algorithms parameters. It
-is assumed that the user has already processed and prepared the training
-and validation datasets, which are usually used to build the model.
+<div class="section" id="mlp-example-binary-classification">
+<h2>MLP Example (Binary Classification)<a class="headerlink" href="#mlp-example-binary-classification" title="Permalink to this headline">¶</a></h2>
+<p><strong>pspso</strong> is used to select the machine learning algorithms parameters.
 Below is an example for using the pspso to select
-the parameters of the MLP. It should be noticed that pspso handles the
+the parameters of the MLP. pspso handles the
 MLP random weights intialization issue that may cause losing the best
 solution in consecutive iterations.</p>
 <p>The following example demonstrates the selection process of the MLP parameters.
-The params variable details the parameters utilized for selection.
-The task and the score are defined as binary classification and score.
-Then, the PSO is used to select the parameters of the MLP.
-Results will be provided back to user.
-It should be mentioned that the number of neurons has been left as a default value and was not given for selection in this example.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pspso</span> <span class="kn">import</span> <span class="n">pspso</span>
-<span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;optimizer&quot;</span><span class="p">:[</span><span class="s1">&#39;adam&#39;</span><span class="p">,</span><span class="s1">&#39;nadam&#39;</span><span class="p">,</span><span class="s1">&#39;sgd&#39;</span><span class="p">,</span><span class="s1">&#39;adadelta&#39;</span><span class="p">],</span>
-    <span class="s2">&quot;learning_rate&quot;</span><span class="p">:</span>  <span class="p">[</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.2</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>
-    <span class="s2">&quot;hiddenactivation&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;sigmoid&#39;</span><span class="p">,</span><span class="s1">&#39;tanh&#39;</span><span class="p">,</span><span class="s1">&#39;relu&#39;</span><span class="p">],</span>
-    <span class="s2">&quot;activation&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;sigmoid&#39;</span><span class="p">,</span><span class="s1">&#39;tanh&#39;</span><span class="p">,</span><span class="s1">&#39;relu&#39;</span><span class="p">]}</span>
-<span class="n">task</span><span class="o">=</span><span class="s1">&#39;binary classification&#39;</span>
-<span class="n">score</span><span class="o">=</span><span class="s1">&#39;auc&#39;</span>
-<span class="n">number_of_particles</span><span class="o">=</span><span class="mi">4</span>
-<span class="n">number_of_iterations</span><span class="o">=</span><span class="mi">5</span>
-<span class="n">p</span><span class="o">=</span><span class="n">pspso</span><span class="p">(</span><span class="s1">&#39;mlp&#39;</span><span class="p">,</span><span class="n">params</span><span class="p">,</span><span class="n">task</span><span class="p">,</span><span class="n">score</span><span class="p">)</span>
-<span class="n">p</span><span class="o">.</span><span class="n">fitpspso</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span><span class="n">Y_train</span><span class="p">,</span><span class="n">X_val</span><span class="p">,</span><span class="n">Y_val</span><span class="p">,</span><span class="n">number_of_particles</span><span class="o">=</span><span class="n">number_of_particles</span><span class="p">,</span>
-               <span class="n">number_of_iterations</span><span class="o">=</span><span class="n">number_of_iterations</span><span class="p">)</span>
-<span class="n">p</span><span class="o">.</span><span class="n">printresults</span><span class="p">()</span>
+A variable named <em>params</em> was not given by the user. Hence, the default search space of the MLP is loaded.
+This search space contains five parameters:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;optimizer&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;RMSprop&quot;</span><span class="p">,</span> <span class="s2">&quot;adam&quot;</span><span class="p">,</span> <span class="s2">&quot;sgd&quot;</span><span class="p">,</span><span class="s1">&#39;adamax&#39;</span><span class="p">,</span><span class="s1">&#39;nadam&#39;</span><span class="p">,</span><span class="s1">&#39;adadelta&#39;</span><span class="p">]</span> <span class="p">,</span>
+          <span class="s2">&quot;learning_rate&quot;</span><span class="p">:</span>  <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.3</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>
+          <span class="s2">&quot;neurons&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
+          <span class="s2">&quot;hiddenactivation&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span><span class="s1">&#39;sigmoid&#39;</span><span class="p">,</span><span class="s1">&#39;tanh&#39;</span><span class="p">],</span>
+          <span class="s2">&quot;activation&quot;</span><span class="p">:[</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span><span class="s1">&#39;sigmoid&#39;</span><span class="p">,</span><span class="s1">&#39;tanh&#39;</span><span class="p">]}</span>
+</pre></div>
+</div>
+<p>The task and the score were defined as <em>binary classification</em> and <em>auc</em> respectively.
+Then, the PSO was used to select the parameters of the MLP.
+Results are provided back to the user through the <strong>print_results()</strong> function.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">MinMaxScaler</span>
+<span class="kn">from</span> <span class="nn">pspso</span> <span class="kn">import</span> <span class="n">pspso</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">datasets</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+
+<span class="n">breastcancer</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">load_breast_cancer</span><span class="p">()</span>
+<span class="n">data</span><span class="o">=</span><span class="n">breastcancer</span><span class="o">.</span><span class="n">data</span><span class="c1">#get the breast cancer dataset input features</span>
+<span class="n">target</span><span class="o">=</span><span class="n">breastcancer</span><span class="o">.</span><span class="n">target</span><span class="c1"># target</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">Y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span><span class="n">test_size</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span><span class="n">stratify</span><span class="o">=</span><span class="n">target</span><span class="p">)</span>
+<span class="n">normalize</span> <span class="o">=</span> <span class="n">MinMaxScaler</span><span class="p">(</span><span class="n">feature_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span><span class="c1">#normalize input features</span>
+<span class="n">X_train</span><span class="o">=</span><span class="n">normalize</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="n">X_test</span><span class="o">=</span><span class="n">normalize</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_val</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">Y_val</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span><span class="n">test_size</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span><span class="n">stratify</span><span class="o">=</span><span class="n">Y_train</span><span class="p">)</span>
+<span class="n">p</span><span class="o">=</span><span class="n">pspso</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="s1">&#39;mlp&#39;</span><span class="p">,</span><span class="n">task</span><span class="o">=</span><span class="s1">&#39;binary classification&#39;</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="s1">&#39;auc&#39;</span><span class="p">)</span>
+<span class="n">pos</span><span class="p">,</span><span class="n">cost</span><span class="p">,</span><span class="n">duration</span><span class="p">,</span><span class="n">model</span><span class="p">,</span><span class="n">optimizer</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">fitpspso</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span><span class="n">Y_train</span><span class="p">,</span><span class="n">X_val</span><span class="p">,</span><span class="n">Y_val</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">print_results</span><span class="p">()</span><span class="c1">#print the results</span>
+<span class="n">testscore</span><span class="o">=</span><span class="n">pspso</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">model</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">estimator</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">task</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">score</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">testscore</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>In this example, four parameters were examined: optimizer,
 learning_rate, hiddenactivation, and activation. The number of neurons
 in the hidden layer was kept as default.</p>
+<p>Output:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Estimator</span><span class="p">:</span> <span class="n">mlp</span>
+<span class="n">Task</span><span class="p">:</span> <span class="n">binary</span> <span class="n">classification</span>
+<span class="n">Selection</span> <span class="nb">type</span><span class="p">:</span> <span class="n">PSO</span>
+<span class="n">Number</span> <span class="n">of</span> <span class="n">attempts</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">Total</span> <span class="n">number</span> <span class="n">of</span> <span class="n">combinations</span><span class="p">:</span> <span class="mi">45360</span>
+<span class="n">Parameters</span><span class="p">:</span>
+<span class="p">{</span><span class="s1">&#39;optimizer&#39;</span><span class="p">:</span> <span class="s1">&#39;nadam&#39;</span><span class="p">,</span> <span class="s1">&#39;learning_rate&#39;</span><span class="p">:</span> <span class="mf">0.29</span><span class="p">,</span> <span class="s1">&#39;neurons&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;hiddenactivation&#39;</span><span class="p">:</span> <span class="s1">&#39;sigmoid&#39;</span><span class="p">,</span> <span class="s1">&#39;activation&#39;</span><span class="p">:</span> <span class="s1">&#39;sigmoid&#39;</span><span class="p">}</span>
+<span class="n">Global</span> <span class="n">best</span> <span class="n">position</span><span class="p">:</span> <span class="p">[</span><span class="mf">3.8997699</span>  <span class="mf">0.28725911</span> <span class="mf">4.21218138</span> <span class="mf">1.41200923</span> <span class="mf">0.84643591</span><span class="p">]</span>
+<span class="n">Global</span> <span class="n">best</span> <span class="n">cost</span><span class="p">:</span> <span class="mf">0.0</span>
+<span class="n">Time</span> <span class="n">taken</span> <span class="n">to</span> <span class="n">find</span> <span class="n">the</span> <span class="nb">set</span> <span class="n">of</span> <span class="n">parameters</span><span class="p">:</span> <span class="mf">160.3374378681183</span>
+<span class="n">Number</span> <span class="n">of</span> <span class="n">particles</span><span class="p">:</span> <span class="mi">5</span>
+<span class="n">Number</span> <span class="n">of</span> <span class="n">iterations</span><span class="p">:</span> <span class="mi">10</span>
+<span class="mf">0.9867724867724867</span>
+</pre></div>
 </div>
-<div class="section" id="xgboost-example">
-<h2>XGBoost Example<a class="headerlink" href="#xgboost-example" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="xgboost-example-binary-classification">
+<h2>XGBoost Example (Binary Classification)<a class="headerlink" href="#xgboost-example-binary-classification" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">MinMaxScaler</span>
+<span class="kn">from</span> <span class="nn">pspso</span> <span class="kn">import</span> <span class="n">pspso</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">datasets</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+
+<span class="n">breastcancer</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">load_breast_cancer</span><span class="p">()</span>
+<span class="n">data</span><span class="o">=</span><span class="n">breastcancer</span><span class="o">.</span><span class="n">data</span><span class="c1">#get the breast cancer dataset input features</span>
+<span class="n">target</span><span class="o">=</span><span class="n">breastcancer</span><span class="o">.</span><span class="n">target</span><span class="c1"># target</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">Y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span><span class="n">test_size</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span><span class="n">stratify</span><span class="o">=</span><span class="n">target</span><span class="p">)</span>
+<span class="n">normalize</span> <span class="o">=</span> <span class="n">MinMaxScaler</span><span class="p">(</span><span class="n">feature_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span><span class="c1">#normalize input features</span>
+<span class="n">X_train</span><span class="o">=</span><span class="n">normalize</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="n">X_test</span><span class="o">=</span><span class="n">normalize</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_val</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">Y_val</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span><span class="n">test_size</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span><span class="n">stratify</span><span class="o">=</span><span class="n">Y_train</span><span class="p">)</span>
+
+<span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;learning_rate&quot;</span><span class="p">:</span>  <span class="p">[</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.2</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>
+                <span class="s2">&quot;max_depth&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s2">&quot;n_estimators&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">200</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s2">&quot;subsample&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]}</span>
+<span class="n">p</span><span class="o">=</span><span class="n">pspso</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="s1">&#39;xgboost&#39;</span><span class="p">,</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span><span class="n">task</span><span class="o">=</span><span class="s1">&#39;binary classification&#39;</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="s1">&#39;auc&#39;</span><span class="p">)</span>
+<span class="n">pos</span><span class="p">,</span><span class="n">cost</span><span class="p">,</span><span class="n">duration</span><span class="p">,</span><span class="n">model</span><span class="p">,</span><span class="n">optimizer</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">fitpspso</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span><span class="n">Y_train</span><span class="p">,</span><span class="n">X_val</span><span class="p">,</span><span class="n">Y_val</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">print_results</span><span class="p">()</span><span class="c1">#print the results</span>
+<span class="n">testscore</span><span class="o">=</span><span class="n">pspso</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">model</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">estimator</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">task</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">score</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">testscore</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="xgboost-example-regression">
+<h2>XGBoost Example (Regression)<a class="headerlink" href="#xgboost-example-regression" title="Permalink to this headline">¶</a></h2>
 <p>The XGBoost is an implementation of boosting decision trees.
-It is assumed that at this stage the user has already prepared the training and validation cohorts.
 Five parameters were utilized for selection: objective, learning rate, maximum depth, number of estimators, and subsample.
 Three categorical values were selected for the objective parameter.
-The learning rate parameter values range between 0.01 and 0.2 with 2 decimal point,
-maximum depth ranges between 1 and 10 with 0 decimal points (1,2,3,4,5,6,7,8,9,10), etc.
+The learning rate parameter values range between <em>0.01</em> and <em>0.2</em> with <em>2</em> decimal point,
+maximum depth ranges between <em>1</em> and <em>10</em> with <em>0</em> decimal points <em>(1,2,3,4,5,6,7,8,9,10)</em>, etc.
 The task and score are selected as regression and RMSE respectively.
 The number of particles and number of iterations can be left as default values if needed.
 Then, a pspso instance is created. By applying the fitpspso function, the selection process is applied.
 Finally, results are printed back to the user.
 The best model, best parameters, score, time, and other details will be saved in the created instance for the user to check.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pspso</span> <span class="kn">import</span> <span class="n">pspso</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">MinMaxScaler</span>
+<span class="kn">from</span> <span class="nn">pspso</span> <span class="kn">import</span> <span class="n">pspso</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">datasets</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+
+<span class="n">boston_data</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">load_boston</span><span class="p">()</span>
+<span class="n">data</span><span class="o">=</span><span class="n">boston_data</span><span class="o">.</span><span class="n">data</span>
+<span class="n">target</span><span class="o">=</span><span class="n">boston_data</span><span class="o">.</span><span class="n">target</span>
+
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">Y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span><span class="n">test_size</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">normalize</span> <span class="o">=</span> <span class="n">MinMaxScaler</span><span class="p">(</span><span class="n">feature_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span><span class="c1">#normalize input features</span>
+<span class="n">normalizetarget</span> <span class="o">=</span> <span class="n">MinMaxScaler</span><span class="p">(</span><span class="n">feature_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span><span class="c1">#normalize target</span>
+
+<span class="n">X_train</span><span class="o">=</span><span class="n">normalize</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="n">X_test</span><span class="o">=</span><span class="n">normalize</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="n">Y_train</span><span class="o">=</span><span class="n">normalizetarget</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">Y_train</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">Y_test</span><span class="o">=</span><span class="n">normalizetarget</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">Y_test</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_val</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">Y_val</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span><span class="n">test_size</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
 <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s2">&quot;objective&quot;</span><span class="p">:[</span><span class="s1">&#39;reg:tweedie&#39;</span><span class="p">,</span><span class="s2">&quot;reg:linear&quot;</span><span class="p">,</span><span class="s2">&quot;reg:gamma&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;learning_rate&quot;</span><span class="p">:</span>  <span class="p">[</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.2</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>
-        <span class="s2">&quot;max_depth&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
-        <span class="s2">&quot;n_estimators&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">200</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
-        <span class="s2">&quot;subsample&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]}</span>
-<span class="n">task</span><span class="o">=</span><span class="s2">&quot;regression&quot;</span>
-<span class="n">score</span><span class="o">=</span><span class="s2">&quot;rmse&quot;</span>
-<span class="n">number_of_particles</span><span class="o">=</span><span class="mi">20</span>
-<span class="n">number_of_iterations</span><span class="o">=</span><span class="mi">40</span>
-<span class="n">p</span><span class="o">=</span><span class="n">pspso</span><span class="p">(</span><span class="s1">&#39;xgboost&#39;</span><span class="p">,</span><span class="n">params</span><span class="p">,</span><span class="n">task</span><span class="p">,</span><span class="n">score</span><span class="p">)</span>
-<span class="n">p</span><span class="o">.</span><span class="n">fitpspso</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span><span class="n">Y_train</span><span class="p">,</span><span class="n">X_val</span><span class="p">,</span><span class="n">Y_val</span><span class="p">,</span>
-                           <span class="n">number_of_particles</span><span class="o">=</span><span class="n">number_of_particles</span><span class="p">,</span>
-                           <span class="n">number_of_iterations</span><span class="o">=</span><span class="n">number_of_iterations</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s2">&quot;PSO search:&quot;</span><span class="p">)</span>
-<span class="n">p</span><span class="o">.</span><span class="n">printresults</span><span class="p">()</span>
+                <span class="s2">&quot;learning_rate&quot;</span><span class="p">:</span>  <span class="p">[</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.2</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>
+                <span class="s2">&quot;max_depth&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s2">&quot;n_estimators&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">200</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s2">&quot;subsample&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]}</span>
+<span class="n">p</span><span class="o">=</span><span class="n">pspso</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="s1">&#39;xgboost&#39;</span><span class="p">,</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span><span class="n">task</span><span class="o">=</span><span class="s1">&#39;regression&#39;</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="s1">&#39;rmse&#39;</span><span class="p">)</span>
+<span class="n">pos</span><span class="p">,</span><span class="n">cost</span><span class="p">,</span><span class="n">duration</span><span class="p">,</span><span class="n">model</span><span class="p">,</span><span class="n">optimizer</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">fitpspso</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span><span class="n">Y_train</span><span class="p">,</span><span class="n">X_val</span><span class="p">,</span><span class="n">Y_val</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">print_results</span><span class="p">()</span><span class="c1">#print the results</span>
+<span class="n">testscore</span><span class="o">=</span><span class="n">pspso</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">model</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">estimator</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">task</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">score</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">testscore</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -326,11 +393,9 @@ The order of the values inside the list affect the position of the value in the 
 <li><p><strong>ub</strong>: represents the maximum value in the search space</p></li>
 <li><p><strong>rv</strong>: represents the number of decimal points the parameter values are rounded to before being added for training the algorithm</p></li>
 </ul>
-<p>For e.g if you want pspso to select n_estimators, you add the following list [2,200,0] as in the example.
-By that, the lowest n_estimators will be 2, the highest to be examined is 200, and each possible value is rounded to an integer value ( 0 decimal points).</p>
-</div>
-<div class="section" id="other-parameters">
-<h2>Other parameters<a class="headerlink" href="#other-parameters" title="Permalink to this headline">¶</a></h2>
+<p>For e.g if you want pspso to select n_estimators, you add the following list <em>[2,200,0]</em> as in the example.
+By that, the lowest n_estimators will be <em>2</em>, the highest to be examined is <em>200</em>, and each possible value is rounded to an integer value ( <em>0</em> decimal points).</p>
+<p><strong>Other parameters</strong></p>
 <p>The user is given the chance to handle some of the default parameters
 such as the number of epochs in the MLP. The user can modify this by changing a
 pspso class instance. For e.g., to change the number of
@@ -409,19 +474,25 @@ With fit random search, the number of attempts to be tried is added by the user 
 In grid search, all the possible combinations are created and investigated by the package.
 These functions follow the same encoding schema used in fitpspso(), and were basically added for comparison.</p>
 </div>
-<div class="section" id="parameters-encoding-decoding-functions">
-<h2>Parameters Encoding/Decoding Functions<a class="headerlink" href="#parameters-encoding-decoding-functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="parameters-functions">
+<h2>Parameters Functions<a class="headerlink" href="#parameters-functions" title="Permalink to this headline">¶</a></h2>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pspso.pspso.readparameters" title="pspso.pspso.readparameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">readparameters</span></code></a>([params, estimator, task])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pspso.pspso.read_parameters" title="pspso.pspso.read_parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_parameters</span></code></a>([params, estimator, task])</p></td>
 <td><p>Read the parameters provided by the user.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pspso.pspso.decode_parameters" title="pspso.pspso.decode_parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">decode_parameters</span></code></a>(particle)</p></td>
 <td><p>Decodes the parameters of a list into a meaningful set of parameters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pspso.pspso.get_default_params" title="pspso.pspso.get_default_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_default_params</span></code></a>(estimator, task)</p></td>
+<td><p>Set the default parameters of the estimator.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pspso.pspso.get_default_search_space" title="pspso.pspso.get_default_search_space"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_default_search_space</span></code></a>(estimator, task)</p></td>
+<td><p>Create a dictionary of default parameters if the user didnt provide parameters.</p></td>
 </tr>
 </tbody>
 </table>
@@ -440,11 +511,14 @@ These functions follow the same encoding schema used in fitpspso(), and were bas
 <tr class="row-even"><td><p><a class="reference internal" href="#pspso.pspso.rebuildmodel" title="pspso.pspso.rebuildmodel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rebuildmodel</span></code></a>(estimator, pos, task, score, …)</p></td>
 <td><p>Used to rebuild the model after selecting the parameters.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pspso.pspso.printresults" title="pspso.pspso.printresults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">printresults</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pspso.pspso.print_results" title="pspso.pspso.print_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_results</span></code></a>()</p></td>
 <td><p>Print the results found in the pspso instance.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pspso.pspso.calculatecombinations" title="pspso.pspso.calculatecombinations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculatecombinations</span></code></a>()</p></td>
 <td><p>A function that will generate all the possible combinations in the search space.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pspso.pspso.predict" title="pspso.pspso.predict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">predict</span></code></a>(model, estimator, task, score, …)</p></td>
+<td><p>A function used to release the score of a model.</p></td>
 </tr>
 </tbody>
 </table>
@@ -503,7 +577,7 @@ I have to traverse each value between x_min, x_max. Create a list seperating rou
 
 <dl class="method">
 <dt id="pspso.pspso.fitpspso">
-<code class="sig-name descname">fitpspso</code><span class="sig-paren">(</span><em class="sig-param">X_train=None</em>, <em class="sig-param">Y_train=None</em>, <em class="sig-param">X_val=None</em>, <em class="sig-param">Y_val=None</em>, <em class="sig-param">number_of_particles=5</em>, <em class="sig-param">number_of_iterations=10</em>, <em class="sig-param">options={'c1': 1.49618</em>, <em class="sig-param">'c2': 1.49618</em>, <em class="sig-param">'w': 0.7298}</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.fitpspso" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">fitpspso</code><span class="sig-paren">(</span><em class="sig-param">X_train=None</em>, <em class="sig-param">Y_train=None</em>, <em class="sig-param">X_val=None</em>, <em class="sig-param">Y_val=None</em>, <em class="sig-param">psotype='global'</em>, <em class="sig-param">number_of_particles=5</em>, <em class="sig-param">number_of_iterations=10</em>, <em class="sig-param">options={'c1': 1.49618</em>, <em class="sig-param">'c2': 1.49618</em>, <em class="sig-param">'w': 0.7298}</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.fitpspso" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select the algorithm parameters based on PSO.</p>
 <p>Inputs</p>
 <dl class="simple">
@@ -583,7 +657,7 @@ The particle is decoded into parameters of the gbdt. Then, The gbdt is trained a
 <dl class="simple">
 <dt>particle: list of values (n dimensions)</dt><dd><p>A particle in the swarm</p>
 </dd>
-<dt>task: regression, binary classification, or binary classification r</dt><dd><p>the task to be conducted</p>
+<dt>task: regression, binary classification</dt><dd><p>the task to be conducted</p>
 </dd>
 <dt>score: rmse (regression), auc (binary classification), acc (binary classification)</dt><dd><p>the type of evaluation</p>
 </dd>
@@ -626,7 +700,7 @@ The gbdt is trained and the score is sent back to the fitness function.</p>
 <dl class="simple">
 <dt>particle: list of values (n dimensions)</dt><dd><p>A particle in the swarm</p>
 </dd>
-<dt>task: regression, binary classification, or binary classification r</dt><dd><p>the task to be conducted</p>
+<dt>task: regression, binary classification</dt><dd><p>the task to be conducted</p>
 </dd>
 <dt>score: rmse (regression), auc (binary classification), acc (binary classification)</dt><dd><p>the type of evaluation</p>
 </dd>
@@ -647,8 +721,78 @@ The gbdt is trained and the score is sent back to the fitness function.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pspso.pspso.printresults">
-<code class="sig-name descname">printresults</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.printresults" title="Permalink to this definition">¶</a></dt>
+<dt id="pspso.pspso.get_default_params">
+<em class="property">static </em><code class="sig-name descname">get_default_params</code><span class="sig-paren">(</span><em class="sig-param">estimator</em>, <em class="sig-param">task</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.get_default_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the default parameters of the estimator.
+This function assigns the default parameters for the user.
+Each algorithm has a set of parameters. To allow the user to search for some parameters
+instead of the supported parameters, this function is used to assign a default value for each parameter.
+In addition, it gets other parameters for each algorithm. For e.g, it returns the number of epochs, batch_size, and loss for the mlp.</p>
+<p>Inputs</p>
+<dl class="simple">
+<dt>estimator: string value</dt><dd><p>A string value that determines the estimator: ‘mlp’,’xgboost’,’svm’, or ‘gbdt’</p>
+</dd>
+<dt>task: string value</dt><dd><p>A string value that determines the task under consideration: ‘regression’ or ‘binary classification’</p>
+</dd>
+</dl>
+<p>Returns</p>
+<dl class="simple">
+<dt>defaultparams: Dictionary</dt><dd><p>A dictionary that contains default parameters to be used.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pspso.pspso.get_default_search_space">
+<em class="property">static </em><code class="sig-name descname">get_default_search_space</code><span class="sig-paren">(</span><em class="sig-param">estimator</em>, <em class="sig-param">task</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.get_default_search_space" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a dictionary of default parameters if the user didnt provide parameters.</p>
+<p>Inputs</p>
+<dl class="simple">
+<dt>estimator: string value</dt><dd><p>A string value that determines the estimator: ‘mlp’,’xgboost’,’svm’, or ‘gbdt’</p>
+</dd>
+<dt>task: string value</dt><dd><p>A string value that determines the task under consideration: ‘regression’ or ‘binary classification’</p>
+</dd>
+</dl>
+<p>Returns</p>
+<dl class="simple">
+<dt>params: Dictionary</dt><dd><p>A dictionary that contains default parameters to be used.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pspso.pspso.predict">
+<em class="property">static </em><code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param">model</em>, <em class="sig-param">estimator</em>, <em class="sig-param">task</em>, <em class="sig-param">score</em>, <em class="sig-param">X_val</em>, <em class="sig-param">Y_val</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function used to release the score of a model.
+If the score is rmse, the value is released.
+If the score is acc (accuracy), 1-acc is returned back since pso applies a minimization task.
+If the score is auc, 1-auc is returned back since pso applies a minization task</p>
+<p>This class is static and can be used to test the model accuracy over the hold-out sample once the selection process is finalized.</p>
+<p>Inputs</p>
+<dl class="simple">
+<dt>model:</dt><dd><p>A trained model</p>
+</dd>
+<dt>estimator: string value</dt><dd><p>A string value that determines the estimator: ‘mlp’,’xgboost’,’svm’, or ‘gbdt’</p>
+</dd>
+<dt>task: string value</dt><dd><p>A string value that determines the task under consideration: ‘regression’ or ‘binary classification’</p>
+</dd>
+<dt>score: string value</dt><dd><p>Determines the score (‘rmse’,’auc’,’acc’)</p>
+</dd>
+<dt>X_val: numpy.ndarray</dt><dd><p>Input features</p>
+</dd>
+<dt>Y_val: numpy.ndarray</dt><dd><p>Target</p>
+</dd>
+</dl>
+<p>Returns</p>
+<dl class="simple">
+<dt>met: float</dt><dd><p>Score value of the model</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pspso.pspso.print_results">
+<code class="sig-name descname">print_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.print_results" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print the results found in the pspso instance. Expected to print general details
 like estimator, task, selection type, number of attempts examined, total number of
 combinations, position of the best solution, score of the best solution, parameters,
@@ -656,8 +800,8 @@ details about the pso algorithm.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pspso.pspso.readparameters">
-<em class="property">static </em><code class="sig-name descname">readparameters</code><span class="sig-paren">(</span><em class="sig-param">params=None</em>, <em class="sig-param">estimator=None</em>, <em class="sig-param">task=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.readparameters" title="Permalink to this definition">¶</a></dt>
+<dt id="pspso.pspso.read_parameters">
+<em class="property">static </em><code class="sig-name descname">read_parameters</code><span class="sig-paren">(</span><em class="sig-param">params=None</em>, <em class="sig-param">estimator=None</em>, <em class="sig-param">task=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pspso.pspso.read_parameters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the parameters provided by the user.</p>
 <p>Inputs</p>
 <dl class="simple">
@@ -665,7 +809,7 @@ details about the pso algorithm.</p>
 </dd>
 <dt>estimator: string value</dt><dd><p>A string value that determines the estimator: ‘mlp’,’xgboost’,’svm’, or ‘gbdt’</p>
 </dd>
-<dt>task: string value</dt><dd><p>A string valeu that determines the task under consideration: ‘regression’ or ‘binary classification’</p>
+<dt>task: string value</dt><dd><p>A string value that determines the task under consideration: ‘regression’ or ‘binary classification’</p>
 </dd>
 </dl>
 <p>Returns</p>
@@ -703,8 +847,8 @@ details about the pso algorithm.</p>
 <div class="section" id="additional-parameters">
 <h2>Additional Parameters<a class="headerlink" href="#additional-parameters" title="Permalink to this headline">¶</a></h2>
 <p>To add new parameters to the currently supported algorithms, two functions should be updated</p>
-<p>The <strong>read_params</strong> function should include default details about the parameter,
-The <strong>forward_prop_algorithmname</strong> function should add the parameter to the initialization process</p>
+<p>The <strong>get_default_params</strong> function should include default details about the parameter,
+The <strong>forward_prop_algorithmname</strong> function should add the parameter to the training process</p>
 </div>
 <div class="section" id="new-algorithms">
 <h2>New Algorithms<a class="headerlink" href="#new-algorithms" title="Permalink to this headline">¶</a></h2>

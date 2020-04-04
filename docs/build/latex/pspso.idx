@@ -1,14 +1,17 @@
-\indexentry{pspso (class in pspso)@\spxentry{pspso}\spxextra{class in pspso}|hyperpage}{11}
-\indexentry{calculatecombinations() (pspso.pspso method)@\spxentry{calculatecombinations()}\spxextra{pspso.pspso method}|hyperpage}{11}
-\indexentry{decode\_parameters() (pspso.pspso static method)@\spxentry{decode\_parameters()}\spxextra{pspso.pspso static method}|hyperpage}{11}
-\indexentry{f() (pspso.pspso static method)@\spxentry{f()}\spxextra{pspso.pspso static method}|hyperpage}{11}
-\indexentry{fitpsgrid() (pspso.pspso method)@\spxentry{fitpsgrid()}\spxextra{pspso.pspso method}|hyperpage}{11}
-\indexentry{fitpspso() (pspso.pspso method)@\spxentry{fitpspso()}\spxextra{pspso.pspso method}|hyperpage}{11}
-\indexentry{fitpsrandom() (pspso.pspso method)@\spxentry{fitpsrandom()}\spxextra{pspso.pspso method}|hyperpage}{12}
-\indexentry{forward\_prop\_gbdt() (pspso.pspso static method)@\spxentry{forward\_prop\_gbdt()}\spxextra{pspso.pspso static method}|hyperpage}{12}
-\indexentry{forward\_prop\_mlp() (pspso.pspso static method)@\spxentry{forward\_prop\_mlp()}\spxextra{pspso.pspso static method}|hyperpage}{13}
-\indexentry{forward\_prop\_svm() (pspso.pspso static method)@\spxentry{forward\_prop\_svm()}\spxextra{pspso.pspso static method}|hyperpage}{13}
-\indexentry{forward\_prop\_xgboost() (pspso.pspso static method)@\spxentry{forward\_prop\_xgboost()}\spxextra{pspso.pspso static method}|hyperpage}{13}
-\indexentry{printresults() (pspso.pspso method)@\spxentry{printresults()}\spxextra{pspso.pspso method}|hyperpage}{13}
-\indexentry{readparameters() (pspso.pspso static method)@\spxentry{readparameters()}\spxextra{pspso.pspso static method}|hyperpage}{13}
-\indexentry{rebuildmodel() (pspso.pspso static method)@\spxentry{rebuildmodel()}\spxextra{pspso.pspso static method}|hyperpage}{13}
+\indexentry{pspso (class in pspso)@\spxentry{pspso}\spxextra{class in pspso}|hyperpage}{13}
+\indexentry{calculatecombinations() (pspso.pspso method)@\spxentry{calculatecombinations()}\spxextra{pspso.pspso method}|hyperpage}{13}
+\indexentry{decode\_parameters() (pspso.pspso static method)@\spxentry{decode\_parameters()}\spxextra{pspso.pspso static method}|hyperpage}{13}
+\indexentry{f() (pspso.pspso static method)@\spxentry{f()}\spxextra{pspso.pspso static method}|hyperpage}{13}
+\indexentry{fitpsgrid() (pspso.pspso method)@\spxentry{fitpsgrid()}\spxextra{pspso.pspso method}|hyperpage}{13}
+\indexentry{fitpspso() (pspso.pspso method)@\spxentry{fitpspso()}\spxextra{pspso.pspso method}|hyperpage}{13}
+\indexentry{fitpsrandom() (pspso.pspso method)@\spxentry{fitpsrandom()}\spxextra{pspso.pspso method}|hyperpage}{14}
+\indexentry{forward\_prop\_gbdt() (pspso.pspso static method)@\spxentry{forward\_prop\_gbdt()}\spxextra{pspso.pspso static method}|hyperpage}{14}
+\indexentry{forward\_prop\_mlp() (pspso.pspso static method)@\spxentry{forward\_prop\_mlp()}\spxextra{pspso.pspso static method}|hyperpage}{15}
+\indexentry{forward\_prop\_svm() (pspso.pspso static method)@\spxentry{forward\_prop\_svm()}\spxextra{pspso.pspso static method}|hyperpage}{15}
+\indexentry{forward\_prop\_xgboost() (pspso.pspso static method)@\spxentry{forward\_prop\_xgboost()}\spxextra{pspso.pspso static method}|hyperpage}{15}
+\indexentry{get\_default\_params() (pspso.pspso static method)@\spxentry{get\_default\_params()}\spxextra{pspso.pspso static method}|hyperpage}{15}
+\indexentry{get\_default\_search\_space() (pspso.pspso static method)@\spxentry{get\_default\_search\_space()}\spxextra{pspso.pspso static method}|hyperpage}{15}
+\indexentry{predict() (pspso.pspso static method)@\spxentry{predict()}\spxextra{pspso.pspso static method}|hyperpage}{15}
+\indexentry{print\_results() (pspso.pspso method)@\spxentry{print\_results()}\spxextra{pspso.pspso method}|hyperpage}{16}
+\indexentry{read\_parameters() (pspso.pspso static method)@\spxentry{read\_parameters()}\spxextra{pspso.pspso static method}|hyperpage}{16}
+\indexentry{rebuildmodel() (pspso.pspso static method)@\spxentry{rebuildmodel()}\spxextra{pspso.pspso static method}|hyperpage}{16}

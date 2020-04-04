@@ -31,7 +31,7 @@ Three scores are supported in the first version of pspso:
 
 * **Regression** :
 
-	* Root Mean Square Error (RMSE) for regression tasks
+	* Root Mean Square Error (RMSE)
 	
 * **Binary Classication** :
 
@@ -52,53 +52,113 @@ install pspso.
 Usage
 =================================
 
-MLP Example
-------------
+MLP Example (Binary Classification)
+-----------------------------------
 
-**pspso** is used to select the machine learning algorithms parameters. It
-is assumed that the user has already processed and prepared the training
-and validation datasets, which are usually used to build the model.
+**pspso** is used to select the machine learning algorithms parameters. 
 Below is an example for using the pspso to select
-the parameters of the MLP. It should be noticed that pspso handles the
+the parameters of the MLP. pspso handles the
 MLP random weights intialization issue that may cause losing the best
 solution in consecutive iterations.
 
 The following example demonstrates the selection process of the MLP parameters.
-The params variable details the parameters utilized for selection.
-The task and the score are defined as binary classification and score.
-Then, the PSO is used to select the parameters of the MLP. 
-Results will be provided back to user. 
-It should be mentioned that the number of neurons has been left as a default value and was not given for selection in this example. 
+A variable named *params* was not given by the user. Hence, the default search space of the MLP is loaded. 
+This search space contains five parameters:
 
 .. code:: python
 
-    from pspso import pspso
-    params = {"optimizer":['adam','nadam','sgd','adadelta'],
-        "learning_rate":  [0.01,0.2,2],
-        "hiddenactivation": ['sigmoid','tanh','relu'],
-        "activation": ['sigmoid','tanh','relu']}
-    task='binary classification'
-    score='auc'
-    number_of_particles=4
-    number_of_iterations=5
-    p=pspso('mlp',params,task,score)
-    p.fitpspso(X_train,Y_train,X_val,Y_val,number_of_particles=number_of_particles,
-                   number_of_iterations=number_of_iterations)
-    p.printresults()
+	params = {"optimizer": ["RMSprop", "adam", "sgd",'adamax','nadam','adadelta'] ,
+		  "learning_rate":  [0.1,0.3,2],
+		  "neurons": [1,40,0],
+		  "hiddenactivation": ['relu','sigmoid','tanh'],
+		  "activation":['relu','sigmoid','tanh']} 
+		  
+The task and the score were defined as *binary classification* and *auc* respectively.
+Then, the PSO was used to select the parameters of the MLP. 
+Results are provided back to the user through the **print_results()** function. 
+
+
+.. code:: python
+
+	from sklearn.preprocessing import MinMaxScaler
+	from pspso import pspso
+	from sklearn import datasets
+	from sklearn.model_selection import train_test_split
+
+	breastcancer = datasets.load_breast_cancer()
+	data=breastcancer.data#get the breast cancer dataset input features
+	target=breastcancer.target# target
+	X_train, X_test, Y_train, Y_test = train_test_split(data, target,test_size=0.1,random_state=42,stratify=target)
+	normalize = MinMaxScaler(feature_range=(0,1))#normalize input features 
+	X_train=normalize.fit_transform(X_train)
+	X_test=normalize.transform(X_test)
+	X_train, X_val, Y_train, Y_val = train_test_split(X_train, Y_train,test_size=0.15,random_state=42,stratify=Y_train)
+	p=pspso(estimator='mlp',task='binary classification', score='auc')
+	pos,cost,duration,model,optimizer=p.fitpspso(X_train,Y_train,X_val,Y_val)
+	p.print_results()#print the results
+	testscore=pspso.predict(p.model,p.estimator,p.task,p.score, X_test, Y_test)
+	print(1-testscore)
 
 In this example, four parameters were examined: optimizer,
 learning_rate, hiddenactivation, and activation. The number of neurons
 in the hidden layer was kept as default.
 
-XGBoost Example
----------------
+Output:
+
+.. code:: python
+
+	Estimator: mlp
+	Task: binary classification
+	Selection type: PSO
+	Number of attempts:50
+	Total number of combinations: 45360
+	Parameters:
+	{'optimizer': 'nadam', 'learning_rate': 0.29, 'neurons': 4, 'hiddenactivation': 'sigmoid', 'activation': 'sigmoid'}
+	Global best position: [3.8997699  0.28725911 4.21218138 1.41200923 0.84643591]
+	Global best cost: 0.0
+	Time taken to find the set of parameters: 160.3374378681183
+	Number of particles: 5
+	Number of iterations: 10
+	0.9867724867724867
+
+XGBoost Example (Binary Classification)
+---------------------------------------
+
+.. code:: python
+
+	from sklearn.preprocessing import MinMaxScaler
+	from pspso import pspso
+	from sklearn import datasets
+	from sklearn.model_selection import train_test_split
+
+	breastcancer = datasets.load_breast_cancer()
+	data=breastcancer.data#get the breast cancer dataset input features
+	target=breastcancer.target# target
+	X_train, X_test, Y_train, Y_test = train_test_split(data, target,test_size=0.1,random_state=42,stratify=target)
+	normalize = MinMaxScaler(feature_range=(0,1))#normalize input features 
+	X_train=normalize.fit_transform(X_train)
+	X_test=normalize.transform(X_test)
+	X_train, X_val, Y_train, Y_val = train_test_split(X_train, Y_train,test_size=0.15,random_state=42,stratify=Y_train)
+
+	params = {
+			"learning_rate":  [0.01,0.2,2],
+			"max_depth": [1,10,0],
+			"n_estimators": [2,200,0],
+			"subsample": [0.7,1,1]}
+	p=pspso(estimator='xgboost',params=params,task='binary classification', score='auc')
+	pos,cost,duration,model,optimizer=p.fitpspso(X_train,Y_train,X_val,Y_val)
+	p.print_results()#print the results
+	testscore=pspso.predict(p.model,p.estimator,p.task,p.score, X_test, Y_test)
+	print(1-testscore)
+	
+XGBoost Example (Regression)
+---------------------------------------
 
 The XGBoost is an implementation of boosting decision trees. 
-It is assumed that at this stage the user has already prepared the training and validation cohorts.
 Five parameters were utilized for selection: objective, learning rate, maximum depth, number of estimators, and subsample.
 Three categorical values were selected for the objective parameter. 
-The learning rate parameter values range between 0.01 and 0.2 with 2 decimal point, 
-maximum depth ranges between 1 and 10 with 0 decimal points (1,2,3,4,5,6,7,8,9,10), etc. 
+The learning rate parameter values range between *0.01* and *0.2* with *2* decimal point, 
+maximum depth ranges between *1* and *10* with *0* decimal points *(1,2,3,4,5,6,7,8,9,10)*, etc. 
 The task and score are selected as regression and RMSE respectively. 
 The number of particles and number of iterations can be left as default values if needed.
 Then, a pspso instance is created. By applying the fitpspso function, the selection process is applied. 
@@ -107,23 +167,36 @@ The best model, best parameters, score, time, and other details will be saved in
 
 .. code:: python
 
+	from sklearn.preprocessing import MinMaxScaler
 	from pspso import pspso
+	from sklearn import datasets
+	from sklearn.model_selection import train_test_split
+
+	boston_data = datasets.load_boston()
+	data=boston_data.data
+	target=boston_data.target
+
+	X_train, X_test, Y_train, Y_test = train_test_split(data, target,test_size=0.1,random_state=42)
+	normalize = MinMaxScaler(feature_range=(0,1))#normalize input features
+	normalizetarget = MinMaxScaler(feature_range=(0,1))#normalize target
+
+	X_train=normalize.fit_transform(X_train)
+	X_test=normalize.transform(X_test)
+	Y_train=normalizetarget.fit_transform(Y_train.reshape(-1,1))
+	Y_test=normalizetarget.transform(Y_test.reshape(-1,1))
+
+	X_train, X_val, Y_train, Y_val = train_test_split(X_train, Y_train,test_size=0.25,random_state=42)
 	params = {
 			"objective":['reg:tweedie',"reg:linear","reg:gamma"],
-		"learning_rate":  [0.01,0.2,2],
-		"max_depth": [1,10,0],
-		"n_estimators": [2,200,0],
-		"subsample": [0.7,1,1]}
-	task="regression"
-	score="rmse"
-	number_of_particles=20
-	number_of_iterations=40
-	p=pspso('xgboost',params,task,score)
-	p.fitpspso(X_train,Y_train,X_val,Y_val,
-				   number_of_particles=number_of_particles,
-				   number_of_iterations=number_of_iterations)
-	print("PSO search:")
-	p.printresults()
+			"learning_rate":  [0.01,0.2,2],
+			"max_depth": [1,10,0],
+			"n_estimators": [2,200,0],
+			"subsample": [0.7,1,1]}
+	p=pspso(estimator='xgboost',params=params,task='regression', score='rmse')
+	pos,cost,duration,model,optimizer=p.fitpspso(X_train,Y_train,X_val,Y_val)
+	p.print_results()#print the results
+	testscore=pspso.predict(p.model,p.estimator,p.task,p.score, X_test, Y_test)
+	print(testscore)
 
 User Input
 ----------
@@ -173,13 +246,13 @@ On the other side, if the parameter is numerical, a list with three elements is 
 * **ub**: represents the maximum value in the search space
 * **rv**: represents the number of decimal points the parameter values are rounded to before being added for training the algorithm 
 
-For e.g if you want pspso to select n_estimators, you add the following list [2,200,0] as in the example.
-By that, the lowest n_estimators will be 2, the highest to be examined is 200, and each possible value is rounded to an integer value ( 0 decimal points).
+For e.g if you want pspso to select n_estimators, you add the following list *[2,200,0]* as in the example.
+By that, the lowest n_estimators will be *2*, the highest to be examined is *200*, and each possible value is rounded to an integer value ( *0* decimal points).
 
 
 
-Other parameters
------------------
+**Other parameters**
+
 
 The user is given the chance to handle some of the default parameters
 such as the number of epochs in the MLP. The user can modify this by changing a
@@ -249,15 +322,17 @@ With fit random search, the number of attempts to be tried is added by the user 
 In grid search, all the possible combinations are created and investigated by the package. 
 These functions follow the same encoding schema used in fitpspso(), and were basically added for comparison.
 
-Parameters Encoding/Decoding Functions
+Parameters Functions
 --------------------------------------
 
 .. currentmodule:: pspso.pspso
 
 .. autosummary:: 
 
-	readparameters
+	read_parameters
 	decode_parameters
+	get_default_params
+	get_default_search_space
 	
 Other Functions
 -------------------------
@@ -265,11 +340,14 @@ Other Functions
 .. currentmodule:: pspso.pspso
 
 .. autosummary:: 
-
+	
 	f
 	rebuildmodel
-	printresults
+	print_results
 	calculatecombinations
+	predict
+	
+	
 
   
 
@@ -290,8 +368,8 @@ Additional Parameters
 
 To add new parameters to the currently supported algorithms, two functions should be updated
 
-The **read_params** function should include default details about the parameter,
-The **forward_prop_algorithmname** function should add the parameter to the initialization process
+The **get_default_params** function should include default details about the parameter,
+The **forward_prop_algorithmname** function should add the parameter to the training process
 
 New Algorithms
 ----------------------------
@@ -350,4 +428,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+
+
 

@@ -72,8 +72,8 @@
 
 
 \title{pspso}
-\date{Mar 20, 2020}
-\release{0.0.7}
+\date{Apr 04, 2020}
+\release{0.0.8}
 \author{Ali Haidar}
 \newcommand{\sphinxlogo}{\vbox{}}
 \renewcommand{\releasename}{Release}
@@ -118,7 +118,7 @@ Three scores are supported in the first version of pspso:
 \sphinxstylestrong{Regression} :
 \begin{itemize}
 \item {} 
-Root Mean Square Error (RMSE) for regression tasks
+Root Mean Square Error (RMSE)
 
 \end{itemize}
 
@@ -149,52 +149,111 @@ pip install pspso
 \chapter{Usage}
 \label{\detokenize{index:usage}}
 
-\section{MLP Example}
-\label{\detokenize{index:mlp-example}}
-\sphinxstylestrong{pspso} is used to select the machine learning algorithms parameters. It
-is assumed that the user has already processed and prepared the training
-and validation datasets, which are usually used to build the model.
+\section{MLP Example (Binary Classification)}
+\label{\detokenize{index:mlp-example-binary-classification}}
+\sphinxstylestrong{pspso} is used to select the machine learning algorithms parameters.
 Below is an example for using the pspso to select
-the parameters of the MLP. It should be noticed that pspso handles the
+the parameters of the MLP. pspso handles the
 MLP random weights intialization issue that may cause losing the best
 solution in consecutive iterations.
 
 The following example demonstrates the selection process of the MLP parameters.
-The params variable details the parameters utilized for selection.
-The task and the score are defined as binary classification and score.
-Then, the PSO is used to select the parameters of the MLP.
-Results will be provided back to user.
-It should be mentioned that the number of neurons has been left as a default value and was not given for selection in this example.
+A variable named \sphinxstyleemphasis{params} was not given by the user. Hence, the default search space of the MLP is loaded.
+This search space contains five parameters:
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n}{params} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{optimizer}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{RMSprop}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{adam}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{sgd}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{adamax}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{nadam}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{adadelta}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]} \PYG{p}{,}
+          \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{learning\PYGZus{}rate}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:}  \PYG{p}{[}\PYG{l+m+mf}{0.1}\PYG{p}{,}\PYG{l+m+mf}{0.3}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{]}\PYG{p}{,}
+          \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{neurons}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{40}\PYG{p}{,}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,}
+          \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{hiddenactivation}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{relu}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{sigmoid}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{tanh}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{,}
+          \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{activation}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{relu}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{sigmoid}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{tanh}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{\PYGZcb{}}
+\end{sphinxVerbatim}
+
+The task and the score were defined as \sphinxstyleemphasis{binary classification} and \sphinxstyleemphasis{auc} respectively.
+Then, the PSO was used to select the parameters of the MLP.
+Results are provided back to the user through the \sphinxstylestrong{print\_results()} function.
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from} \PYG{n+nn}{sklearn.preprocessing} \PYG{k+kn}{import} \PYG{n}{MinMaxScaler}
 \PYG{k+kn}{from} \PYG{n+nn}{pspso} \PYG{k+kn}{import} \PYG{n}{pspso}
-\PYG{n}{params} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{optimizer}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{adam}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{nadam}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{sgd}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{adadelta}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{,}
-    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{learning\PYGZus{}rate}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:}  \PYG{p}{[}\PYG{l+m+mf}{0.01}\PYG{p}{,}\PYG{l+m+mf}{0.2}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{]}\PYG{p}{,}
-    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{hiddenactivation}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{sigmoid}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{tanh}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{relu}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{,}
-    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{activation}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{sigmoid}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{tanh}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{relu}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{\PYGZcb{}}
-\PYG{n}{task}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{binary classification}\PYG{l+s+s1}{\PYGZsq{}}
-\PYG{n}{score}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{auc}\PYG{l+s+s1}{\PYGZsq{}}
-\PYG{n}{number\PYGZus{}of\PYGZus{}particles}\PYG{o}{=}\PYG{l+m+mi}{4}
-\PYG{n}{number\PYGZus{}of\PYGZus{}iterations}\PYG{o}{=}\PYG{l+m+mi}{5}
-\PYG{n}{p}\PYG{o}{=}\PYG{n}{pspso}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{mlp}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{n}{params}\PYG{p}{,}\PYG{n}{task}\PYG{p}{,}\PYG{n}{score}\PYG{p}{)}
-\PYG{n}{p}\PYG{o}{.}\PYG{n}{fitpspso}\PYG{p}{(}\PYG{n}{X\PYGZus{}train}\PYG{p}{,}\PYG{n}{Y\PYGZus{}train}\PYG{p}{,}\PYG{n}{X\PYGZus{}val}\PYG{p}{,}\PYG{n}{Y\PYGZus{}val}\PYG{p}{,}\PYG{n}{number\PYGZus{}of\PYGZus{}particles}\PYG{o}{=}\PYG{n}{number\PYGZus{}of\PYGZus{}particles}\PYG{p}{,}
-               \PYG{n}{number\PYGZus{}of\PYGZus{}iterations}\PYG{o}{=}\PYG{n}{number\PYGZus{}of\PYGZus{}iterations}\PYG{p}{)}
-\PYG{n}{p}\PYG{o}{.}\PYG{n}{printresults}\PYG{p}{(}\PYG{p}{)}
+\PYG{k+kn}{from} \PYG{n+nn}{sklearn} \PYG{k+kn}{import} \PYG{n}{datasets}
+\PYG{k+kn}{from} \PYG{n+nn}{sklearn.model\PYGZus{}selection} \PYG{k+kn}{import} \PYG{n}{train\PYGZus{}test\PYGZus{}split}
+
+\PYG{n}{breastcancer} \PYG{o}{=} \PYG{n}{datasets}\PYG{o}{.}\PYG{n}{load\PYGZus{}breast\PYGZus{}cancer}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{data}\PYG{o}{=}\PYG{n}{breastcancer}\PYG{o}{.}\PYG{n}{data}\PYG{c+c1}{\PYGZsh{}get the breast cancer dataset input features}
+\PYG{n}{target}\PYG{o}{=}\PYG{n}{breastcancer}\PYG{o}{.}\PYG{n}{target}\PYG{c+c1}{\PYGZsh{} target}
+\PYG{n}{X\PYGZus{}train}\PYG{p}{,} \PYG{n}{X\PYGZus{}test}\PYG{p}{,} \PYG{n}{Y\PYGZus{}train}\PYG{p}{,} \PYG{n}{Y\PYGZus{}test} \PYG{o}{=} \PYG{n}{train\PYGZus{}test\PYGZus{}split}\PYG{p}{(}\PYG{n}{data}\PYG{p}{,} \PYG{n}{target}\PYG{p}{,}\PYG{n}{test\PYGZus{}size}\PYG{o}{=}\PYG{l+m+mf}{0.1}\PYG{p}{,}\PYG{n}{random\PYGZus{}state}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{,}\PYG{n}{stratify}\PYG{o}{=}\PYG{n}{target}\PYG{p}{)}
+\PYG{n}{normalize} \PYG{o}{=} \PYG{n}{MinMaxScaler}\PYG{p}{(}\PYG{n}{feature\PYGZus{}range}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{)}\PYG{c+c1}{\PYGZsh{}normalize input features}
+\PYG{n}{X\PYGZus{}train}\PYG{o}{=}\PYG{n}{normalize}\PYG{o}{.}\PYG{n}{fit\PYGZus{}transform}\PYG{p}{(}\PYG{n}{X\PYGZus{}train}\PYG{p}{)}
+\PYG{n}{X\PYGZus{}test}\PYG{o}{=}\PYG{n}{normalize}\PYG{o}{.}\PYG{n}{transform}\PYG{p}{(}\PYG{n}{X\PYGZus{}test}\PYG{p}{)}
+\PYG{n}{X\PYGZus{}train}\PYG{p}{,} \PYG{n}{X\PYGZus{}val}\PYG{p}{,} \PYG{n}{Y\PYGZus{}train}\PYG{p}{,} \PYG{n}{Y\PYGZus{}val} \PYG{o}{=} \PYG{n}{train\PYGZus{}test\PYGZus{}split}\PYG{p}{(}\PYG{n}{X\PYGZus{}train}\PYG{p}{,} \PYG{n}{Y\PYGZus{}train}\PYG{p}{,}\PYG{n}{test\PYGZus{}size}\PYG{o}{=}\PYG{l+m+mf}{0.15}\PYG{p}{,}\PYG{n}{random\PYGZus{}state}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{,}\PYG{n}{stratify}\PYG{o}{=}\PYG{n}{Y\PYGZus{}train}\PYG{p}{)}
+\PYG{n}{p}\PYG{o}{=}\PYG{n}{pspso}\PYG{p}{(}\PYG{n}{estimator}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{mlp}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{n}{task}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{binary classification}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{score}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{auc}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{pos}\PYG{p}{,}\PYG{n}{cost}\PYG{p}{,}\PYG{n}{duration}\PYG{p}{,}\PYG{n}{model}\PYG{p}{,}\PYG{n}{optimizer}\PYG{o}{=}\PYG{n}{p}\PYG{o}{.}\PYG{n}{fitpspso}\PYG{p}{(}\PYG{n}{X\PYGZus{}train}\PYG{p}{,}\PYG{n}{Y\PYGZus{}train}\PYG{p}{,}\PYG{n}{X\PYGZus{}val}\PYG{p}{,}\PYG{n}{Y\PYGZus{}val}\PYG{p}{)}
+\PYG{n}{p}\PYG{o}{.}\PYG{n}{print\PYGZus{}results}\PYG{p}{(}\PYG{p}{)}\PYG{c+c1}{\PYGZsh{}print the results}
+\PYG{n}{testscore}\PYG{o}{=}\PYG{n}{pspso}\PYG{o}{.}\PYG{n}{predict}\PYG{p}{(}\PYG{n}{p}\PYG{o}{.}\PYG{n}{model}\PYG{p}{,}\PYG{n}{p}\PYG{o}{.}\PYG{n}{estimator}\PYG{p}{,}\PYG{n}{p}\PYG{o}{.}\PYG{n}{task}\PYG{p}{,}\PYG{n}{p}\PYG{o}{.}\PYG{n}{score}\PYG{p}{,} \PYG{n}{X\PYGZus{}test}\PYG{p}{,} \PYG{n}{Y\PYGZus{}test}\PYG{p}{)}
+\PYG{k}{print}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{o}{\PYGZhy{}}\PYG{n}{testscore}\PYG{p}{)}
 \end{sphinxVerbatim}
 
 In this example, four parameters were examined: optimizer,
 learning\_rate, hiddenactivation, and activation. The number of neurons
 in the hidden layer was kept as default.
 
+Output:
 
-\section{XGBoost Example}
-\label{\detokenize{index:xgboost-example}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n}{Estimator}\PYG{p}{:} \PYG{n}{mlp}
+\PYG{n}{Task}\PYG{p}{:} \PYG{n}{binary} \PYG{n}{classification}
+\PYG{n}{Selection} \PYG{n+nb}{type}\PYG{p}{:} \PYG{n}{PSO}
+\PYG{n}{Number} \PYG{n}{of} \PYG{n}{attempts}\PYG{p}{:}\PYG{l+m+mi}{50}
+\PYG{n}{Total} \PYG{n}{number} \PYG{n}{of} \PYG{n}{combinations}\PYG{p}{:} \PYG{l+m+mi}{45360}
+\PYG{n}{Parameters}\PYG{p}{:}
+\PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{optimizer}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{nadam}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{learning\PYGZus{}rate}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mf}{0.29}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{neurons}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mi}{4}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{hiddenactivation}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{sigmoid}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{activation}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{sigmoid}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{\PYGZcb{}}
+\PYG{n}{Global} \PYG{n}{best} \PYG{n}{position}\PYG{p}{:} \PYG{p}{[}\PYG{l+m+mf}{3.8997699}  \PYG{l+m+mf}{0.28725911} \PYG{l+m+mf}{4.21218138} \PYG{l+m+mf}{1.41200923} \PYG{l+m+mf}{0.84643591}\PYG{p}{]}
+\PYG{n}{Global} \PYG{n}{best} \PYG{n}{cost}\PYG{p}{:} \PYG{l+m+mf}{0.0}
+\PYG{n}{Time} \PYG{n}{taken} \PYG{n}{to} \PYG{n}{find} \PYG{n}{the} \PYG{n+nb}{set} \PYG{n}{of} \PYG{n}{parameters}\PYG{p}{:} \PYG{l+m+mf}{160.3374378681183}
+\PYG{n}{Number} \PYG{n}{of} \PYG{n}{particles}\PYG{p}{:} \PYG{l+m+mi}{5}
+\PYG{n}{Number} \PYG{n}{of} \PYG{n}{iterations}\PYG{p}{:} \PYG{l+m+mi}{10}
+\PYG{l+m+mf}{0.9867724867724867}
+\end{sphinxVerbatim}
+
+
+\section{XGBoost Example (Binary Classification)}
+\label{\detokenize{index:xgboost-example-binary-classification}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from} \PYG{n+nn}{sklearn.preprocessing} \PYG{k+kn}{import} \PYG{n}{MinMaxScaler}
+\PYG{k+kn}{from} \PYG{n+nn}{pspso} \PYG{k+kn}{import} \PYG{n}{pspso}
+\PYG{k+kn}{from} \PYG{n+nn}{sklearn} \PYG{k+kn}{import} \PYG{n}{datasets}
+\PYG{k+kn}{from} \PYG{n+nn}{sklearn.model\PYGZus{}selection} \PYG{k+kn}{import} \PYG{n}{train\PYGZus{}test\PYGZus{}split}
+
+\PYG{n}{breastcancer} \PYG{o}{=} \PYG{n}{datasets}\PYG{o}{.}\PYG{n}{load\PYGZus{}breast\PYGZus{}cancer}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{data}\PYG{o}{=}\PYG{n}{breastcancer}\PYG{o}{.}\PYG{n}{data}\PYG{c+c1}{\PYGZsh{}get the breast cancer dataset input features}
+\PYG{n}{target}\PYG{o}{=}\PYG{n}{breastcancer}\PYG{o}{.}\PYG{n}{target}\PYG{c+c1}{\PYGZsh{} target}
+\PYG{n}{X\PYGZus{}train}\PYG{p}{,} \PYG{n}{X\PYGZus{}test}\PYG{p}{,} \PYG{n}{Y\PYGZus{}train}\PYG{p}{,} \PYG{n}{Y\PYGZus{}test} \PYG{o}{=} \PYG{n}{train\PYGZus{}test\PYGZus{}split}\PYG{p}{(}\PYG{n}{data}\PYG{p}{,} \PYG{n}{target}\PYG{p}{,}\PYG{n}{test\PYGZus{}size}\PYG{o}{=}\PYG{l+m+mf}{0.1}\PYG{p}{,}\PYG{n}{random\PYGZus{}state}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{,}\PYG{n}{stratify}\PYG{o}{=}\PYG{n}{target}\PYG{p}{)}
+\PYG{n}{normalize} \PYG{o}{=} \PYG{n}{MinMaxScaler}\PYG{p}{(}\PYG{n}{feature\PYGZus{}range}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{)}\PYG{c+c1}{\PYGZsh{}normalize input features}
+\PYG{n}{X\PYGZus{}train}\PYG{o}{=}\PYG{n}{normalize}\PYG{o}{.}\PYG{n}{fit\PYGZus{}transform}\PYG{p}{(}\PYG{n}{X\PYGZus{}train}\PYG{p}{)}
+\PYG{n}{X\PYGZus{}test}\PYG{o}{=}\PYG{n}{normalize}\PYG{o}{.}\PYG{n}{transform}\PYG{p}{(}\PYG{n}{X\PYGZus{}test}\PYG{p}{)}
+\PYG{n}{X\PYGZus{}train}\PYG{p}{,} \PYG{n}{X\PYGZus{}val}\PYG{p}{,} \PYG{n}{Y\PYGZus{}train}\PYG{p}{,} \PYG{n}{Y\PYGZus{}val} \PYG{o}{=} \PYG{n}{train\PYGZus{}test\PYGZus{}split}\PYG{p}{(}\PYG{n}{X\PYGZus{}train}\PYG{p}{,} \PYG{n}{Y\PYGZus{}train}\PYG{p}{,}\PYG{n}{test\PYGZus{}size}\PYG{o}{=}\PYG{l+m+mf}{0.15}\PYG{p}{,}\PYG{n}{random\PYGZus{}state}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{,}\PYG{n}{stratify}\PYG{o}{=}\PYG{n}{Y\PYGZus{}train}\PYG{p}{)}
+
+\PYG{n}{params} \PYG{o}{=} \PYG{p}{\PYGZob{}}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{learning\PYGZus{}rate}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:}  \PYG{p}{[}\PYG{l+m+mf}{0.01}\PYG{p}{,}\PYG{l+m+mf}{0.2}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{]}\PYG{p}{,}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{max\PYGZus{}depth}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{10}\PYG{p}{,}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{n\PYGZus{}estimators}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{p}{[}\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{l+m+mi}{200}\PYG{p}{,}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{subsample}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{p}{[}\PYG{l+m+mf}{0.7}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{\PYGZcb{}}
+\PYG{n}{p}\PYG{o}{=}\PYG{n}{pspso}\PYG{p}{(}\PYG{n}{estimator}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{xgboost}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{n}{params}\PYG{o}{=}\PYG{n}{params}\PYG{p}{,}\PYG{n}{task}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{binary classification}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{score}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{auc}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{pos}\PYG{p}{,}\PYG{n}{cost}\PYG{p}{,}\PYG{n}{duration}\PYG{p}{,}\PYG{n}{model}\PYG{p}{,}\PYG{n}{optimizer}\PYG{o}{=}\PYG{n}{p}\PYG{o}{.}\PYG{n}{fitpspso}\PYG{p}{(}\PYG{n}{X\PYGZus{}train}\PYG{p}{,}\PYG{n}{Y\PYGZus{}train}\PYG{p}{,}\PYG{n}{X\PYGZus{}val}\PYG{p}{,}\PYG{n}{Y\PYGZus{}val}\PYG{p}{)}
+\PYG{n}{p}\PYG{o}{.}\PYG{n}{print\PYGZus{}results}\PYG{p}{(}\PYG{p}{)}\PYG{c+c1}{\PYGZsh{}print the results}
+\PYG{n}{testscore}\PYG{o}{=}\PYG{n}{pspso}\PYG{o}{.}\PYG{n}{predict}\PYG{p}{(}\PYG{n}{p}\PYG{o}{.}\PYG{n}{model}\PYG{p}{,}\PYG{n}{p}\PYG{o}{.}\PYG{n}{estimator}\PYG{p}{,}\PYG{n}{p}\PYG{o}{.}\PYG{n}{task}\PYG{p}{,}\PYG{n}{p}\PYG{o}{.}\PYG{n}{score}\PYG{p}{,} \PYG{n}{X\PYGZus{}test}\PYG{p}{,} \PYG{n}{Y\PYGZus{}test}\PYG{p}{)}
+\PYG{k}{print}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{o}{\PYGZhy{}}\PYG{n}{testscore}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\section{XGBoost Example (Regression)}
+\label{\detokenize{index:xgboost-example-regression}}
 The XGBoost is an implementation of boosting decision trees.
-It is assumed that at this stage the user has already prepared the training and validation cohorts.
 Five parameters were utilized for selection: objective, learning rate, maximum depth, number of estimators, and subsample.
 Three categorical values were selected for the objective parameter.
-The learning rate parameter values range between 0.01 and 0.2 with 2 decimal point,
-maximum depth ranges between 1 and 10 with 0 decimal points (1,2,3,4,5,6,7,8,9,10), etc.
+The learning rate parameter values range between \sphinxstyleemphasis{0.01} and \sphinxstyleemphasis{0.2} with \sphinxstyleemphasis{2} decimal point,
+maximum depth ranges between \sphinxstyleemphasis{1} and \sphinxstyleemphasis{10} with \sphinxstyleemphasis{0} decimal points \sphinxstyleemphasis{(1,2,3,4,5,6,7,8,9,10)}, etc.
 The task and score are selected as regression and RMSE respectively.
 The number of particles and number of iterations can be left as default values if needed.
 Then, a pspso instance is created. By applying the fitpspso function, the selection process is applied.
@@ -202,23 +261,36 @@ Finally, results are printed back to the user.
 The best model, best parameters, score, time, and other details will be saved in the created instance for the user to check.
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from} \PYG{n+nn}{sklearn.preprocessing} \PYG{k+kn}{import} \PYG{n}{MinMaxScaler}
 \PYG{k+kn}{from} \PYG{n+nn}{pspso} \PYG{k+kn}{import} \PYG{n}{pspso}
+\PYG{k+kn}{from} \PYG{n+nn}{sklearn} \PYG{k+kn}{import} \PYG{n}{datasets}
+\PYG{k+kn}{from} \PYG{n+nn}{sklearn.model\PYGZus{}selection} \PYG{k+kn}{import} \PYG{n}{train\PYGZus{}test\PYGZus{}split}
+
+\PYG{n}{boston\PYGZus{}data} \PYG{o}{=} \PYG{n}{datasets}\PYG{o}{.}\PYG{n}{load\PYGZus{}boston}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{data}\PYG{o}{=}\PYG{n}{boston\PYGZus{}data}\PYG{o}{.}\PYG{n}{data}
+\PYG{n}{target}\PYG{o}{=}\PYG{n}{boston\PYGZus{}data}\PYG{o}{.}\PYG{n}{target}
+
+\PYG{n}{X\PYGZus{}train}\PYG{p}{,} \PYG{n}{X\PYGZus{}test}\PYG{p}{,} \PYG{n}{Y\PYGZus{}train}\PYG{p}{,} \PYG{n}{Y\PYGZus{}test} \PYG{o}{=} \PYG{n}{train\PYGZus{}test\PYGZus{}split}\PYG{p}{(}\PYG{n}{data}\PYG{p}{,} \PYG{n}{target}\PYG{p}{,}\PYG{n}{test\PYGZus{}size}\PYG{o}{=}\PYG{l+m+mf}{0.1}\PYG{p}{,}\PYG{n}{random\PYGZus{}state}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+\PYG{n}{normalize} \PYG{o}{=} \PYG{n}{MinMaxScaler}\PYG{p}{(}\PYG{n}{feature\PYGZus{}range}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{)}\PYG{c+c1}{\PYGZsh{}normalize input features}
+\PYG{n}{normalizetarget} \PYG{o}{=} \PYG{n}{MinMaxScaler}\PYG{p}{(}\PYG{n}{feature\PYGZus{}range}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{)}\PYG{c+c1}{\PYGZsh{}normalize target}
+
+\PYG{n}{X\PYGZus{}train}\PYG{o}{=}\PYG{n}{normalize}\PYG{o}{.}\PYG{n}{fit\PYGZus{}transform}\PYG{p}{(}\PYG{n}{X\PYGZus{}train}\PYG{p}{)}
+\PYG{n}{X\PYGZus{}test}\PYG{o}{=}\PYG{n}{normalize}\PYG{o}{.}\PYG{n}{transform}\PYG{p}{(}\PYG{n}{X\PYGZus{}test}\PYG{p}{)}
+\PYG{n}{Y\PYGZus{}train}\PYG{o}{=}\PYG{n}{normalizetarget}\PYG{o}{.}\PYG{n}{fit\PYGZus{}transform}\PYG{p}{(}\PYG{n}{Y\PYGZus{}train}\PYG{o}{.}\PYG{n}{reshape}\PYG{p}{(}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{)}
+\PYG{n}{Y\PYGZus{}test}\PYG{o}{=}\PYG{n}{normalizetarget}\PYG{o}{.}\PYG{n}{transform}\PYG{p}{(}\PYG{n}{Y\PYGZus{}test}\PYG{o}{.}\PYG{n}{reshape}\PYG{p}{(}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{)}
+
+\PYG{n}{X\PYGZus{}train}\PYG{p}{,} \PYG{n}{X\PYGZus{}val}\PYG{p}{,} \PYG{n}{Y\PYGZus{}train}\PYG{p}{,} \PYG{n}{Y\PYGZus{}val} \PYG{o}{=} \PYG{n}{train\PYGZus{}test\PYGZus{}split}\PYG{p}{(}\PYG{n}{X\PYGZus{}train}\PYG{p}{,} \PYG{n}{Y\PYGZus{}train}\PYG{p}{,}\PYG{n}{test\PYGZus{}size}\PYG{o}{=}\PYG{l+m+mf}{0.25}\PYG{p}{,}\PYG{n}{random\PYGZus{}state}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
 \PYG{n}{params} \PYG{o}{=} \PYG{p}{\PYGZob{}}
                 \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{objective}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{reg:tweedie}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{reg:linear}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{reg:gamma}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{,}
-        \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{learning\PYGZus{}rate}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:}  \PYG{p}{[}\PYG{l+m+mf}{0.01}\PYG{p}{,}\PYG{l+m+mf}{0.2}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{]}\PYG{p}{,}
-        \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{max\PYGZus{}depth}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{10}\PYG{p}{,}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,}
-        \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{n\PYGZus{}estimators}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{p}{[}\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{l+m+mi}{200}\PYG{p}{,}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,}
-        \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{subsample}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{p}{[}\PYG{l+m+mf}{0.7}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{\PYGZcb{}}
-\PYG{n}{task}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{regression}\PYG{l+s+s2}{\PYGZdq{}}
-\PYG{n}{score}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{rmse}\PYG{l+s+s2}{\PYGZdq{}}
-\PYG{n}{number\PYGZus{}of\PYGZus{}particles}\PYG{o}{=}\PYG{l+m+mi}{20}
-\PYG{n}{number\PYGZus{}of\PYGZus{}iterations}\PYG{o}{=}\PYG{l+m+mi}{40}
-\PYG{n}{p}\PYG{o}{=}\PYG{n}{pspso}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{xgboost}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{n}{params}\PYG{p}{,}\PYG{n}{task}\PYG{p}{,}\PYG{n}{score}\PYG{p}{)}
-\PYG{n}{p}\PYG{o}{.}\PYG{n}{fitpspso}\PYG{p}{(}\PYG{n}{X\PYGZus{}train}\PYG{p}{,}\PYG{n}{Y\PYGZus{}train}\PYG{p}{,}\PYG{n}{X\PYGZus{}val}\PYG{p}{,}\PYG{n}{Y\PYGZus{}val}\PYG{p}{,}
-                           \PYG{n}{number\PYGZus{}of\PYGZus{}particles}\PYG{o}{=}\PYG{n}{number\PYGZus{}of\PYGZus{}particles}\PYG{p}{,}
-                           \PYG{n}{number\PYGZus{}of\PYGZus{}iterations}\PYG{o}{=}\PYG{n}{number\PYGZus{}of\PYGZus{}iterations}\PYG{p}{)}
-\PYG{k}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{PSO search:}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
-\PYG{n}{p}\PYG{o}{.}\PYG{n}{printresults}\PYG{p}{(}\PYG{p}{)}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{learning\PYGZus{}rate}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:}  \PYG{p}{[}\PYG{l+m+mf}{0.01}\PYG{p}{,}\PYG{l+m+mf}{0.2}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{]}\PYG{p}{,}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{max\PYGZus{}depth}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{10}\PYG{p}{,}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{n\PYGZus{}estimators}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{p}{[}\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{l+m+mi}{200}\PYG{p}{,}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{subsample}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{p}{[}\PYG{l+m+mf}{0.7}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{\PYGZcb{}}
+\PYG{n}{p}\PYG{o}{=}\PYG{n}{pspso}\PYG{p}{(}\PYG{n}{estimator}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{xgboost}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{n}{params}\PYG{o}{=}\PYG{n}{params}\PYG{p}{,}\PYG{n}{task}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{regression}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{score}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{rmse}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{pos}\PYG{p}{,}\PYG{n}{cost}\PYG{p}{,}\PYG{n}{duration}\PYG{p}{,}\PYG{n}{model}\PYG{p}{,}\PYG{n}{optimizer}\PYG{o}{=}\PYG{n}{p}\PYG{o}{.}\PYG{n}{fitpspso}\PYG{p}{(}\PYG{n}{X\PYGZus{}train}\PYG{p}{,}\PYG{n}{Y\PYGZus{}train}\PYG{p}{,}\PYG{n}{X\PYGZus{}val}\PYG{p}{,}\PYG{n}{Y\PYGZus{}val}\PYG{p}{)}
+\PYG{n}{p}\PYG{o}{.}\PYG{n}{print\PYGZus{}results}\PYG{p}{(}\PYG{p}{)}\PYG{c+c1}{\PYGZsh{}print the results}
+\PYG{n}{testscore}\PYG{o}{=}\PYG{n}{pspso}\PYG{o}{.}\PYG{n}{predict}\PYG{p}{(}\PYG{n}{p}\PYG{o}{.}\PYG{n}{model}\PYG{p}{,}\PYG{n}{p}\PYG{o}{.}\PYG{n}{estimator}\PYG{p}{,}\PYG{n}{p}\PYG{o}{.}\PYG{n}{task}\PYG{p}{,}\PYG{n}{p}\PYG{o}{.}\PYG{n}{score}\PYG{p}{,} \PYG{n}{X\PYGZus{}test}\PYG{p}{,} \PYG{n}{Y\PYGZus{}test}\PYG{p}{)}
+\PYG{k}{print}\PYG{p}{(}\PYG{n}{testscore}\PYG{p}{)}
 \end{sphinxVerbatim}
 
 
@@ -275,12 +347,11 @@ On the other side, if the parameter is numerical, a list with three elements is 
 
 \end{itemize}
 
-For e.g if you want pspso to select n\_estimators, you add the following list {[}2,200,0{]} as in the example.
-By that, the lowest n\_estimators will be 2, the highest to be examined is 200, and each possible value is rounded to an integer value ( 0 decimal points).
+For e.g if you want pspso to select n\_estimators, you add the following list \sphinxstyleemphasis{{[}2,200,0{]}} as in the example.
+By that, the lowest n\_estimators will be \sphinxstyleemphasis{2}, the highest to be examined is \sphinxstyleemphasis{200}, and each possible value is rounded to an integer value ( \sphinxstyleemphasis{0} decimal points).
 
+\sphinxstylestrong{Other parameters}
 
-\section{Other parameters}
-\label{\detokenize{index:other-parameters}}
 The user is given the chance to handle some of the default parameters
 such as the number of epochs in the MLP. The user can modify this by changing a
 pspso class instance. For e.g., to change the number of
@@ -404,8 +475,8 @@ In grid search, all the possible combinations are created and investigated by th
 These functions follow the same encoding schema used in fitpspso(), and were basically added for comparison.
 
 
-\section{Parameters Encoding/Decoding Functions}
-\label{\detokenize{index:parameters-encoding-decoding-functions}}
+\section{Parameters Functions}
+\label{\detokenize{index:parameters-functions}}
 
 \begin{savenotes}\sphinxatlongtablestart\begin{longtable}[c]{\X{1}{2}\X{1}{2}}
 \hline
@@ -424,7 +495,7 @@ These functions follow the same encoding schema used in fitpspso(), and were bas
 
 \endlastfoot
 
-{\hyperref[\detokenize{index:pspso.pspso.readparameters}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{readparameters}}}}}({[}params, estimator, task{]})
+{\hyperref[\detokenize{index:pspso.pspso.read_parameters}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{read\_parameters}}}}}({[}params, estimator, task{]})
 &
 Read the parameters provided by the user.
 \\
@@ -432,6 +503,16 @@ Read the parameters provided by the user.
 {\hyperref[\detokenize{index:pspso.pspso.decode_parameters}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{decode\_parameters}}}}}(particle)
 &
 Decodes the parameters of a list into a meaningful set of parameters.
+\\
+\hline
+{\hyperref[\detokenize{index:pspso.pspso.get_default_params}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{get\_default\_params}}}}}(estimator, task)
+&
+Set the default parameters of the estimator.
+\\
+\hline
+{\hyperref[\detokenize{index:pspso.pspso.get_default_search_space}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{get\_default\_search\_space}}}}}(estimator, task)
+&
+Create a dictionary of default parameters if the user didnt provide parameters.
 \\
 \hline
 \end{longtable}\sphinxatlongtableend\end{savenotes}
@@ -467,7 +548,7 @@ Higher\sphinxhyphen{}level method to do forward\_prop in the whole swarm.
 Used to rebuild the model after selecting the parameters.
 \\
 \hline
-{\hyperref[\detokenize{index:pspso.pspso.printresults}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{printresults}}}}}()
+{\hyperref[\detokenize{index:pspso.pspso.print_results}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{print\_results}}}}}()
 &
 Print the results found in the pspso instance.
 \\
@@ -475,6 +556,11 @@ Print the results found in the pspso instance.
 {\hyperref[\detokenize{index:pspso.pspso.calculatecombinations}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{calculatecombinations}}}}}()
 &
 A function that will generate all the possible combinations in the search space.
+\\
+\hline
+{\hyperref[\detokenize{index:pspso.pspso.predict}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{predict}}}}}(model, estimator, task, score, …)
+&
+A function used to release the score of a model.
 \\
 \hline
 \end{longtable}\sphinxatlongtableend\end{savenotes}
@@ -549,7 +635,7 @@ I have to traverse each value between x\_min, x\_max. Create a list seperating r
 \index{fitpspso() (pspso.pspso method)@\spxentry{fitpspso()}\spxextra{pspso.pspso method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{index:pspso.pspso.fitpspso}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{fitpspso}}}{\emph{X\_train=None}, \emph{Y\_train=None}, \emph{X\_val=None}, \emph{Y\_val=None}, \emph{number\_of\_particles=5}, \emph{number\_of\_iterations=10}, \emph{options=\{\textquotesingle{}c1\textquotesingle{}: 1.49618}, \emph{\textquotesingle{}c2\textquotesingle{}: 1.49618}, \emph{\textquotesingle{}w\textquotesingle{}: 0.7298\}}}{}
+\phantomsection\label{\detokenize{index:pspso.pspso.fitpspso}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{fitpspso}}}{\emph{X\_train=None}, \emph{Y\_train=None}, \emph{X\_val=None}, \emph{Y\_val=None}, \emph{psotype=\textquotesingle{}global\textquotesingle{}}, \emph{number\_of\_particles=5}, \emph{number\_of\_iterations=10}, \emph{options=\{\textquotesingle{}c1\textquotesingle{}: 1.49618}, \emph{\textquotesingle{}c2\textquotesingle{}: 1.49618}, \emph{\textquotesingle{}w\textquotesingle{}: 0.7298\}}}{}
 Select the algorithm parameters based on PSO.
 
 Inputs
@@ -664,7 +750,7 @@ Inputs
 \item[{particle: list of values (n dimensions)}] \leavevmode
 A particle in the swarm
 
-\item[{task: regression, binary classification, or binary classification r}] \leavevmode
+\item[{task: regression, binary classification}] \leavevmode
 the task to be conducted
 
 \item[{score: rmse (regression), auc (binary classification), acc (binary classification)}] \leavevmode
@@ -723,7 +809,7 @@ Inputs
 \item[{particle: list of values (n dimensions)}] \leavevmode
 A particle in the swarm
 
-\item[{task: regression, binary classification, or binary classification r}] \leavevmode
+\item[{task: regression, binary classification}] \leavevmode
 the task to be conducted
 
 \item[{score: rmse (regression), auc (binary classification), acc (binary classification)}] \leavevmode
@@ -752,10 +838,106 @@ the score of the trained algorithm over the validation dataset, trained model
 
 \end{fulllineitems}
 
-\index{printresults() (pspso.pspso method)@\spxentry{printresults()}\spxextra{pspso.pspso method}}
+\index{get\_default\_params() (pspso.pspso static method)@\spxentry{get\_default\_params()}\spxextra{pspso.pspso static method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{index:pspso.pspso.printresults}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{printresults}}}{}{}
+\phantomsection\label{\detokenize{index:pspso.pspso.get_default_params}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{static }}\sphinxbfcode{\sphinxupquote{get\_default\_params}}}{\emph{estimator}, \emph{task}}{}
+Set the default parameters of the estimator.
+This function assigns the default parameters for the user.
+Each algorithm has a set of parameters. To allow the user to search for some parameters
+instead of the supported parameters, this function is used to assign a default value for each parameter.
+In addition, it gets other parameters for each algorithm. For e.g, it returns the number of epochs, batch\_size, and loss for the mlp.
+
+Inputs
+\begin{description}
+\item[{estimator: string value}] \leavevmode
+A string value that determines the estimator: ‘mlp’,’xgboost’,’svm’, or ‘gbdt’
+
+\item[{task: string value}] \leavevmode
+A string value that determines the task under consideration: ‘regression’ or ‘binary classification’
+
+\end{description}
+
+Returns
+\begin{description}
+\item[{defaultparams: Dictionary}] \leavevmode
+A dictionary that contains default parameters to be used.
+
+\end{description}
+
+\end{fulllineitems}
+
+\index{get\_default\_search\_space() (pspso.pspso static method)@\spxentry{get\_default\_search\_space()}\spxextra{pspso.pspso static method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:pspso.pspso.get_default_search_space}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{static }}\sphinxbfcode{\sphinxupquote{get\_default\_search\_space}}}{\emph{estimator}, \emph{task}}{}
+Create a dictionary of default parameters if the user didnt provide parameters.
+
+Inputs
+\begin{description}
+\item[{estimator: string value}] \leavevmode
+A string value that determines the estimator: ‘mlp’,’xgboost’,’svm’, or ‘gbdt’
+
+\item[{task: string value}] \leavevmode
+A string value that determines the task under consideration: ‘regression’ or ‘binary classification’
+
+\end{description}
+
+Returns
+\begin{description}
+\item[{params: Dictionary}] \leavevmode
+A dictionary that contains default parameters to be used.
+
+\end{description}
+
+\end{fulllineitems}
+
+\index{predict() (pspso.pspso static method)@\spxentry{predict()}\spxextra{pspso.pspso static method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:pspso.pspso.predict}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{static }}\sphinxbfcode{\sphinxupquote{predict}}}{\emph{model}, \emph{estimator}, \emph{task}, \emph{score}, \emph{X\_val}, \emph{Y\_val}}{}
+A function used to release the score of a model.
+If the score is rmse, the value is released.
+If the score is acc (accuracy), 1\sphinxhyphen{}acc is returned back since pso applies a minimization task.
+If the score is auc, 1\sphinxhyphen{}auc is returned back since pso applies a minization task
+
+This class is static and can be used to test the model accuracy over the hold\sphinxhyphen{}out sample once the selection process is finalized.
+
+Inputs
+\begin{description}
+\item[{model:}] \leavevmode
+A trained model
+
+\item[{estimator: string value}] \leavevmode
+A string value that determines the estimator: ‘mlp’,’xgboost’,’svm’, or ‘gbdt’
+
+\item[{task: string value}] \leavevmode
+A string value that determines the task under consideration: ‘regression’ or ‘binary classification’
+
+\item[{score: string value}] \leavevmode
+Determines the score (‘rmse’,’auc’,’acc’)
+
+\item[{X\_val: numpy.ndarray}] \leavevmode
+Input features
+
+\item[{Y\_val: numpy.ndarray}] \leavevmode
+Target
+
+\end{description}
+
+Returns
+\begin{description}
+\item[{met: float}] \leavevmode
+Score value of the model
+
+\end{description}
+
+\end{fulllineitems}
+
+\index{print\_results() (pspso.pspso method)@\spxentry{print\_results()}\spxextra{pspso.pspso method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:pspso.pspso.print_results}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{print\_results}}}{}{}
 Print the results found in the pspso instance. Expected to print general details
 like estimator, task, selection type, number of attempts examined, total number of
 combinations, position of the best solution, score of the best solution, parameters,
@@ -763,10 +945,10 @@ details about the pso algorithm.
 
 \end{fulllineitems}
 
-\index{readparameters() (pspso.pspso static method)@\spxentry{readparameters()}\spxextra{pspso.pspso static method}}
+\index{read\_parameters() (pspso.pspso static method)@\spxentry{read\_parameters()}\spxextra{pspso.pspso static method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{index:pspso.pspso.readparameters}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{static }}\sphinxbfcode{\sphinxupquote{readparameters}}}{\emph{params=None}, \emph{estimator=None}, \emph{task=None}}{}
+\phantomsection\label{\detokenize{index:pspso.pspso.read_parameters}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{static }}\sphinxbfcode{\sphinxupquote{read\_parameters}}}{\emph{params=None}, \emph{estimator=None}, \emph{task=None}}{}
 Read the parameters provided by the user.
 
 Inputs
@@ -778,7 +960,7 @@ This dictionary determines the parameters and ranges of parameters the user want
 A string value that determines the estimator: ‘mlp’,’xgboost’,’svm’, or ‘gbdt’
 
 \item[{task: string value}] \leavevmode
-A string valeu that determines the task under consideration: ‘regression’ or ‘binary classification’
+A string value that determines the task under consideration: ‘regression’ or ‘binary classification’
 
 \end{description}
 
@@ -832,8 +1014,8 @@ Used to rebuild the model after selecting the parameters.
 \label{\detokenize{index:additional-parameters}}
 To add new parameters to the currently supported algorithms, two functions should be updated
 
-The \sphinxstylestrong{read\_params} function should include default details about the parameter,
-The \sphinxstylestrong{forward\_prop\_algorithmname} function should add the parameter to the initialization process
+The \sphinxstylestrong{get\_default\_params} function should include default details about the parameter,
+The \sphinxstylestrong{forward\_prop\_algorithmname} function should add the parameter to the training process
 
 
 \section{New Algorithms}
