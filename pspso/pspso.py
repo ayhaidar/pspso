@@ -14,7 +14,7 @@ import random
 import numpy as np
 import time
 import itertools as it
-import lightgbm
+import lightgbm as lgb
 import xgboost as xgb
 from sklearn.svm import SVC,SVR
 #keras MLP
@@ -106,7 +106,7 @@ class pspso:
                   "n_estimators": [2,70,0],
                   "subsample": [0.7,1,2]}
             else:
-                params = {"objective": ["tweedie","gamma"],
+                params = {"objective": ["tweedie","regression"],
                   "learning_rate":  [0.1,0.3,2],
                   "max_depth": [1,10,0],
                   "n_estimators": [2,70,0],
@@ -160,9 +160,9 @@ class pspso:
                 eval_metric ='rmse'
             elif task =='binary classification':
                 defaultparams['objective'] = 'binary'
-                eval_metric ='auc' 
+                eval_metric =['auc'] 
             defaultparams.update({'learning_rate':0.01,'max_depth':6,'n_estimators':40,'subsample':0.99,
-                                  'boosting_type':'gbdt','metric':eval_metric,'verbose':pspso.verbose})
+                                  'boosting_type':'gbdt','eval_metric':eval_metric})
                 
         elif estimator == 'mlp':
             #steps_per_epoch=4000 // batch_size
@@ -274,6 +274,7 @@ class pspso:
          
     @staticmethod
     def forward_prop_gbdt(particle,task,score,X_train,Y_train,X_val,Y_val):
+        #print(pspso.decode_parameters(particle))
         """Train the GBDT after decoding the parameters in variable particle.
         The particle is decoded into parameters of the gbdt. Then, The gbdt is trained and the score is sent back to the fitness function.
         
@@ -306,26 +307,26 @@ class pspso:
             the score of the trained algorithm over the validation dataset, trained model
 
         """ 
-        decodedparams = pspso.decode_parameters(particle)
-        modelparameters = {**pspso.defaultparams,**decodedparams}
+        model=None 
+        eval_set = [(X_val, np.squeeze(Y_val))]#eval set is the same in regression and classification
         try:
-            if modelparameters['subsample'] ==1: # Note: to enable bagging, bagging_fraction(subsample_freq) should be set to value smaller than 1.0 as well
-                modelparameters['subsample_freq'] =0 #disable bagging
-            else:
-                modelparameters['subsample_freq'] =1 #perform bagging each iteration 
-            
-            train_data = lightgbm.Dataset(X_train, label=np.squeeze(Y_train))
-            val_data = lightgbm.Dataset(X_val, label=np.squeeze(Y_val))#evaluation set.
-            gbm_n_estimators=modelparameters['n_estimators']
-            del modelparameters['n_estimators']
-            model = lightgbm.train(modelparameters,
-                                 train_data,
-                                 valid_sets=val_data,
-                                 num_boost_round=gbm_n_estimators,verbose_eval=False,
-                                 early_stopping_rounds=pspso.early_stopping)
-            return pspso.predict(model,'gbdt',task, score,X_val,Y_val),model
+            decodedparams = pspso.decode_parameters(particle)
+            modelparameters = {**pspso.defaultparams,**decodedparams}
+            eval_metric=modelparameters['eval_metric']
+            del modelparameters['eval_metric']
+
+            if task !='binary classification':
+                model = lgb.LGBMRegressor(**modelparameters)
+            else : # if it is a binary classification task, will use XGBClassifier, note the different decoder since we have objective as fixed this time.
+                model = lgb.LGBMClassifier(**modelparameters)
+            model.fit(X_train,np.squeeze(Y_train),
+                      early_stopping_rounds=pspso.early_stopping,
+                      eval_set=eval_set,
+                      eval_metric=eval_metric,
+                      verbose=pspso.verbose )
+            return pspso.predict(model,'gbdt',task, score,X_val,np.squeeze(Y_val)),model
         except Exception as e:
-            print('Got an exception in training gbdt')
+            print('An exception occured in GBDT training.')
             print(e)
             return None,None
     
@@ -373,19 +374,10 @@ class pspso:
             decodedparams = pspso.decode_parameters(particle)
             modelparameters = {**pspso.defaultparams,**decodedparams}
             if task !='binary classification':
-                model = xgb.XGBRegressor(objective =modelparameters['objective'],  
-                              learning_rate = modelparameters['learning_rate'],                        
-                              max_depth = int(modelparameters['max_depth']) ,
-                              n_estimators = int(modelparameters['n_estimators']),
-                              subsample=modelparameters['subsample'])
+                model = xgb.XGBRegressor(**modelparameters)
             else : # if it is a binary classification task, will use XGBClassifier, note the different decoder since we have objective as fixed this time.
-                model = xgb.XGBClassifier(objective =modelparameters['objective'],  
-                              learning_rate = modelparameters['learning_rate'],                        
-                              max_depth = int(modelparameters['max_depth']) ,
-                              n_estimators = int(modelparameters['n_estimators']),
-                              subsample=modelparameters['subsample'])
-            
-            model.fit(X_train,Y_train,early_stopping_rounds=pspso.early_stopping,eval_set=eval_set,eval_metric=modelparameters['eval_metric'],verbose=pspso.verbose )
+                model = xgb.XGBClassifier(**modelparameters)
+            model.fit(X_train,Y_train,early_stopping_rounds=pspso.early_stopping,eval_set=eval_set,verbose=pspso.verbose )
             return pspso.predict(model,'xgboost',task, score,X_val,Y_val),model
         except Exception as e:
             print('An exception occured in XGBoost training.')
@@ -599,7 +591,7 @@ class pspso:
         
         if self.estimator =='mlp' :# if the estimator is mlp, assign history variable 
             self.history=pspso.best_history_ann
-        
+        self.miniopt=self.save_optimizer_details()
         return self.pos,self.cost,self.duration,self.model,self.optimizer
     
     
@@ -822,7 +814,7 @@ class pspso:
             preds_val=model.predict(X_val)# predict output
             met = np.sqrt(mean_squared_error(Y_val, preds_val))
             return met
-        if task =='binary classification' and (estimator =='gbdt' or estimator =='mlp'):
+        if task =='binary classification' and estimator =='mlp':
             #gbdt and mlp has same way of prediction.
             # since it is using the gbdt model, output will be one column
             #and for the mlp, since sigmoid, tanh, or relu then one output. No softmax here.
@@ -834,7 +826,7 @@ class pspso:
                 fpr, tpr, thresholds = roc_curve(Y_val, preds_val)
                 met = auc(fpr, tpr)
                 return 1-met   
-        elif task =='binary classification' and (estimator== 'xgboost' or estimator =='svm'):
+        elif task =='binary classification' and (estimator== 'xgboost' or estimator =='svm' or estimator =='gbdt'):
             # XGBOOST classifier and svm has same way of prediction.
             if score == 'acc': # if it is accuracy
                 preds_val = model.predict(X_val)  # one column with acc, will generate labels with function predict() in xgboost
@@ -845,6 +837,20 @@ class pspso:
                 fpr, tpr, thresholds = roc_curve(Y_val, preds_val[:,1]) 
                 met = auc(fpr, tpr)# calculate auc using roc_curve and auc in sklearn.metrics class
                 return 1-met
+            
+    def save_optimizer_details(self):#since the optimizer cant be save (pyswarms issue)
+        opt={}
+        opt['pos_history']=self.optimizer.pos_history
+        opt['cost_history']=self.optimizer.cost_history
+        
+        opt['bounds']=self.optimizer.bounds
+        opt['init_pos']=self.optimizer.init_pos
+        opt['swarm_size']=self.optimizer.swarm_size
+        opt['options']=self.optimizer.options
+        opt['name']=self.optimizer.name
+        opt['n_particles']=self.optimizer.n_particles
+        opt['cost_history']=self.optimizer.cost_history
+        return opt
 
         
         
