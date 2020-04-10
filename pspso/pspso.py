@@ -314,11 +314,11 @@ class pspso:
             modelparameters = {**pspso.defaultparams,**decodedparams}
             eval_metric=modelparameters['eval_metric']
             del modelparameters['eval_metric']
-
             if task !='binary classification':
                 model = lgb.LGBMRegressor(**modelparameters)
             else : # if it is a binary classification task, will use XGBClassifier, note the different decoder since we have objective as fixed this time.
                 model = lgb.LGBMClassifier(**modelparameters)
+
             model.fit(X_train,np.squeeze(Y_train),
                       early_stopping_rounds=pspso.early_stopping,
                       eval_set=eval_set,

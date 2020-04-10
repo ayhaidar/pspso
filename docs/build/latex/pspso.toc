@@ -14,10 +14,9 @@
 \contentsline {section}{\numberline {3.4}Other Functions}{12}{section.3.4}
 \contentsline {chapter}{\numberline {4}Module Summary}{13}{chapter.4}
 \contentsline {chapter}{\numberline {5}Future Work}{17}{chapter.5}
-\contentsline {section}{\numberline {5.1}Additional Parameters}{17}{section.5.1}
-\contentsline {section}{\numberline {5.2}New Algorithms}{17}{section.5.2}
-\contentsline {section}{\numberline {5.3}Crossvalidation}{17}{section.5.3}
-\contentsline {section}{\numberline {5.4}Multi\sphinxhyphen {}Class Classification}{17}{section.5.4}
+\contentsline {section}{\numberline {5.1}New Algorithms}{17}{section.5.1}
+\contentsline {section}{\numberline {5.2}Cross Validation}{17}{section.5.2}
+\contentsline {section}{\numberline {5.3}Multi\sphinxhyphen {}Class Classification}{17}{section.5.3}
 \contentsline {chapter}{\numberline {6}Contributing}{19}{chapter.6}
 \contentsline {chapter}{\numberline {7}License}{21}{chapter.7}
 \contentsline {chapter}{Index}{23}{section*.20}

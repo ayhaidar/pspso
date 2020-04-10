@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Welcome to pspso’s documentation! &mdash; pspso 0.0.8 documentation</title>
+  <title>Welcome to pspso’s documentation! &mdash; pspso 0.0.9 documentation</title>
   
 
   
@@ -102,9 +102,8 @@
 </li>
 <li><a class="reference internal" href="#module-summary">Module Summary</a></li>
 <li><a class="reference internal" href="#future-work">Future Work</a><ul>
-<li><a class="reference internal" href="#additional-parameters">Additional Parameters</a></li>
 <li><a class="reference internal" href="#new-algorithms">New Algorithms</a></li>
-<li><a class="reference internal" href="#crossvalidation">Crossvalidation</a></li>
+<li><a class="reference internal" href="#cross-validation">Cross Validation</a></li>
 <li><a class="reference internal" href="#multi-class-classification">Multi-Class Classification</a></li>
 </ul>
 </li>
@@ -358,8 +357,7 @@ The best model, best parameters, score, time, and other details will be saved in
 </div>
 <div class="section" id="user-input">
 <h2>User Input<a class="headerlink" href="#user-input" title="Permalink to this headline">¶</a></h2>
-<p>The user enters the type of the algorithm (‘mlp’,’svm’,’xgboost’,’gbdt’); the task type (‘binary classification’,
-‘regression’), score (‘rmse’,’acc’, or ‘auc’). The user can keep the parameters variable empty, where a default set of parameters and ranges is loaded
+<p>The user is required to select the type of the algorithm (‘mlp’, ‘svm’, ‘xgboost’, ‘gbdt’); the task type (‘binary classification’,’regression’), score (‘rmse’, ‘acc’, or ‘auc’). The user can keep the parameters variable empty, where a default set of parameters and ranges is loaded
 for each algorithm.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pspso</span> <span class="kn">import</span> <span class="n">pspso</span>
 <span class="n">task</span><span class="o">=</span><span class="s1">&#39;binary classification&#39;</span>
@@ -368,15 +366,13 @@ for each algorithm.</p>
 </pre></div>
 </div>
 <p>Pspso allows the user to provide a range of parameters for exploration.
-The parameters vary between each algorithm.
-For this current version, up to 5 paramaters can be explored at the same time.</p>
-<p>The parameters are encoded in json object that consists of <em>key,value</em> pairs:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;objective&quot;</span><span class="p">:[</span><span class="s1">&#39;reg:tweedie&#39;</span><span class="p">,</span><span class="s2">&quot;reg:linear&quot;</span><span class="p">,</span><span class="s2">&quot;reg:gamma&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;learning_rate&quot;</span><span class="p">:</span>  <span class="p">[</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.2</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>
-        <span class="s2">&quot;max_depth&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
-        <span class="s2">&quot;n_estimators&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">200</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
-        <span class="s2">&quot;subsample&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]}</span>
+The parameters vary between each algorithm. Any parameter supported by the Scikit-Learn API for GBDT and XGBoost can be added to the selection process.
+A set of parameters that contains five XGBoost parameters is shown below. The parameters are encoded in JSON object that consists of <em>key,value</em> pairs:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;objective&quot;</span><span class="p">:[</span><span class="s1">&#39;reg:tweedie&#39;</span><span class="p">,</span><span class="s2">&quot;reg:linear&quot;</span><span class="p">,</span><span class="s2">&quot;reg:gamma&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;learning_rate&quot;</span><span class="p">:</span>  <span class="p">[</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.2</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>
+                <span class="s2">&quot;max_depth&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s2">&quot;n_estimators&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">200</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s2">&quot;subsample&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]}</span>
 </pre></div>
 </div>
 <p>The key can be any parameter belonging to to the algorithm under investigation.
@@ -387,19 +383,19 @@ Pspso will check the type of the first element in the list, which will determine
 The values in the list will be automatically mapped into a list of integers, where each integer represents a value in the original list.
 The order of the values inside the list affect the position of the value in the search space.</p>
 <p><strong>Numerical Parameters</strong></p>
-<p>On the other side, if the parameter is numerical, a list with three elements is expected [lb,ub, rv]:</p>
+<p>If the parameter is numerical, a list of three elements [lb,ub, rv] is expected to be found:</p>
 <ul class="simple">
 <li><p><strong>lb</strong>: repesents the lowest value in the search space</p></li>
 <li><p><strong>ub</strong>: represents the maximum value in the search space</p></li>
 <li><p><strong>rv</strong>: represents the number of decimal points the parameter values are rounded to before being added for training the algorithm</p></li>
 </ul>
-<p>For e.g if you want pspso to select n_estimators, you add the following list <em>[2,200,0]</em> as in the example.
+<p>For e.g if you want pspso to select n_estimators, add the following list <em>[2,200,0]</em>.
 By that, the lowest n_estimators will be <em>2</em>, the highest to be examined is <em>200</em>, and each possible value is rounded to an integer value ( <em>0</em> decimal points).</p>
 <p><strong>Other parameters</strong></p>
 <p>The user is given the chance to handle some of the default parameters
-such as the number of epochs in the MLP. The user can modify this by changing a
+such as the number of epochs in the MLP. Although this parameter can be optimized, but its not encouraged. The user can modify this by changing a
 pspso class instance. For e.g., to change the number of
-epochs from 50 to 10 for an MLP training:</p>
+epochs from default to 10 in MLP training:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pspso</span> <span class="kn">import</span> <span class="n">pspso</span>
 <span class="n">task</span><span class="o">=</span><span class="s1">&#39;binary classification&#39;</span>
 <span class="n">score</span><span class="o">=</span><span class="s1">&#39;auc&#39;</span>
@@ -415,7 +411,7 @@ epochs from 50 to 10 for an MLP training:</p>
 <span class="n">p</span><span class="o">.</span><span class="n">verbosity</span><span class="o">=</span><span class="mi">1</span>
 </pre></div>
 </div>
-<p>Early stopping rounds for supporting algorithm can be modified, default is 60:</p>
+<p>Early stopping rounds can alos be modified, the user can set a value different to the default value:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pspso</span> <span class="kn">import</span> <span class="n">pspso</span>
 <span class="n">task</span><span class="o">=</span><span class="s1">&#39;binary classification&#39;</span>
 <span class="n">score</span><span class="o">=</span><span class="s1">&#39;auc&#39;</span>
@@ -423,6 +419,7 @@ epochs from 50 to 10 for an MLP training:</p>
 <span class="n">p</span><span class="o">.</span><span class="n">early_stopping</span><span class="o">=</span><span class="mi">10</span>
 </pre></div>
 </div>
+<p>Other parameters such that n_jobs in XGBoost can also be modified before the start of the selection process.</p>
 </div>
 </div>
 <div class="section" id="functions">
@@ -844,23 +841,14 @@ details about the pso algorithm.</p>
 </div>
 <div class="section" id="future-work">
 <h1>Future Work<a class="headerlink" href="#future-work" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="additional-parameters">
-<h2>Additional Parameters<a class="headerlink" href="#additional-parameters" title="Permalink to this headline">¶</a></h2>
-<p>To add new parameters to the currently supported algorithms, two functions should be updated</p>
-<p>The <strong>get_default_params</strong> function should include default details about the parameter,
-The <strong>forward_prop_algorithmname</strong> function should add the parameter to the training process</p>
-</div>
 <div class="section" id="new-algorithms">
 <h2>New Algorithms<a class="headerlink" href="#new-algorithms" title="Permalink to this headline">¶</a></h2>
-<p>Adding a new algorithm is more complex as you will be required to add an objective function that will detail the training and evaluation process.</p>
-<p>New Optimizers
-Two main optimizers are currently supported. These algorithms are built in the pyswams function.</p>
-<p>The default is globalbest pso, however the user can specify the local pso
-The pso parameters are set to default in each case and can be modified by the user.</p>
+<p>Other machine learning algorithms and packages will be added such as the catboost.</p>
 </div>
-<div class="section" id="crossvalidation">
-<h2>Crossvalidation<a class="headerlink" href="#crossvalidation" title="Permalink to this headline">¶</a></h2>
-<p>We are working towards adding the cross validation support that will take the training data and number of folds, then split the records and train each fold. Finally, the average performance is retuned to the user.</p>
+<div class="section" id="cross-validation">
+<h2>Cross Validation<a class="headerlink" href="#cross-validation" title="Permalink to this headline">¶</a></h2>
+<p>We are working towards adding the cross validation support that will take the training data and number of folds.</p>
+<p>Then split the records and train each fold. The average performance of cross-validation will be retuned back to the user.</p>
 </div>
 <div class="section" id="multi-class-classification">
 <h2>Multi-Class Classification<a class="headerlink" href="#multi-class-classification" title="Permalink to this headline">¶</a></h2>

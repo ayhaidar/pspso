@@ -12,7 +12,7 @@ setuptools.setup(
     name='pspso',
     license="MIT",
     description='pspso is a python package for selecting machine learning algorithms parameters.',
-    version='v0.0.8',
+    version='v0.0.9',
     long_description=README,
     long_description_content_type='text/markdown',
     url='https://github.com/ayhaidar/pspso',

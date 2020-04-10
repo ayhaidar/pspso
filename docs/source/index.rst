@@ -200,8 +200,7 @@ The best model, best parameters, score, time, and other details will be saved in
 
 User Input
 ----------
-The user enters the type of the algorithm ('mlp','svm','xgboost','gbdt'); the task type ('binary classification',
-'regression'), score ('rmse','acc', or 'auc'). The user can keep the parameters variable empty, where a default set of parameters and ranges is loaded 
+The user is required to select the type of the algorithm ('mlp', 'svm', 'xgboost', 'gbdt'); the task type ('binary classification','regression'), score ('rmse', 'acc', or 'auc'). The user can keep the parameters variable empty, where a default set of parameters and ranges is loaded 
 for each algorithm.
 
 .. code:: python
@@ -213,20 +212,16 @@ for each algorithm.
 	
 
 Pspso allows the user to provide a range of parameters for exploration.
-The parameters vary between each algorithm. 
-For this current version, up to 5 paramaters can be explored at the same time. 
-
-
-The parameters are encoded in json object that consists of *key,value* pairs:
+The parameters vary between each algorithm. Any parameter supported by the Scikit-Learn API for GBDT and XGBoost can be added to the selection process. 
+A set of parameters that contains five XGBoost parameters is shown below. The parameters are encoded in JSON object that consists of *key,value* pairs:
 
 .. code:: python
 
-	params = {
-		"objective":['reg:tweedie',"reg:linear","reg:gamma"],
-		"learning_rate":  [0.01,0.2,2],
-		"max_depth": [1,10,0],
-		"n_estimators": [2,200,0],
-		"subsample": [0.7,1,1]}
+	params = {"objective":['reg:tweedie',"reg:linear","reg:gamma"],
+			"learning_rate":  [0.01,0.2,2],
+			"max_depth": [1,10,0],
+			"n_estimators": [2,200,0],
+			"subsample": [0.7,1,1]}
 
 The key can be any parameter belonging to to the algorithm under investigation.
 The value is a list.
@@ -240,13 +235,13 @@ The order of the values inside the list affect the position of the value in the 
 
 **Numerical Parameters**
 
-On the other side, if the parameter is numerical, a list with three elements is expected [lb,ub, rv]:
+If the parameter is numerical, a list of three elements [lb,ub, rv] is expected to be found:
 
 * **lb**: repesents the lowest value in the search space
 * **ub**: represents the maximum value in the search space
 * **rv**: represents the number of decimal points the parameter values are rounded to before being added for training the algorithm 
 
-For e.g if you want pspso to select n_estimators, you add the following list *[2,200,0]* as in the example.
+For e.g if you want pspso to select n_estimators, add the following list *[2,200,0]*.
 By that, the lowest n_estimators will be *2*, the highest to be examined is *200*, and each possible value is rounded to an integer value ( *0* decimal points).
 
 
@@ -255,9 +250,9 @@ By that, the lowest n_estimators will be *2*, the highest to be examined is *200
 
 
 The user is given the chance to handle some of the default parameters
-such as the number of epochs in the MLP. The user can modify this by changing a
+such as the number of epochs in the MLP. Although this parameter can be optimized, but its not encouraged. The user can modify this by changing a
 pspso class instance. For e.g., to change the number of
-epochs from 50 to 10 for an MLP training:
+epochs from default to 10 in MLP training:
 
 .. code:: python
 
@@ -266,6 +261,7 @@ epochs from 50 to 10 for an MLP training:
     score='auc'
     p=pspso.pspso('mlp',None,task,score)# in case of empty set of params (None) default search space is loaded
     p.defaultparams['epochs']=10
+
 
 The verbosity can be modified for any algorithm, which allows showing details of the training process:
 
@@ -277,7 +273,7 @@ The verbosity can be modified for any algorithm, which allows showing details of
     p=pspso.pspso('mlp',None,task,score)
     p.verbosity=1
 
-Early stopping rounds for supporting algorithm can be modified, default is 60:
+Early stopping rounds can alos be modified, the user can set a value different to the default value:
 
 .. code:: python
 
@@ -287,8 +283,7 @@ Early stopping rounds for supporting algorithm can be modified, default is 60:
     p=pspso.pspso('xgboost',None,task,score)
     p.early_stopping=10
 
-
-
+Other parameters such that n_jobs in XGBoost can also be modified before the start of the selection process.  
 
 
 Functions
@@ -363,29 +358,19 @@ Module Summary
 Future Work
 ===========
 
-Additional Parameters
----------------------------
-
-To add new parameters to the currently supported algorithms, two functions should be updated
-
-The **get_default_params** function should include default details about the parameter,
-The **forward_prop_algorithmname** function should add the parameter to the training process
 
 New Algorithms
 ----------------------------
 
-Adding a new algorithm is more complex as you will be required to add an objective function that will detail the training and evaluation process.
+Other machine learning algorithms and packages will be added such as the catboost.
 
-New Optimizers
-Two main optimizers are currently supported. These algorithms are built in the pyswams function. 
 
-The default is globalbest pso, however the user can specify the local pso
-The pso parameters are set to default in each case and can be modified by the user.
-
-Crossvalidation
+Cross Validation
 -------------------------
  
-We are working towards adding the cross validation support that will take the training data and number of folds, then split the records and train each fold. Finally, the average performance is retuned to the user.
+We are working towards adding the cross validation support that will take the training data and number of folds. 
+
+Then split the records and train each fold. The average performance of cross-validation will be retuned back to the user.
 
 Multi-Class Classification
 ---------------------------
