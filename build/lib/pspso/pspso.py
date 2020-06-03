@@ -422,7 +422,7 @@ class pspso:
           model.add(Dense(int(modelparameters['neurons']), input_dim=X_train.shape[1], activation=modelparameters['hiddenactivation']))#particle,task='regression',score='rmse',X_train,Y_train,X_val,Y_val
           model.add(Dense(1, activation=modelparameters['activation']))#kernel_initializer='lecun_uniform',bias_initializer='zeros'
           model.compile(loss=modelparameters['loss'], optimizer=modelparameters['optimizer'], metrics=modelparameters['metrics'])
-          model.optimizer.lr=modelparameters['learning_rate']
+          model.optimizer.learning_rate=modelparameters['learning_rate']
           #checkpoint=ModelCheckpoint('mlp.h5',monitor='val_loss',verbose=pspso.verbose,save_best_only=True,mode=mode)
           es = EarlyStopping(monitor='val_loss', mode=modelparameters['mode'], verbose=pspso.verbose,patience=pspso.early_stopping)
           #callbacks_list=[checkpoint,es]   

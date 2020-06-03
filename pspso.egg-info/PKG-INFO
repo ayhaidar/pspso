@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: pspso
-Version: 0.1.1
+Version: 0.1.2
 Summary: pspso is a python package for selecting machine learning algorithms parameters.
 Home-page: https://github.com/ayhaidar/pspso
 Author: Ali Haidar
