@@ -297,6 +297,7 @@ Other parameters such that n\_jobs in XGBoost can also be modified
 before the start of the selection process.
 
 
+
 Contributing
 ============
 
@@ -312,6 +313,29 @@ user.
 
 We are also working on adding multi-class classification and data
 oversampling techniques.
+
+
+Steps for adding another machine learning algorithm
+===================================================
+
+The main reason behind the development of this package is to facilitate
+the use of the algorithms with a minimum amount of code required.
+However, the steps to add an algorithm are followed:
+
+-   **Step 1:** Add a condition in the **get\_default\_search\_space()**
+    function to include the new algorithm default search space
+    parameters with upper/lower bounds
+-   **Step 2:** Add a default search space based on the algorithm and
+    the task (binary classification or regression) to the
+    **get\_default\_params()** function
+-   **Step 3:** Create a function **forward\_prop\_algorithmname()**
+    that accepts parameters (similar to
+    forward\_prop\_gbdt,forward\_prop\_svm) and returns two variables:
+    the model and fitness value
+-   **Step 4:** Add a condition in the function **f()** to forward the
+    task to the function created in Step 3
+-   **Step 5:** Add a condition in the function **predict()** to allow
+    building the model using the function created in Step 3
 
 License
 =======

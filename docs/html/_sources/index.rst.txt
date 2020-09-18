@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
    
-.. image:: ../../LOGO.png
+.. image:: LOGO.png
     :align: center
     :alt: alternate text
 
@@ -378,6 +378,19 @@ Multi-Class Classification
 We are also working on adding multi-class classification and data oversampling techniques.
 
 
+Steps for adding another machine learning algorithm
+=====================================================
+The main reason behind the development of this package is to facilitate the use of the algorithms with a minimum amount of code required. However, the steps to add an algorithm are followed:
+
+* **Step 1:** Add a condition in the **get_default_search_space()** function to include the new algorithm default search space parameters with upper/lower bounds
+* **Step 2:** Add a default search space based on the algorithm and the task (binary classification or regression) to the **get_default_params()** function
+* **Step 3:** Create a function **forward_prop_algorithmname()** that accepts parameters (similar to forward_prop_gbdt,forward_prop_svm) and returns two variables: the model and fitness value
+* **Step 4:** Add a condition in the function **f()** to forward the task to the function created in step 3
+* **Step 5:** Add a condition in the function **predict()** to allow building the model using the function created in step 3
+
+
+
+ 
 Contributing
 ==================
 

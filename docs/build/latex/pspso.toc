@@ -17,6 +17,7 @@
 \contentsline {section}{\numberline {5.1}New Algorithms}{17}{section.5.1}
 \contentsline {section}{\numberline {5.2}Cross Validation}{17}{section.5.2}
 \contentsline {section}{\numberline {5.3}Multi\sphinxhyphen {}Class Classification}{17}{section.5.3}
-\contentsline {chapter}{\numberline {6}Contributing}{19}{chapter.6}
-\contentsline {chapter}{\numberline {7}License}{21}{chapter.7}
-\contentsline {chapter}{Index}{23}{section*.20}
+\contentsline {chapter}{\numberline {6}Steps for adding another machine learning algorithm}{19}{chapter.6}
+\contentsline {chapter}{\numberline {7}Contributing}{21}{chapter.7}
+\contentsline {chapter}{\numberline {8}License}{23}{chapter.8}
+\contentsline {chapter}{Index}{25}{section*.20}

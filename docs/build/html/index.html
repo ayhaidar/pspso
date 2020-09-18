@@ -107,6 +107,7 @@
 <li><a class="reference internal" href="#multi-class-classification">Multi-Class Classification</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#steps-for-adding-another-machine-learning-algorithm">Steps for adding another machine learning algorithm</a></li>
 <li><a class="reference internal" href="#contributing">Contributing</a></li>
 <li><a class="reference internal" href="#license">License</a></li>
 </ul>
@@ -854,6 +855,17 @@ details about the pso algorithm.</p>
 <h2>Multi-Class Classification<a class="headerlink" href="#multi-class-classification" title="Permalink to this headline">¶</a></h2>
 <p>We are also working on adding multi-class classification and data oversampling techniques.</p>
 </div>
+</div>
+<div class="section" id="steps-for-adding-another-machine-learning-algorithm">
+<h1>Steps for adding another machine learning algorithm<a class="headerlink" href="#steps-for-adding-another-machine-learning-algorithm" title="Permalink to this headline">¶</a></h1>
+<p>The main reason behind the development of this package is to facilitate the use of the algorithms with a minimum amount of code required. However, the steps to add an algorithm are followed:</p>
+<ul class="simple">
+<li><p><strong>Step 1:</strong> Add a condition in the <strong>get_default_search_space()</strong> function to include the new algorithm default search space parameters with upper/lower bounds</p></li>
+<li><p><strong>Step 2:</strong> Add a default search space based on the algorithm and the task (binary classification or regression) to the <strong>get_default_params()</strong> function</p></li>
+<li><p><strong>Step 3:</strong> Create a function <strong>forward_prop_algorithmname()</strong> that accepts parameters (similar to forward_prop_gbdt,forward_prop_svm) and returns two variables: the model and fitness value</p></li>
+<li><p><strong>Step 4:</strong> Add a condition in the function <strong>f()</strong> to forward the task to the function created in step 3</p></li>
+<li><p><strong>Step 5:</strong> Add a condition in the function <strong>predict()</strong> to allow building the model using the function created in step 3</p></li>
+</ul>
 </div>
 <div class="section" id="contributing">
 <h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h1>

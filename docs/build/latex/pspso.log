@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6730) (preloaded format=pdflatex 2020.3.17)  3 JUN 2020 14:00
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6730) (preloaded format=pdflatex 2020.3.17)  18 SEP 2020 09:52
 entering extended mode
 **./pspso.tex
 (pspso.tex
@@ -946,7 +946,7 @@ LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <10> not available
 ] [2
 
 ]
-<LOGO.png, id=133, 553.4233pt x 228.93584pt>
+<LOGO.png, id=138, 553.4233pt x 228.93584pt>
 LaTeX Font Info:    Try loading font information for T1+pcr on input line 89.
 
 (C:\Users\AliHaidar\Anaconda3\Library\miktex\texmfs\install\tex\latex\psnfss\t1
@@ -1014,7 +1014,11 @@ Chapter 6.
 
 ]
 Chapter 7.
-(pspso.ind [21] [22
+[21] [22
+
+]
+Chapter 8.
+(pspso.ind [23] [24
 
 ]
 Underfull \hbox (badness 10000) in paragraph at lines 23--24
@@ -1034,25 +1038,25 @@ Underfull \hbox (badness 10000) in paragraph at lines 28--30
 so.pspso
  []
 
-[23
+[25
 
 
 ])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1066.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1066.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1088.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1088.
  (pspso.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1066.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1066.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1088.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1088.
 
 Package rerunfilecheck Info: File `pspso.out' has not changed.
-(rerunfilecheck)             Checksum: 99F1D0BB64487D39DE8794D0801D3416;2927.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1066.
+(rerunfilecheck)             Checksum: FBA02FF7918FFF3FCE335CC94466CDE3;3245.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1088.
  ) 
 Here is how much of TeX's memory you used:
- 13569 strings out of 494872
- 197355 string characters out of 3176772
- 321108 words of memory out of 3000000
- 16771 multiletter control sequences out of 15000+200000
+ 13574 strings out of 494872
+ 197448 string characters out of 3176772
+ 321183 words of memory out of 3000000
+ 16773 multiletter control sequences out of 15000+200000
  51624 words of font info for 77 fonts, out of 3000000 for 9000
  15 hyphenation exceptions out of 8191
  43i,11n,48p,764b,554s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -1071,9 +1075,9 @@ stall/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Users/AliHaidar/Anaconda3/Library
 /utmb8a.pfb><C:/Users/AliHaidar/Anaconda3/Library/miktex/texmfs/install/fonts/t
 ype1/urw/times/utmr8a.pfb><C:/Users/AliHaidar/Anaconda3/Library/miktex/texmfs/i
 nstall/fonts/type1/urw/times/utmri8a.pfb>
-Output written on pspso.pdf (27 pages, 346127 bytes).
+Output written on pspso.pdf (29 pages, 349587 bytes).
 PDF statistics:
- 348 PDF objects out of 1000 (max. 8388607)
- 70 named destinations out of 1000 (max. 500000)
- 194 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 363 PDF objects out of 1000 (max. 8388607)
+ 73 named destinations out of 1000 (max. 500000)
+ 202 words of extra memory for PDF output out of 10000 (max. 10000000)
 

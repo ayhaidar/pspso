@@ -72,7 +72,7 @@
 
 
 \title{pspso}
-\date{Jun 03, 2020}
+\date{Sep 18, 2020}
 \release{0.1.2}
 \author{Ali Haidar}
 \newcommand{\sphinxlogo}{\vbox{}}
@@ -1023,6 +1023,28 @@ Then split the records and train each fold. The average performance of cross\sph
 \section{Multi\sphinxhyphen{}Class Classification}
 \label{\detokenize{index:multi-class-classification}}
 We are also working on adding multi\sphinxhyphen{}class classification and data oversampling techniques.
+
+
+\chapter{Steps for adding another machine learning algorithm}
+\label{\detokenize{index:steps-for-adding-another-machine-learning-algorithm}}
+The main reason behind the development of this package is to facilitate the use of the algorithms with a minimum amount of code required. However, the steps to add an algorithm are followed:
+\begin{itemize}
+\item {} 
+\sphinxstylestrong{Step 1:} Add a condition in the \sphinxstylestrong{get\_default\_search\_space()} function to include the new algorithm default search space parameters with upper/lower bounds
+
+\item {} 
+\sphinxstylestrong{Step 2:} Add a default search space based on the algorithm and the task (binary classification or regression) to the \sphinxstylestrong{get\_default\_params()} function
+
+\item {} 
+\sphinxstylestrong{Step 3:} Create a function \sphinxstylestrong{forward\_prop\_algorithmname()} that accepts parameters (similar to forward\_prop\_gbdt,forward\_prop\_svm) and returns two variables: the model and fitness value
+
+\item {} 
+\sphinxstylestrong{Step 4:} Add a condition in the function \sphinxstylestrong{f()} to forward the task to the function created in Step 3
+
+\item {} 
+\sphinxstylestrong{Step 5:} Add a condition in the function \sphinxstylestrong{predict()} to allow building the model using the function created in Step 3
+
+\end{itemize}
 
 
 \chapter{Contributing}
