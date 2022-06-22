@@ -18,7 +18,7 @@ setuptools.setup(
     url='https://github.com/ayhaidar/pspso',
     packages=setuptools.find_packages(),
     python_requires=">=3.5",
-    install_requires=['numpy==1.16.1','lightgbm','xgboost','scikit-learn>=0.21.2','keras','tensorflow','pyswarms>=1.0.2','matplotlib>=3.1.1'],
+    install_requires=['numpy==1.22.0','lightgbm','xgboost','scikit-learn>=0.21.2','keras','tensorflow','pyswarms>=1.0.2','matplotlib>=3.1.1'],
     classifiers=[
         # Trove classifiers
         # (https://pypi.python.org/pypi?%3Aaction=list_classifiers)
