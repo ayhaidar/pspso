@@ -48,6 +48,8 @@ Paper
 
 Haidar A, Field M, Sykes J, Carolan M, Holloway L. PSPSO: A package for parameters selection using particle swarm optimization. SoftwareX. 2021 Jul 1;15:100706.
 
+https://www.sciencedirect.com/science/article/pii/S2352711021000510
+
 Usage
 =====
 
