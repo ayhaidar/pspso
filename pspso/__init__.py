@@ -1,8 +1,9 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Mar 14 18:28:52 2020
+"""Top-level package for pspso.
 
-@author: AliHaidar
+This module exposes the `pspso` class directly at the package level so
+that users can simply `from pspso import pspso`.
 """
 
 from .pspso import pspso
+
+__all__ = ['pspso']

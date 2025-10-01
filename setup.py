@@ -1,34 +1,60 @@
-"""Setup for the pspso package."""
+"""Setup script for the pspso package.
 
-import setuptools
-from setuptools import setup
+This script configures packaging metadata and dependencies for
+distribution on PyPI.  The version has been bumped from the original
+`v0.1.3` tag to a modern semantic version and the dependency pins have
+been updated to target contemporary releases of third‑party libraries.
 
-with open('README.md') as f:
-    README = f.read()
+The install_requires list deliberately omits pinned versions of heavy
+scientific dependencies; instead it specifies minimum versions known to
+work with the codebase.  Users can install the package with
+`pip install pspso` to pull in the dependencies automatically.  For
+development or testing on environments without GPU support or when
+network access is unavailable, use the `--no-deps` flag to skip
+installing dependencies and instead provide them manually.
+"""
 
-setuptools.setup(
-    author="Ali Haidar",
-    author_email="ali.hdrv@outlook.com",
+from pathlib import Path
+from setuptools import setup, find_packages
+
+base_dir = Path(__file__).parent
+readme_path = base_dir / 'README.md'
+
+# Read long description from README.md
+long_description = readme_path.read_text(encoding='utf-8')
+
+setup(
     name='pspso',
-    license="MIT",
-    description='pspso is a python package for selecting machine learning algorithms parameters.',
-    version='v0.1.3',
-    long_description=README,
+    version='0.1.4',
+    author='Ali Haidar',
+    author_email='ali.hdrv@outlook.com',
+    description='PSPSO: Hyper‑parameter optimisation via Particle Swarm Optimisation',
+    long_description=long_description,
     long_description_content_type='text/markdown',
+    license='MIT',
     url='https://github.com/ayhaidar/pspso',
-    packages=setuptools.find_packages(),
-    python_requires=">=3.5",
-    install_requires=['numpy==1.16.1','lightgbm','xgboost','scikit-learn>=0.21.2','keras','tensorflow','pyswarms>=1.0.2','matplotlib>=3.1.1'],
+    packages=find_packages(),
+    python_requires='>=3.8',
+    install_requires=[
+        'numpy>=1.21',
+        'lightgbm>=3.3.5',
+        'xgboost>=1.6.0',
+        'scikit-learn>=1.1.0',
+        'tensorflow>=2.6.0',  # includes Keras API
+        'pyswarms>=1.3.0',
+        'matplotlib>=3.5.0',
+    ],
     classifiers=[
-        # Trove classifiers
-        # (https://pypi.python.org/pypi?%3Aaction=list_classifiers)
         'Development Status :: 4 - Beta',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'Topic :: Software Development :: Libraries',
-        'Topic :: Software Development :: Libraries :: Python Modules',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3 :: Only',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'Intended Audience :: Developers',
+        'Topic :: Software Development :: Libraries',
+        'Topic :: Scientific/Engineering :: Artificial Intelligence',
     ],
 )
