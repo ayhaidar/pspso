@@ -42,12 +42,11 @@ Three scores are supported in the first version of pspso:
 Installation
 ------------
 
-Use the package manager `pip <https://pip.pypa.io/en/stable/>`__ to
-install pspso.
+clone the repo, then from the local cloned directory run:
 
-.. code:: bash
-
-    pip install pspso
+```bash
+pip install -e .
+```
 
 Usage
 =================================
