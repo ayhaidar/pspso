@@ -1,9 +1,19 @@
-"""Top-level package for pspso.
+"""Public package interface for pspso."""
 
-This module exposes the `pspso` class directly at the package level so
-that users can simply `from pspso import pspso`.
-"""
-
+from .config import EstimatorConfig, OptimizationConfig, OptimizationResult, TrialResult
+from .optimizer import PSPSOOptimizer
 from .pspso import pspso
+from .search_space import Choice, FloatRange, IntRange, SearchSpace
 
-__all__ = ['pspso']
+__all__ = [
+    "Choice",
+    "EstimatorConfig",
+    "FloatRange",
+    "IntRange",
+    "OptimizationConfig",
+    "OptimizationResult",
+    "PSPSOOptimizer",
+    "SearchSpace",
+    "TrialResult",
+    "pspso",
+]

@@ -82,6 +82,12 @@ docs/_build/
 docs/build/
 docs/html/
 docs/doctrees/
+site/
+
+# Dashboard/frontend artifacts
+.pspso/
+frontend/node_modules/
+frontend/dist/
 
 # Temporary files
 *.tmp

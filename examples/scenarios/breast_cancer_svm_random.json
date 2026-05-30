@@ -1,0 +1,28 @@
+{
+  "dataset": {
+    "source": "example",
+    "name": "breast_cancer",
+    "target_column": "target"
+  },
+  "task": "binary classification",
+  "metric": "roc_auc",
+  "estimator": "svm",
+  "fixed_params": {
+    "probability": true
+  },
+  "search_space": {
+    "kernel": { "type": "choice", "values": ["linear", "rbf"] },
+    "C": { "type": "float", "low": 0.1, "high": 2.0, "precision": 1 },
+    "gamma": { "type": "float", "low": 0.1, "high": 1.0, "precision": 1 }
+  },
+  "strategy": "random",
+  "split": {
+    "validation_size": 0.2,
+    "random_state": 42,
+    "stratify": true
+  },
+  "runtime": {
+    "max_trials": 6,
+    "verbose": 0
+  }
+}

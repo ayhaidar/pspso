@@ -1,0 +1,51 @@
+site_name: pspso
+site_description: Hyperparameter optimization with PSO, grid search, random search, and a live dashboard.
+repo_url: https://github.com/ayhaidar/pspso
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - content.code.copy
+  palette:
+    - scheme: default
+      primary: teal
+      accent: amber
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+            show_source: true
+  - mermaid2
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:mermaid2.fence_mermaid_custom
+nav:
+  - Overview: index.md
+  - Getting Started: getting-started.md
+  - Dashboard:
+      - Workflow: dashboard/workflow.md
+      - Frontend Backend Link: dashboard/frontend-backend-link.md
+      - Live Monitoring: dashboard/live-monitoring.md
+      - What Happens During a Run: dashboard/what-happens.md
+  - Scenarios: scenarios.md
+  - Troubleshooting: troubleshooting.md
+  - API:
+      - Python API: api/python.md
+  - Development:
+      - Architecture: development/architecture.md
+      - Frontend: development/frontend.md
+      - Backend: development/backend.md
+  - Quality:
+      - Tests and Results: quality/test-results.md
