@@ -1,3 +1,5 @@
+
+
 ![image](LOGO.png)
 
 
@@ -27,7 +29,7 @@ Three scores are supported in the first version of pspso:
 
     > -   Root Mean Square Error (RMSE)
 
--   **Binary Classication** :
+-   **Binary Classification** :
 
     > -   Area under the Curve (AUC) of the Receiver Operating
     >     Characteristic (ROC)
