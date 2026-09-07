@@ -1,0 +1,111 @@
+name: Verify PSPSO 1.0
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python:
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.10', '3.11', '3.12']
+        os: [ubuntu-latest]
+        include:
+          - python: '3.12'
+            os: windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python }}
+      - run: uv sync --locked --group dev
+      - run: uv run --no-sync pytest --junitxml=.artifacts/pytest.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: python-${{ matrix.os }}-${{ matrix.python }}
+          path: .artifacts/
+
+  optional-models:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - extra: xgboost
+            model: xgboost
+          - extra: lightgbm
+            model: lightgbm
+          - extra: torch
+            model: pytorch
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: '3.12'
+      - run: uv sync --locked --group dev --extra ${{ matrix.extra }}
+      - run: uv run --no-sync pytest tests/test_model_training.py tests/test_worker.py -k ${{ matrix.model }}
+
+  release-gates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: uv sync --locked --all-extras
+      - run: uv run --no-sync ruff check .
+      - run: uv run --no-sync ruff format --check .
+      - run: uv run --no-sync mypy pspso
+      - run: uv run --no-sync pytest --cov=pspso --cov-report=term-missing --cov-report=json:.artifacts/coverage.json --junitxml=.artifacts/pytest.xml
+      - run: uv run --no-sync python scripts/check_coverage.py .artifacts/coverage.json
+      - run: npm ci
+        working-directory: frontend
+      - run: uv run --no-sync python scripts/export_openapi.py .artifacts/openapi.json
+      - run: npm run api:types
+        working-directory: frontend
+      - run: git diff --exit-code -- frontend/src/api-schema.d.ts
+      - run: npm test -- --reporter=json --outputFile=../.artifacts/vitest.json
+        working-directory: frontend
+      - run: npx playwright install --with-deps chromium
+        working-directory: frontend
+      - run: npm run test:e2e
+        working-directory: frontend
+      - run: npm audit --audit-level=low
+        working-directory: frontend
+      - run: uv run --no-sync pip-audit --skip-editable
+      - run: uv run --no-sync python scripts/report_test_results.py --junit .artifacts/pytest.xml --coverage .artifacts/coverage.json --frontend .artifacts/vitest.json
+      - run: uv run --no-sync mkdocs build --strict
+      - run: uv run --no-sync python scripts/build_release.py
+      - run: uv run --no-sync twine check --strict dist/*.whl dist/*.tar.gz
+      - run: uv venv .artifacts/wheel-venv
+      - run: uv pip install --python .artifacts/wheel-venv/bin/python dist/*.whl
+      - run: .artifacts/wheel-venv/bin/python -I scripts/smoke_wheel.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: release-verification
+          path: |
+            .artifacts/*.json
+            .artifacts/*.xml
+            frontend/playwright-report/
+            frontend/test-results/
+            docs/quality/test-results.md
+            dist/
+            site/

@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "experiment_id": null,
+  "dataset": { "source": "example", "name": "wine", "target_column": "target" },
+  "task": "multiclass_classification",
+  "metric": "f1_macro",
+  "estimator": "random_forest",
+  "fixed_params": { "random_state": 42 },
+  "search_space": {
+    "n_estimators": { "type": "int", "low": 20, "high": 40 },
+    "max_depth": { "type": "int", "low": 2, "high": 6 }
+  },
+  "strategy": "random",
+  "split": { "validation_size": 0.2, "test_size": 0.0, "random_state": 42, "stratify": true },
+  "preprocessing": { "scale_numeric": true, "encode_categorical": true, "ignored_columns": [] },
+  "pso": { "particles": 4, "iterations": 3, "c1": 1.49618, "c2": 1.49618, "w": 0.7298, "topology": "local" },
+  "runtime": { "max_trials": 3, "early_stopping_rounds": 2, "verbose": 0 }
+}

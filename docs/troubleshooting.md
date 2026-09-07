@@ -10,7 +10,7 @@ RandomForest does not accept those params, so every trial fails.
 Fix:
 
 1. Change estimator.
-2. Let the dashboard reload estimator defaults from `GET /api/estimators`.
+2. Let the dashboard reload estimator defaults from `GET /api/v1/estimators`.
 3. Validate before starting.
 4. Start only if validation passes.
 
@@ -51,6 +51,6 @@ causes:
 
 ## SSE Disconnects
 
-The frontend should fall back to polling `GET /api/runs/{run_id}`. Polling
+The frontend should fall back to polling `GET /api/v1/runs/{run_id}`. Polling
 keeps the status, best params, and final result visible even if the event stream
 disconnects.

@@ -1,93 +1,110 @@
 # Dashboard Workflow
 
-The dashboard is a guided builder for `RunRequest`, the backend request model
-used to start optimization.
+The dashboard separates experiment work into six stages. A versioned draft is
+saved in the browser while it is being prepared; submitted runs and results are
+stored in the `.pspso` workspace.
 
-## Dataset
+The opening **Overview** page explains PSPSO, its supported tasks and the full
+workflow. Use **Set up an experiment** to begin, **View history** to revisit saved
+runs, or the PSPSO logo to return to the overview.
 
-Choose one of:
+## 1. Data Setup
 
-- `breast_cancer`: built-in binary-classification dataset.
-- `diabetes`: built-in regression dataset.
-- CSV text: pasted tabular data with a target column.
+Data Setup contains three numbered sections:
 
-The dashboard sends dataset information in:
+1. **Dataset and target:** choose a built-in, saved or CSV dataset and inspect it.
+2. **Data profile and evaluation:** review data quality and target statistics;
+   select cross-validation (five folds by default) or train/validation/test.
+   Choose random or chronological ordering and inspect the proposed partitions.
+3. **Feature engineering:** include or exclude columns, handle missing values,
+   optionally clip numeric outliers, standardize numeric features and configure
+   nominal one-hot or explicitly ordered ordinal encoding.
 
-```json
-{
-  "dataset": {
-    "source": "example",
-    "name": "breast_cancer",
-    "target_column": "target"
-  }
-}
-```
+Chronological evaluation keeps future rows out of training. A selected time
+column sorts the data and is excluded from features; otherwise the existing row
+order must run from oldest to newest. An optional row gap separates evaluation
+windows. Chronological cross-validation uses expanding training windows.
 
-## Task And Metric
+Inspection also reports source rows, duplicate counts, descriptive numeric
+statistics, class distribution for classification, and target statistics for
+regression. The proposed split summary uses the selected seed and stratification
+setting, so its row and class counts match the partitions used by the worker.
 
-Tasks control valid metrics and estimators.
+Missing numeric features can use median, mean, most-frequent, or constant-value
+imputation. Missing categorical features can use most-frequent or constant-label
+imputation, and optional missingness indicators can preserve the fact that a
+value was absent. These steps are learned from training rows only. Missing target
+values remain a blocking error because inventing labels would invalidate the
+evaluation.
 
-| Task | Valid metrics | Typical estimators |
-| --- | --- | --- |
-| Regression | RMSE | SVM, RandomForest, MLP, XGBoost, LightGBM |
-| Binary classification | Accuracy, ROC AUC | SVM, RandomForest, LogisticRegression, MLP, XGBoost, LightGBM |
+## 2. Model And Parameters
 
-The frontend must hide invalid choices. For example, ROC AUC is invalid for
-regression.
+The model catalog is filtered by task. Availability and capabilities come from
+`GET /api/v1/estimators`, including optional dependency status, probability
+outputs, feature importance, scaling advice, and epoch monitoring.
 
-## Estimator
+Fixed parameters apply to every candidate. Tunable parameters belong to the
+search space. The interface deliberately prevents one parameter from appearing
+in both groups.
 
-Estimator metadata comes from `GET /api/estimators`. The frontend should use
-that response as its source of truth for:
+## 3. Search Engine
 
-- supported tasks;
-- optional dependency status;
-- default fixed parameters;
-- default tunable search space;
-- human-readable help text.
+Choose random, grid, or PSO search. The page shows the planned number of model
+fits and the real local-worker concurrency before launch. PSO exposes particles,
+iterations, topology, cognitive/social coefficients, and inertia. The complete
+specification is validated before it enters the queue.
 
-When the estimator changes, the dashboard must replace stale tunable params.
-This prevents failures such as sending SVM's `kernel` parameter to
-RandomForest.
+For PSO, the planned fit count is `particles x iterations`. Selecting PSO in the
+dashboard clears a trial limit left over from random or grid search, so a hidden
+old limit cannot stop the swarm after its first particle.
+The candidate count is multiplied by the fold count for cross-validation, and
+one additional fit is included when final refit is enabled. Evaluation choices
+are shown here and edited in Data Setup. The saved-model control chooses between
+one refitted winner and the already fitted winning fold ensemble. Both choices
+produce a model artifact; the ensemble adds no extra fit.
 
-## Fixed Params vs Tunable Params
+## 4. Live Experiments
 
-Fixed params are applied to every trial. Tunable params are optimized by the
-selected search strategy.
+The live page is built from persisted events, not simulated state. It shows the
+current worker activity, trial ledger, best-cost curve, logs, and timeline.
+The visual canvas changes with the strategy: particles and topology for PSO,
+sample positions for random search, and parameter cells for grid search. If SSE
+disconnects, polling reloads the durable timeline.
 
-Example fixed params:
+The optimizer evaluates up to the configured number of concurrent candidates.
+Active model fits and fold progress are counted independently of queued
+candidates. Every successful candidate contributes one convergence point;
+failed candidates remain in the ledger. Fit totals include all candidate folds
+and the final refit when enabled.
+The `iteration_completed` event marks the barrier after all particles in that
+iteration have been evaluated.
 
-```json
-{
-  "random_state": 42,
-  "n_jobs": -1
-}
-```
+## 5. Results
 
-Example tunable params:
+The default toolbox depends on the task and can be customized per experiment:
 
-```json
-{
-  "n_estimators": { "type": "int", "low": 10, "high": 100 },
-  "max_depth": { "type": "int", "low": 2, "high": 12 }
-}
-```
+- Shared context: dataset dimensions, missingness, duplicates, target summary,
+  and recorded train/validation/test sizes.
 
-## Strategy
+- Binary classification: ROC AUC, PR AUC, confusion matrix, sensitivity,
+  specificity, threshold exploration, feature importance, and predictions.
+- Multiclass classification: confusion matrix, per-class sensitivity and
+  specificity, one-vs-rest ROC curves when probabilities exist, and predictions.
+- Regression: RMSE, MAE, R2, actual-versus-predicted, residuals, feature
+  importance, and largest row-level errors in the prediction table.
 
-| Strategy | Meaning |
-| --- | --- |
-| Random | Samples a fixed number of parameter sets. Good default for quick runs. |
-| Grid | Evaluates every combination. Safe for tiny spaces only. |
-| PSO | Uses particle swarm optimization across the encoded search space. |
+Diagnostics default to the untouched test split when one exists. Native tree or
+coefficient importance is used first; permutation importance can be calculated
+from the saved model when native importance is unavailable.
 
-## Runtime
+## 6. History
 
-Runtime fields limit work and control feedback:
+History combines GUI and CLI runs from SQLite. Runs can be filtered, reopened,
+reviewed, or cloned back into Search Engine. Reopening Live Experiments replays
+its ordered event history, including failures and cancellation.
 
-- `max_trials`: maximum number of trials for random/PSO.
-- `particles`: PSO swarm size.
-- `iterations`: PSO iterations.
-- `verbose`: backend estimator verbosity where supported.
+## Validation
 
-Always validate before starting a run.
+`POST /api/v1/workflow/validate` accepts `data`, `model`, `search`, or `full`
+scope. `POST /api/v1/runs/validate` validates a complete `ExperimentSpec` for
+CLI and programmatic clients.

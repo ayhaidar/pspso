@@ -1,35 +1,54 @@
 # Frontend Development
 
-The frontend lives in `frontend/` and is built with React, TypeScript, and Vite.
+The frontend is a React, TypeScript, Vite, React Router, and Apache ECharts
+application under `frontend/`.
 
-## Important Files
+## Structure
 
-| File | Role |
+| Location | Role |
 | --- | --- |
-| `frontend/src/App.tsx` | Dashboard state, forms, API calls, event handling. |
-| `frontend/src/styles.css` | Dashboard layout and visual styling. |
-| `frontend/vite.config.ts` | Dev proxy from `/api` to FastAPI. |
+| `src/App.tsx` | Route definitions for the six stages. |
+| `src/workflow.tsx` | Autosaved draft, metadata, selected run, SSE, and polling state. |
+| `src/api.ts` | Typed FastAPI client. |
+| `src/pages/` | One focused page for each workflow stage. |
+| `src/components/` | Navigation, charts, execution canvas, and timeline. |
+| `src/api-schema.d.ts` | Generated OpenAPI types, checked for drift in CI. |
+| `src/types.ts` | Form defaults and view types derived from API contracts. |
 
-## State Flow
+## Connection Flow
 
-1. Fetch estimator metadata from `GET /api/estimators`.
-2. Keep task, metric, estimator, fixed params, and search space synchronized
-   with the metadata.
-3. Build a `RunRequest`.
-4. Validate with `POST /api/runs/validate`.
-5. Start with `POST /api/runs`.
-6. Subscribe to `GET /api/runs/{run_id}/events`.
-7. Fall back to polling `GET /api/runs/{run_id}` if SSE disconnects.
+1. The workflow provider loads model metadata, datasets, and experiments.
+2. Setup edits update `WorkflowDraft`, which is saved to local storage.
+3. Each guided stage calls `POST /api/v1/workflow/validate` before continuing.
+4. Search Engine submits the frozen draft to `POST /api/v1/runs`.
+5. Live Experiments consumes `/api/v1/runs/{run_id}/events` with `EventSource`.
+6. A disconnected event stream switches to snapshot/history polling.
+7. Results loads saved analysis and predictions; History loads every persisted run.
 
-## UI Principles
+The frontend always uses relative `/api` paths. During development, Vite proxies
+them to the configured FastAPI URL.
 
-- Do not let users start a run with stale estimator params.
-- Explain every task and metric near the controls.
-- Keep fixed params separate from tunable params.
-- Prefer structured range/choice controls over raw JSON.
-- Keep advanced JSON editing available for expert use.
+Regenerate contracts from the repository root with
+`uv run python scripts/export_openapi.py .artifacts/openapi.json`, then run
+`npm run api:types` in `frontend/`. Vitest, React Testing Library and MSW cover
+gates, event replay, reconnects, tournaments, result tools and failures.
+`npm run test:e2e` builds the production frontend and runs Playwright against an
+isolated local service. Browser scenarios cover all three tasks, cancellation,
+retry, refresh and artifact downloads. Route components and modular ECharts load
+on demand; the selected run ID is preserved in the route.
 
-## Event Handling
+## Result Tools
 
-The frontend should treat SSE as live updates and snapshots as durable state.
-If an event is missed, polling can recover the current run state.
+Analytical charts use ECharts. The execution canvas uses SVG nodes whose states
+are derived from trial events. Tool availability must be derived from the task
+and saved analysis payload; unsupported tools remain disabled with an explicit
+reason instead of rendering an empty graph.
+
+## Commands
+
+```bash
+cd frontend
+npm install
+npm run dev
+npm run build
+```

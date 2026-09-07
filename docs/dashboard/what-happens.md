@@ -5,10 +5,10 @@ submission to saved experiment history.
 
 ## High-Level Flow
 
-1. The React dashboard builds a `RunRequest`.
+1. The React dashboard builds a versioned `ExperimentSpec`.
 2. The backend validates the request before any model training starts.
 3. A run record is written to SQLite.
-4. A background thread prepares the dataset and starts the optimizer.
+4. The service manager dispatches a supervised worker process from the durable queue.
 5. The optimizer emits progress events for each major step.
 6. The backend saves each event immediately and streams it to the frontend.
 7. The final result is stored on the run record.
@@ -21,7 +21,7 @@ submission to saved experiment history.
 The dashboard sends the configuration to:
 
 ```text
-POST /api/runs/validate
+POST /api/v1/runs/validate
 ```
 
 The backend checks:
@@ -41,7 +41,7 @@ If validation passes, the dashboard can start the run.
 When the dashboard calls:
 
 ```text
-POST /api/runs
+POST /api/v1/runs
 ```
 
 the backend:
@@ -49,8 +49,8 @@ the backend:
 - attaches the run to a selected experiment, or
 - creates an ad hoc experiment automatically if none was selected.
 
-The run configuration is stored exactly as submitted so it can be inspected
-later.
+The effective configuration is frozen and stored, including a generated seed
+when one was unspecified and the source data for saved dataset versions.
 
 ### 3. Persisted execution tracking
 
@@ -67,9 +67,9 @@ This means the execution timeline is durable, ordered, and replayable.
 
 ### 4. Dataset preparation
 
-Before optimization starts, the backend loads the dataset, applies
-preprocessing, and splits the data. A `dataset_prepared` event is recorded with
-summary information such as row counts and feature counts.
+The worker loads the frozen dataset and partitions it. Each CV fold fits its
+own preprocessing pipeline on that fold's training rows. `dataset_prepared`
+records the partition sizes; fold and model-fit events describe training.
 
 ### 5. Optimizer execution
 
@@ -77,12 +77,15 @@ The optimizer emits the main runtime events:
 
 - `run_started`
 - `trial_started`
+- `fold_started` / `fold_completed`
+- `model_fit_started` / `model_fit_completed` / `model_fit_failed`
 - `trial_completed`
 - `trial_failed`
 - `iteration_completed`
 - `best_updated`
 - `run_completed`
 - `run_failed`
+- `final_refit_started` / `final_refit_completed`
 
 These events are used twice:
 
@@ -101,15 +104,21 @@ When the optimizer finishes, the backend stores:
 - full result JSON;
 - terminal error information if the run failed.
 
+The worker completes final refit and test diagnostics, saves the model,
+preprocessor, dataset, exact indices and environment, then records its terminal
+event. Serialization failures emit visible warnings. The manager enforces
+timeouts and cancellation with bounded process-tree cleanup; each attempt has
+exactly one terminal outcome.
+
 ### 7. History and replay
 
 The frontend can later fetch:
 
 ```text
-GET /api/runs/{run_id}
-GET /api/runs/{run_id}/history
-GET /api/runs/{run_id}/result
-GET /api/runs/{run_id}/artifacts
+GET /api/v1/runs/{run_id}
+GET /api/v1/runs/{run_id}/history
+GET /api/v1/runs/{run_id}/result
+GET /api/v1/runs/{run_id}/artifacts
 ```
 
 That is why the run still appears after a refresh and why the timeline can be

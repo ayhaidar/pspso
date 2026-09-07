@@ -1,10 +1,11 @@
 {
+  "schema_version": 1,
   "dataset": {
     "source": "example",
     "name": "breast_cancer",
     "target_column": "target"
   },
-  "task": "binary classification",
+  "task": "binary_classification",
   "metric": "roc_auc",
   "estimator": "svm",
   "fixed_params": {

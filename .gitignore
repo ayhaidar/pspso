@@ -96,3 +96,7 @@ frontend/dist/
 # Local config
 *.env
 .env/
+.artifacts/
+frontend/test-results/
+frontend/playwright-report/
+pspso/build-info.json

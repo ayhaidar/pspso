@@ -1,11 +1,12 @@
 {
+  "schema_version": 1,
   "dataset": {
     "source": "csv",
     "name": null,
     "csv_text": "feature_a,feature_b,target\n0.1,1,A\n0.2,0,A\n0.8,1,B\n0.9,0,B\n0.4,1,A\n0.7,0,B\n",
     "target_column": "target"
   },
-  "task": "binary classification",
+  "task": "binary_classification",
   "metric": "accuracy",
   "estimator": "svm",
   "fixed_params": {

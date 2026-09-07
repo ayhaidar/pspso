@@ -1,11 +1,16 @@
 # Python API
 
-The Python API has two surfaces:
+PSPSO 1.0 exposes one typed Python API. Use `optimize()` for concise notebook
+work and `PSPSOOptimizer` when you need to retain or inspect the optimizer
+instance.
 
-- modern API for new work;
-- legacy `from pspso import pspso` compatibility for old scripts.
+## Notebook Helper
 
-## Modern Optimizer
+::: pspso.optimize
+
+::: pspso.TrackingConfig
+
+## Optimizer
 
 ::: pspso.PSPSOOptimizer
 
@@ -19,6 +24,8 @@ The Python API has two surfaces:
 
 ::: pspso.FloatRange
 
+::: pspso.LogFloatRange
+
 ## Config And Results
 
 ::: pspso.OptimizationConfig
@@ -29,6 +36,12 @@ The Python API has two surfaces:
 
 ::: pspso.TrialResult
 
-## Legacy API
+## Model Discovery
 
-::: pspso.pspso
+::: pspso.list_estimators
+
+::: pspso.get_estimator_info
+
+## Recipe Registration
+
+::: pspso.register_recipe

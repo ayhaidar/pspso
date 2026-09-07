@@ -1,217 +1,311 @@
-# pspso
+# PSPSO 1.0
 
-`pspso` is a Python package for hyperparameter optimization with particle
-swarm optimization, grid search, and random search. The project now has a
-modern optimizer API, a backward-compatible legacy API, and a FastAPI + React
-dashboard for configuring and monitoring runs.
+![PSPSO](https://raw.githubusercontent.com/ayhaidar/pspso/main/docs/assets/pspso-logo.svg)
 
-The original citation remains:
+PSPSO is a modern local framework for reproducible tabular machine-learning
+experiments and hyperparameter optimization. Particle swarm optimization is the
+primary search engine, with random and grid search available as comparison
+baselines.
+
+Version 1.0 provides one typed contract across:
+
+- a notebook-friendly Python API;
+- a React dashboard backed by FastAPI;
+- a local experiment and artifact store;
+- a managed subprocess worker;
+- a CLI for datasets, experiments, and runs.
 
 > Haidar A, Field M, Sykes J, Carolan M, Holloway L. PSPSO: A package for
 > parameters selection using particle swarm optimization. SoftwareX. 2021;
 > 15:100706.
 
-## Install
+## Dashboard Workflow
 
-The recommended development workflow uses `uv`:
+The dashboard opens with an overview of its capabilities. Data Setup contains
+three sections for dataset selection, profile/evaluation, and feature engineering.
+Choose cross-validation or train/validation/test, keep chronological order for
+time series, and configure missing values, outlier clipping and categorical encoding.
 
-```bash
-uv sync --extra api --extra docs --group dev
-uv run pytest
-uv run mkdocs serve
-```
+The interface is organized into six stages:
 
-Run the backend dashboard API:
+1. **Data Setup** inspects values, types, missingness, duplicates, target
+   distribution, descriptive statistics, and split composition.
+2. **Model & Parameters** presents compatible models and separates fixed
+   training settings from tunable domains.
+3. **Search Engine** configures PSO, random, or grid search and calculates the
+   expected model-fit budget.
+4. **Live Experiments** shows worker activity, particles or candidates, metrics,
+   failures, logs, and the persisted event timeline.
+5. **Results** provides task-specific diagnostics, predictions, dataset
+   summaries, and feature importance where available.
+6. **History** combines dashboard, CLI, and tracked notebook runs.
 
-```bash
-uv run pspso-dashboard
-```
+Each stage includes a quick guide, checklist, glossary, and contextual field
+help.
 
-Run the React dashboard during frontend development:
+## Installation
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
+Python 3.10 through 3.12 is supported. Install PSPSO from PyPI to get the dashboard,
+CLI and Python API together. Node.js is only needed for frontend development.
 
-Pip remains supported:
-
-```bash
-pip install -e .
-pip install -e ".[api,docs]"
-```
-
-Optional estimator backends are installed only when needed:
+With **uv**, install the dashboard and CLI as a tool:
 
 ```bash
-uv sync --extra xgboost
-uv sync --extra lightgbm
-uv sync --extra tensorflow
+uv tool install pspso
 ```
 
-## Modern Python API
+This installs PSPSO from PyPI and makes `pspso` and `pspso-dashboard`
+available as commands. To use the Python API in an existing uv project, add
+PSPSO as a project dependency:
+
+```bash
+uv add pspso
+```
+
+With **pip**, use your current Python environment:
+
+```bash
+python -m pip install --upgrade pspso
+```
+
+Optional model engines can be included when installing the uv tool. Choose the
+extras you need in one command:
+
+```bash
+uv tool install "pspso[xgboost]"
+uv tool install "pspso[xgboost,lightgbm,torch]"
+```
+
+For an existing uv project, use `uv add "pspso[xgboost]"` or combine the
+extras in the same way.
+
+With pip:
+
+```bash
+python -m pip install --upgrade "pspso[xgboost]"
+python -m pip install --upgrade "pspso[lightgbm]"
+python -m pip install --upgrade "pspso[torch]"
+```
+
+Contributors working from the repository should follow the
+[source setup](https://ayhaidar.github.io/pspso/development/setup/).
+
+## Start the Dashboard
+
+After installing with either uv or pip:
+
+```bash
+pspso-dashboard
+```
+
+Open [the dashboard](http://127.0.0.1:8000). The installed package serves the
+interface directly. API documentation is available at
+[API v1 docs](http://127.0.0.1:8000/api/v1/docs).
+The browser submits managed jobs; it does not open a machine terminal or execute
+arbitrary Python.
+
+Dashboard defaults use five-fold CV, per-fold preprocessing, a final refit on all
+development rows and one untouched test partition. Exact datasets, partition and
+fold indices, models, environments and seeds are saved. Candidate concurrency
+is bounded, and progress reports actual fit totals and worker slots.
+If the additional refit is disabled, PSPSO saves the winning candidate's fold
+models as an ensemble and averages them for predictions.
+
+The long-lived service owns the durable queue. CLI start, cancel and retry use
+that same service. Queued work survives a restart; interrupted attempts remain
+historical. For foreground execution without HTTP, use
+`pspso run start SPEC --standalone --wait`. The compatible `api` extra remains
+accepted, but service dependencies are included in the base package.
+
+See [evaluation](https://ayhaidar.github.io/pspso/concepts/evaluation/),
+[CLI](https://ayhaidar.github.io/pspso/guides/cli/),
+[architecture](https://ayhaidar.github.io/pspso/development/architecture/) and the
+[release completion record](https://github.com/ayhaidar/pspso/blob/main/RELEASE_CHECKLIST.md)
+for details and verification.
+
+## Notebook API
+
+Use `optimize()` for concise, in-process work:
 
 ```python
-from sklearn.datasets import load_breast_cancer
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
+from sklearn.datasets import load_diabetes
+from pspso import IntRange, OptimizationConfig, SearchSpace, optimize
 
-from pspso import Choice, FloatRange, OptimizationConfig, PSPSOOptimizer, SearchSpace
-
-X, y = load_breast_cancer(return_X_y=True)
-X_train, X_val, y_train, y_val = train_test_split(
-    X, y, test_size=0.2, random_state=42, stratify=y
+X, y = load_diabetes(return_X_y=True)
+space = SearchSpace({
+    "n_estimators": IntRange(20, 80),
+    "max_depth": IntRange(2, 10),
+})
+config = OptimizationConfig(
+    task="regression",
+    metric="rmse",
+    strategy="pso",
+    n_particles=4,
+    n_iterations=3,
+    random_state=42,
 )
-scaler = StandardScaler()
-X_train = scaler.fit_transform(X_train)
-X_val = scaler.transform(X_val)
-
-space = SearchSpace(
-    {
-        "kernel": Choice(["linear", "rbf"]),
-        "C": FloatRange(0.1, 2.0, precision=1),
-        "gamma": FloatRange(0.1, 1.0, precision=1),
-    }
-)
-
-optimizer = PSPSOOptimizer(
-    estimator="svm",
+result = optimize(
+    X,
+    y,
+    estimator="random_forest",
     search_space=space,
-    config=OptimizationConfig(
-        task="binary classification",
-        metric="roc_auc",
-        strategy="random",
-        max_trials=6,
-        random_state=42,
+    config=config,
+)
+
+print(result.summary())
+display(result.trials_frame())
+predictions = result.predict(X[:5])
+```
+
+`PSPSOOptimizer` remains available when the optimizer instance itself is needed.
+`OptimizationResult` provides the best model and parameters, trials, failures,
+duration, prediction, probability, evaluation, tabular, and notebook-display
+helpers.
+
+## Optional Notebook Tracking
+
+Notebook runs do not write to disk by default. Supply `TrackingConfig` to record
+one in the same experiment history used by the dashboard and CLI:
+
+```python
+from pspso import TrackingConfig
+
+result = optimize(
+    X,
+    y,
+    estimator="random_forest",
+    search_space=space,
+    config=config,
+    tracking=TrackingConfig(
+        experiment_name="Diabetes study",
+        run_name="Notebook PSO",
+        tags=("notebook",),
+        snapshot_data=True,
     ),
 )
-
-result = optimizer.optimize(X_train, y_train, X_val, y_val)
-print(result.best_params)
-print(result.best_metric)
 ```
 
-## Legacy API
+Tracked notebook calls do not require FastAPI.
 
-Existing code using `from pspso import pspso` continues to work:
+## Typed Search Spaces
+
+Version 1.0 accepts explicit domains only:
 
 ```python
-from sklearn import datasets
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import MinMaxScaler
+from pspso import Choice, FloatRange, IntRange, LogFloatRange, SearchSpace
 
-from pspso import pspso
-
-X, y = datasets.load_diabetes(return_X_y=True)
-X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
-scaler = MinMaxScaler()
-X_train = scaler.fit_transform(X_train)
-X_val = scaler.transform(X_val)
-
-params = {
-    "kernel": ["linear", "rbf"],
-    "C": [0.1, 1.0, 1],
-    "gamma": [0.1, 1.0, 1],
-}
-
-p = pspso(estimator="svm", params=params, task="regression", score="rmse")
-pos, cost, duration, model, combinations, results = p.fitpsgrid(
-    X_train, y_train, X_val, y_val
-)
-p.print_results()
+space = SearchSpace({
+    "kernel": Choice(["linear", "rbf"]),
+    "max_depth": IntRange(2, 12),
+    "subsample": FloatRange(0.7, 1.0, precision=2),
+    "learning_rate": LogFloatRange(0.001, 0.3, precision=5),
+})
 ```
 
-The wrapper delegates to the modern optimizer internally, while preserving old
-method names and tuple return shapes.
+Use `space.decode()`, `space.encode()`, `space.iter_grid()`, `space.grid_size`,
+and `space.to_schema()` for optimizer and API representations.
 
-## Dashboard API
+## Models and Metrics
 
-Start the API:
+Built-in canonical model IDs are:
+
+- `linear_regression`, `logistic_regression`, and `elastic_net`;
+- `random_forest`, `extra_trees`, and `hist_gradient_boosting`;
+- `svm` and `sklearn_mlp`;
+- optional `xgboost`, `lightgbm`, and `pytorch_mlp`.
+
+Use `list_estimators()` and `get_estimator_info()` to inspect task support,
+dependencies, capabilities, defaults, and typed search spaces.
+
+Canonical tasks are `regression`, `binary_classification`, and
+`multiclass_classification`. Supported metrics include RMSE, MAE, R2, accuracy,
+ROC AUC, PR AUC, log loss, and macro F1. Classification diagnostics include
+sensitivity, specificity, confusion matrices, and threshold analysis.
+
+## Data Preparation
+
+Built-in examples include Breast Cancer, Diabetes, Wine Recognition, Banknote
+Authentication, Auto MPG, and Palmer Penguins. Each shows its source, license,
+standard task, target, and default metric; selecting it applies those defaults.
+The external examples are packaged for offline use. CSV files can also be
+inspected directly or saved as fingerprinted local dataset versions.
+
+Numeric and categorical imputation, missingness indicators, categorical
+encoding, scaling, ignored columns, stratification, and deterministic split
+seeds are configurable. Transformers are fitted on training rows only to avoid
+validation and test leakage.
+
+## CLI
+
+The CLI consumes the same `ExperimentSpec` as the dashboard. Save the complete
+example from the [CLI guide](https://ayhaidar.github.io/pspso/guides/cli/) as
+`experiment.json`, then run
+these commands in a second terminal while the dashboard service is running.
+If PSPSO is a dependency of an existing uv project instead of an installed tool,
+prefix commands with `uv run`.
 
 ```bash
-uv run pspso-dashboard --host 127.0.0.1 --port 8000
+pspso --help
+pspso run validate experiment.json
+pspso run start experiment.json --wait
+pspso run list
+pspso run show <run_id>
+pspso run cancel <run_id>
+pspso run retry <run_id>
 ```
 
-Important endpoints:
+## Experiments and Storage
 
-- `GET /api/datasets/examples`
-- `POST /api/datasets/preview`
-- `GET /api/estimators`
-- `POST /api/runs/validate`
-- `POST /api/runs`
-- `GET /api/runs/{run_id}`
-- `GET /api/runs/{run_id}/events`
-- `GET /api/runs/{run_id}/result`
+Version 1.0 uses an isolated workspace:
 
-The event stream emits:
-
-- `run_started`
-- `trial_started`
-- `trial_completed`
-- `trial_failed`
-- `iteration_completed`
-- `best_updated`
-- `run_completed`
-- `run_failed`
-
-Each trial event includes the evaluated parameters, training metric,
-validation metric, duration, status, and any error message.
-
-## MkDocs Material Documentation
-
-The documentation lives in `docs/` as Markdown and is built with MkDocs
-Material:
-
-```bash
-uv run mkdocs serve
-uv run mkdocs build
+```text
+.pspso/v1/
+  tracking.sqlite3
+  datasets/
+  artifacts/runs/<run_id>/
 ```
 
-Important pages:
+Set `PSPSO_HOME` to relocate the workspace root. Pre-1.0 files under `.pspso/`
+are not read, displayed, migrated, or deleted.
 
-- `docs/dashboard/workflow.md`
-- `docs/dashboard/frontend-backend-link.md`
-- `docs/dashboard/live-monitoring.md`
-- `docs/scenarios.md`
-- `docs/troubleshooting.md`
+SQLite stores experiments, runs, attempts, summaries, and ordered events.
+Artifact directories store specifications, results, analysis, environment
+details, and serializable models and preprocessors.
 
-## Dashboard Configuration
+## REST API and Monitoring
 
-The dashboard lets users configure:
+The supported API is versioned under `/api/v1`. Important endpoints include:
 
-- Built-in breast cancer or diabetes datasets, or CSV text upload.
-- Target column, task type, metric, split ratio, and random seed.
-- Numeric scaling, categorical encoding, and ignored columns.
-- Estimator preset, fixed training params, and tunable search-space params.
-- PSO, grid, or random strategy.
-- PSO particles, iterations, and coefficients.
-- Runtime max trials and verbosity.
-- Validation before training starts, using estimator/task/search-space metadata
-  from `GET /api/estimators`.
+```text
+GET  /api/v1/estimators
+GET  /api/v1/datasets
+POST /api/v1/datasets/inspect
+POST /api/v1/workflow/validate
+POST /api/v1/runs
+GET  /api/v1/runs/{run_id}
+GET  /api/v1/runs/{run_id}/events
+GET  /api/v1/runs/{run_id}/history
+GET  /api/v1/runs/{run_id}/analysis
+GET  /api/v1/runs/{run_id}/predictions
+POST /api/v1/runs/{run_id}/cancel
+POST /api/v1/runs/{run_id}/retry
+```
 
-Fixed training params stay separate from tunable hyperparameters, so users can
-choose exactly what remains constant and what PSO optimizes.
+OpenAPI is served at `/api/v1/docs` and `/api/v1/openapi.json`. Live progress
+uses Server-Sent Events with polling and persisted-history recovery.
 
-## Supported Estimator Presets
-
-- `svm`
-- `random_forest`
-- `mlp`
-- `xgboost` with the `xgboost` extra
-- `gbdt` with the `lightgbm` extra
-- `logistic_regression`
-- `linear_regression`
-
-The XGBoost defaults use modern objectives such as `reg:squarederror`; deprecated
-examples such as `load_boston` and `reg:linear` are no longer used.
-
-## Tests
+## Tests and Documentation
 
 ```bash
 uv run pytest
+cd frontend && npm run build
+uv run mkdocs build --strict
+uv build
 ```
 
-The default test suite uses sklearn-only scenarios so it can run without
-XGBoost, LightGBM, or TensorFlow installed. Optional backend smoke tests can be
-added in CI jobs that install those extras.
+These checks run from a [development checkout](https://ayhaidar.github.io/pspso/development/setup/).
+Run the documentation alongside the dashboard with
+`uv run --no-sync mkdocs serve --dev-addr 127.0.0.1:8001`. The detailed guides
+cover notebooks, the CLI, dashboard workflow, data preparation, search
+strategies, model recipes, REST/SSE contracts, tracking, architecture, and the
+[0.2 to 1.0 migration](https://ayhaidar.github.io/pspso/migration/1.0/).
