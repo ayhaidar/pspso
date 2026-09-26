@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 150" role="img" aria-labelledby="title">
+  <title id="title">PSPSO</title>
+  <g font-family="Arial Black, Arial, sans-serif" font-size="112" font-weight="900">
+    <text x="8" y="124" fill="#ffffff">PS</text>
+    <text x="186" y="124" fill="#ffbd00">PS</text>
+  </g>
+  <g fill="#ffffff">
+    <rect x="433" y="21" width="18" height="30" rx="2"/>
+    <rect x="433" y="21" width="18" height="30" rx="2" transform="rotate(30 442 91)"/>
+    <rect x="433" y="21" width="18" height="30" rx="2" transform="rotate(60 442 91)"/>
+    <rect x="433" y="21" width="18" height="30" rx="2" transform="rotate(90 442 91)"/>
+    <rect x="433" y="21" width="18" height="30" rx="2" transform="rotate(120 442 91)"/>
+    <rect x="433" y="21" width="18" height="30" rx="2" transform="rotate(150 442 91)"/>
+    <rect x="433" y="21" width="18" height="30" rx="2" transform="rotate(180 442 91)"/>
+    <rect x="433" y="21" width="18" height="30" rx="2" transform="rotate(210 442 91)"/>
+    <rect x="433" y="21" width="18" height="30" rx="2" transform="rotate(240 442 91)"/>
+    <rect x="433" y="21" width="18" height="30" rx="2" transform="rotate(270 442 91)"/>
+    <rect x="433" y="21" width="18" height="30" rx="2" transform="rotate(300 442 91)"/>
+    <rect x="433" y="21" width="18" height="30" rx="2" transform="rotate(330 442 91)"/>
+    <circle cx="442" cy="91" r="50"/>
+  </g>
+  <circle cx="442" cy="91" r="32" fill="#ffbd00"/>
+  <circle cx="442" cy="91" r="14" fill="#193139"/>
+  <g fill="#ffffff">
+    <rect x="382" y="4" width="8" height="13" rx="1"/>
+    <rect x="382" y="4" width="8" height="13" rx="1" transform="rotate(45 386 31)"/>
+    <rect x="382" y="4" width="8" height="13" rx="1" transform="rotate(90 386 31)"/>
+    <rect x="382" y="4" width="8" height="13" rx="1" transform="rotate(135 386 31)"/>
+    <rect x="382" y="4" width="8" height="13" rx="1" transform="rotate(180 386 31)"/>
+    <rect x="382" y="4" width="8" height="13" rx="1" transform="rotate(225 386 31)"/>
+    <rect x="382" y="4" width="8" height="13" rx="1" transform="rotate(270 386 31)"/>
+    <rect x="382" y="4" width="8" height="13" rx="1" transform="rotate(315 386 31)"/>
+    <circle cx="386" cy="31" r="17"/>
+  </g>
+  <circle cx="386" cy="31" r="7" fill="#ffbd00"/>
+</svg>

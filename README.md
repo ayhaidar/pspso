@@ -1,368 +1,327 @@
-![image](LOGO.png)
+# PSPSO 1.0
 
+![PSPSO](https://raw.githubusercontent.com/ayhaidar/pspso/main/docs/assets/pspso-logo.svg)
 
-Welcome to pspso's documentation!
-=================================
+PSPSO is a modern local framework for reproducible tabular machine-learning
+experiments and hyperparameter optimization. Particle swarm optimization is the
+primary search engine, with random and grid search available as comparison
+baselines.
 
-Overview and Installation
-=========================
+> **Major update in progress:** PSPSO 1.0 adds a new dashboard, CLI, experiment
+> service, data preparation workflow, and reproducible result tracking. This
+> version is still under active development and may change before the next PyPI
+> release. The existing PyPI package remains the install source until that update
+> is published.
 
-Overview
---------
+Version 1.0 provides one typed contract across:
 
-**pspso** is a python library for selecting machine learning algorithms
-parameters. The first version supports two single algorithms:
-Multi-Layer Perceptron (MLP) and Support Vector Machine (SVM). It
-supports two ensembles: Extreme Gradient Boosting (XGBoost) and Gradient
-Boosting Decision Trees (GBDT).
+- a notebook-friendly Python API;
+- a React dashboard backed by FastAPI;
+- a local experiment and artifact store;
+- a managed subprocess worker;
+- a CLI for datasets, experiments, and runs.
 
-Two types of machine learning tasks are supported by pspso:
+> Haidar A, Field M, Sykes J, Carolan M, Holloway L. PSPSO: A package for
+> parameters selection using particle swarm optimization. SoftwareX. 2021;
+> 15:100706.
 
--   Regression.
--   Binary classification.
+## Dashboard Workflow
 
-Three scores are supported in the first version of pspso:
+The dashboard opens with an overview of its capabilities. Data Setup contains
+three sections for dataset selection, profile/evaluation, and feature engineering.
+Choose cross-validation or train/validation/test, keep chronological order for
+time series, and configure missing values, outlier clipping and categorical encoding.
 
--   **Regression** :
+The interface is organized into six stages:
 
-    > -   Root Mean Square Error (RMSE)
+1. **Data Setup** inspects values, types, missingness, duplicates, target
+   distribution, descriptive statistics, and split composition.
+2. **Model & Parameters** presents compatible models and separates fixed
+   training settings from tunable domains.
+3. **Search Engine** configures PSO, random, or grid search and calculates the
+   expected model-fit budget.
+4. **Live Experiments** shows worker activity, particles or candidates, metrics,
+   failures, logs, and the persisted event timeline.
+5. **Results** provides task-specific diagnostics, predictions, dataset
+   summaries, and feature importance where available.
+6. **History** combines dashboard, CLI, and tracked notebook runs.
 
--   **Binary Classication** :
+Each stage includes a quick guide, checklist, glossary, and contextual field
+help.
 
-    > -   Area under the Curve (AUC) of the Receiver Operating
-    >     Characteristic (ROC)
-    > -   Accuracy
+## Installation
 
-Installation
-------------
+Python 3.10 through 3.12 is supported. Install PSPSO from PyPI to get the dashboard,
+CLI and Python API together. Node.js is only needed for frontend development.
 
-clone the repo, then from the local cloned directory run:
+With **uv**, install the dashboard and CLI as a tool:
 
 ```bash
-pip install -e .
+uv tool install pspso
 ```
 
-Paper
-===============
+This installs PSPSO from PyPI and makes `pspso` and `pspso-dashboard`
+available as commands. To use the Python API in an existing uv project, add
+PSPSO as a project dependency:
 
-Haidar A, Field M, Sykes J, Carolan M, Holloway L. PSPSO: A package for parameters selection using particle swarm optimization. SoftwareX. 2021 Jul 1;15:100706.
-
-https://www.sciencedirect.com/science/article/pii/S2352711021000510
-
-Usage
-=====
-
-MLP Example (Binary Classification)
------------------------------------
-
-**pspso** is used to select the machine learning algorithms parameters.
-Below is an example for using the pspso to select the parameters of the
-MLP. pspso handles the MLP random weights intialization issue that may
-cause losing the best solution in consecutive iterations.
-
-The following example demonstrates the selection process of the MLP
-parameters. A variable named *params* was not given by the user. Hence,
-the default search space of the MLP is loaded. This search space
-contains five parameters:
-
-``` {.sourceCode .python}
-params = {"optimizer": ["RMSprop", "adam", "sgd",'adamax','nadam','adadelta'] ,
-      "learning_rate":  [0.1,0.3,2],
-      "neurons": [1,40,0],
-      "hiddenactivation": ['relu','sigmoid','tanh'],
-      "activation":['relu','sigmoid','tanh']} 
+```bash
+uv add pspso
 ```
 
-The task and the score were defined as *binary classification* and *auc*
-respectively. Then, the PSO was used to select the parameters of the
-MLP. Results are provided back to the user through the
-**print\_results()** function.
+With **pip**, use your current Python environment:
 
-``` {.sourceCode .python}
-from sklearn.preprocessing import MinMaxScaler
-from pspso import pspso
-from sklearn import datasets
-from sklearn.model_selection import train_test_split
-
-breastcancer = datasets.load_breast_cancer()
-data=breastcancer.data#get the breast cancer dataset input features
-target=breastcancer.target# target
-X_train, X_test, Y_train, Y_test = train_test_split(data, target,test_size=0.1,random_state=42,stratify=target)
-normalize = MinMaxScaler(feature_range=(0,1))#normalize input features 
-X_train=normalize.fit_transform(X_train)
-X_test=normalize.transform(X_test)
-X_train, X_val, Y_train, Y_val = train_test_split(X_train, Y_train,test_size=0.15,random_state=42,stratify=Y_train)
-p=pspso(estimator='mlp',task='binary classification', score='auc')
-pos,cost,duration,model,optimizer=p.fitpspso(X_train,Y_train,X_val,Y_val)
-p.print_results()#print the results
-testscore=pspso.predict(p.model,p.estimator,p.task,p.score, X_test, Y_test)
-print(1-testscore)
+```bash
+python -m pip install --upgrade pspso
 ```
 
-In this example, four parameters were examined: optimizer,
-learning\_rate, hiddenactivation, and activation. The number of neurons
-in the hidden layer was kept as default.
+Optional model engines can be included when installing the uv tool. Choose the
+extras you need in one command:
 
-Output:
-
-``` {.sourceCode .python}
-Estimator: mlp
-Task: binary classification
-Selection type: PSO
-Number of attempts:50
-Total number of combinations: 45360
-Parameters:
-{'optimizer': 'nadam', 'learning_rate': 0.29, 'neurons': 4, 'hiddenactivation': 'sigmoid', 'activation': 'sigmoid'}
-Global best position: [3.8997699  0.28725911 4.21218138 1.41200923 0.84643591]
-Global best cost: 0.0
-Time taken to find the set of parameters: 160.3374378681183
-Number of particles: 5
-Number of iterations: 10
-0.9867724867724867
+```bash
+uv tool install "pspso[xgboost]"
+uv tool install "pspso[xgboost,lightgbm,torch]"
 ```
 
-XGBoost Example (Binary Classification)
----------------------------------------
+For an existing uv project, use `uv add "pspso[xgboost]"` or combine the
+extras in the same way.
 
-``` {.sourceCode .python}
-from sklearn.preprocessing import MinMaxScaler
-from pspso import pspso
-from sklearn import datasets
-from sklearn.model_selection import train_test_split
+With pip:
 
-breastcancer = datasets.load_breast_cancer()
-data=breastcancer.data#get the breast cancer dataset input features
-target=breastcancer.target# target
-X_train, X_test, Y_train, Y_test = train_test_split(data, target,test_size=0.1,random_state=42,stratify=target)
-normalize = MinMaxScaler(feature_range=(0,1))#normalize input features 
-X_train=normalize.fit_transform(X_train)
-X_test=normalize.transform(X_test)
-X_train, X_val, Y_train, Y_val = train_test_split(X_train, Y_train,test_size=0.15,random_state=42,stratify=Y_train)
-
-params = {
-        "learning_rate":  [0.01,0.2,2],
-        "max_depth": [1,10,0],
-        "n_estimators": [2,200,0],
-        "subsample": [0.7,1,1]}
-p=pspso(estimator='xgboost',params=params,task='binary classification', score='auc')
-pos,cost,duration,model,optimizer=p.fitpspso(X_train,Y_train,X_val,Y_val)
-p.print_results()#print the results
-testscore=pspso.predict(p.model,p.estimator,p.task,p.score, X_test, Y_test)
-print(1-testscore)
+```bash
+python -m pip install --upgrade "pspso[xgboost]"
+python -m pip install --upgrade "pspso[lightgbm]"
+python -m pip install --upgrade "pspso[torch]"
 ```
 
-XGBoost Example (Regression)
-----------------------------
+Contributors working from the repository should follow the
+[source setup](https://ayhaidar.github.io/pspso/development/setup/).
 
-The XGBoost is an implementation of boosting decision trees. Five
-parameters were utilized for selection: objective, learning rate,
-maximum depth, number of estimators, and subsample. Three categorical
-values were selected for the objective parameter. The learning rate
-parameter values range between *0.01* and *0.2* with *2* decimal point,
-maximum depth ranges between *1* and *10* with *0* decimal points
-*(1,2,3,4,5,6,7,8,9,10)*, etc. The task and score are selected as
-regression and RMSE respectively. The number of particles and number of
-iterations can be left as default values if needed. Then, a pspso
-instance is created. By applying the fitpspso function, the selection
-process is applied. Finally, results are printed back to the user. The
-best model, best parameters, score, time, and other details will be
-saved in the created instance for the user to check.
+## Start the Dashboard
 
-``` {.sourceCode .python}
-from sklearn.preprocessing import MinMaxScaler
-from pspso import pspso
-from sklearn import datasets
-from sklearn.model_selection import train_test_split
+After installing with either uv or pip:
 
-boston_data = datasets.load_boston()
-data=boston_data.data
-target=boston_data.target
-
-X_train, X_test, Y_train, Y_test = train_test_split(data, target,test_size=0.1,random_state=42)
-normalize = MinMaxScaler(feature_range=(0,1))#normalize input features
-normalizetarget = MinMaxScaler(feature_range=(0,1))#normalize target
-
-X_train=normalize.fit_transform(X_train)
-X_test=normalize.transform(X_test)
-Y_train=normalizetarget.fit_transform(Y_train.reshape(-1,1))
-Y_test=normalizetarget.transform(Y_test.reshape(-1,1))
-
-X_train, X_val, Y_train, Y_val = train_test_split(X_train, Y_train,test_size=0.25,random_state=42)
-params = {
-        "objective":['reg:tweedie',"reg:linear","reg:gamma"],
-        "learning_rate":  [0.01,0.2,2],
-        "max_depth": [1,10,0],
-        "n_estimators": [2,200,0],
-        "subsample": [0.7,1,1]}
-p=pspso(estimator='xgboost',params=params,task='regression', score='rmse')
-pos,cost,duration,model,optimizer=p.fitpspso(X_train,Y_train,X_val,Y_val)
-p.print_results()#print the results
-testscore=pspso.predict(p.model,p.estimator,p.task,p.score, X_test, Y_test)
-print(testscore)
+```bash
+pspso-dashboard
 ```
 
-User Input
-----------
+Open [the dashboard](http://127.0.0.1:8000). The installed package serves the
+interface directly. API documentation is available at
+[API v1 docs](http://127.0.0.1:8000/api/v1/docs).
+The browser submits managed jobs; it does not open a machine terminal or execute
+arbitrary Python.
 
-The user is required to select the type of the algorithm ('mlp', 'svm',
-'xgboost', 'gbdt'); the task type ('binary
-classification','regression'), score ('rmse', 'acc', or 'auc'). The user
-can keep the parameters variable empty, where a default set of
-parameters and ranges is loaded for each algorithm.
+Dashboard defaults use five-fold CV, per-fold preprocessing, a final refit on all
+development rows and one untouched test partition. Exact datasets, partition and
+fold indices, models, environments and seeds are saved. Candidate concurrency
+is bounded, and progress reports actual fit totals and worker slots.
+If the additional refit is disabled, PSPSO saves the winning candidate's fold
+models as an ensemble and averages them for predictions.
 
-``` {.sourceCode .python}
-from pspso import pspso
-task='binary classification'
-score='auc'
-p=pspso.pspso('xgboost',None,task,score)
+The long-lived service owns the durable queue. CLI start, cancel and retry use
+that same service. Queued work survives a restart; interrupted attempts remain
+historical. For foreground execution without HTTP, use
+`pspso run start SPEC --standalone --wait`. The compatible `api` extra remains
+accepted, but service dependencies are included in the base package.
+
+See [evaluation](https://ayhaidar.github.io/pspso/concepts/evaluation/),
+[CLI](https://ayhaidar.github.io/pspso/guides/cli/),
+[architecture](https://ayhaidar.github.io/pspso/development/architecture/) and the
+[release completion record](https://github.com/ayhaidar/pspso/blob/main/RELEASE_CHECKLIST.md)
+for details and verification.
+
+## Notebook API
+
+Use `optimize()` for concise, in-process work:
+
+```python
+from sklearn.datasets import load_diabetes
+from pspso import IntRange, OptimizationConfig, SearchSpace, optimize
+
+X, y = load_diabetes(return_X_y=True)
+space = SearchSpace({
+    "n_estimators": IntRange(20, 80),
+    "max_depth": IntRange(2, 10),
+})
+config = OptimizationConfig(
+    task="regression",
+    metric="rmse",
+    strategy="pso",
+    n_particles=4,
+    n_iterations=3,
+    random_state=42,
+)
+result = optimize(
+    X,
+    y,
+    estimator="random_forest",
+    search_space=space,
+    config=config,
+)
+
+print(result.summary())
+display(result.trials_frame())
+predictions = result.predict(X[:5])
 ```
 
-Pspso allows the user to provide a range of parameters for exploration.
-The parameters vary between each algorithm. Any parameter supported by
-the Scikit-Learn API for GBDT and XGBoost can be added to the selection
-process. A set of parameters that contains five XGBoost parameters is
-shown below. The parameters are encoded in JSON object that consists of
-*key,value* pairs:
+`PSPSOOptimizer` remains available when the optimizer instance itself is needed.
+`OptimizationResult` provides the best model and parameters, trials, failures,
+duration, prediction, probability, evaluation, tabular, and notebook-display
+helpers.
 
-``` {.sourceCode .python}
-params = {"objective":['reg:tweedie',"reg:linear","reg:gamma"],
-        "learning_rate":  [0.01,0.2,2],
-        "max_depth": [1,10,0],
-        "n_estimators": [2,200,0],
-        "subsample": [0.7,1,1]}
+## Optional Notebook Tracking
+
+Notebook runs do not write to disk by default. Supply `TrackingConfig` to record
+one in the same experiment history used by the dashboard and CLI:
+
+```python
+from pspso import TrackingConfig
+
+result = optimize(
+    X,
+    y,
+    estimator="random_forest",
+    search_space=space,
+    config=config,
+    tracking=TrackingConfig(
+        experiment_name="Diabetes study",
+        run_name="Notebook PSO",
+        tags=("notebook",),
+        snapshot_data=True,
+    ),
+)
 ```
 
-The key can be any parameter belonging to to the algorithm under
-investigation. The value is a list. Pspso will check the type of the
-first element in the list, which will determine if the values of the
-parameter are categorical or numerical.
+Tracked notebook calls do not require FastAPI.
 
-**Categorical Parameters**
+## Typed Search Spaces
 
-If the parameter values are *categorical*, string values are expected to
-be found in the list, as shown in *objective* parameter. The values in
-the list will be automatically mapped into a list of integers, where
-each integer represents a value in the original list. The order of the
-values inside the list affect the position of the value in the search
-space.
+Version 1.0 accepts explicit domains only:
 
-**Numerical Parameters**
+```python
+from pspso import Choice, FloatRange, IntRange, LogFloatRange, SearchSpace
 
-If the parameter is numerical, a list of three elements [lb,ub, rv] is
-expected to be found:
-
--   **lb**: repesents the lowest value in the search space
--   **ub**: represents the maximum value in the search space
--   **rv**: represents the number of decimal points the parameter values
-    are rounded to before being added for training the algorithm
-
-For e.g if you want pspso to select n\_estimators, add the following
-list *[2,200,0]*. By that, the lowest n\_estimators will be *2*, the
-highest to be examined is *200*, and each possible value is rounded to
-an integer value ( *0* decimal points).
-
-**Other parameters**
-
-The user is given the chance to handle some of the default parameters
-such as the number of epochs in the MLP. Although this parameter can be
-optimized, but its not encouraged. The user can modify this by changing
-a pspso class instance. For e.g., to change the number of epochs from
-default to 10 in MLP training:
-
-``` {.sourceCode .python}
-from pspso import pspso
-task='binary classification'
-score='auc'
-p=pspso.pspso('mlp',None,task,score)# in case of empty set of params (None) default search space is loaded
-p.defaultparams['epochs']=10
+space = SearchSpace({
+    "kernel": Choice(["linear", "rbf"]),
+    "max_depth": IntRange(2, 12),
+    "subsample": FloatRange(0.7, 1.0, precision=2),
+    "learning_rate": LogFloatRange(0.001, 0.3, precision=5),
+})
 ```
 
-The verbosity can be modified for any algorithm, which allows showing
-details of the training process:
+Use `space.decode()`, `space.encode()`, `space.iter_grid()`, `space.grid_size`,
+and `space.to_schema()` for optimizer and API representations.
 
-``` {.sourceCode .python}
-from pspso import pspso
-task='binary classification'
-score='auc'
-p=pspso.pspso('mlp',None,task,score)
-p.verbosity=1
+## Models and Metrics
+
+Built-in canonical model IDs are:
+
+- `linear_regression`, `logistic_regression`, and `elastic_net`;
+- `random_forest`, `extra_trees`, and `hist_gradient_boosting`;
+- `svm` and `sklearn_mlp`;
+- optional `xgboost`, `lightgbm`, and `pytorch_mlp`.
+
+Use `list_estimators()` and `get_estimator_info()` to inspect task support,
+dependencies, capabilities, defaults, and typed search spaces.
+
+Canonical tasks are `regression`, `binary_classification`, and
+`multiclass_classification`. Supported metrics include RMSE, MAE, R2, accuracy,
+ROC AUC, PR AUC, log loss, and macro F1. Classification diagnostics include
+sensitivity, specificity, confusion matrices, and threshold analysis.
+
+## Data Preparation
+
+Built-in examples include Breast Cancer, Diabetes, Wine Recognition, Banknote
+Authentication, Auto MPG, and Palmer Penguins. Each shows its source, license,
+standard task, target, and default metric; selecting it applies those defaults.
+The external examples are packaged for offline use. CSV files can also be
+inspected directly or saved as fingerprinted local dataset versions.
+
+Numeric and categorical imputation, missingness indicators, categorical
+encoding, scaling, ignored columns, stratification, and deterministic split
+seeds are configurable. Transformers are fitted on training rows only to avoid
+validation and test leakage.
+
+## CLI
+
+The CLI consumes the same `ExperimentSpec` as the dashboard. Save the complete
+example from the [CLI guide](https://ayhaidar.github.io/pspso/guides/cli/) as
+`experiment.json`, then run
+these commands in a second terminal while the dashboard service is running.
+If PSPSO is a dependency of an existing uv project instead of an installed tool,
+prefix commands with `uv run`.
+
+```bash
+pspso --help
+pspso run validate experiment.json
+pspso run start experiment.json --wait
+pspso run list
+pspso run show <run_id>
+pspso run cancel <run_id>
+pspso run retry <run_id>
 ```
 
-Early stopping rounds can alos be modified, the user can set a value
-different to the default value:
+## Experiments and Storage
 
-``` {.sourceCode .python}
-from pspso import pspso
-task='binary classification'
-score='auc'
-p=pspso.pspso('xgboost',None,task,score)
-p.early_stopping=10
+Version 1.0 uses an isolated workspace:
+
+```text
+.pspso/v1/
+  tracking.sqlite3
+  datasets/
+  artifacts/runs/<run_id>/
 ```
 
-Other parameters such that n\_jobs in XGBoost can also be modified
-before the start of the selection process.
+Set `PSPSO_HOME` to relocate the workspace root. Pre-1.0 files under `.pspso/`
+are not read, displayed, migrated, or deleted.
 
+SQLite stores experiments, runs, attempts, summaries, and ordered events.
+Artifact directories store specifications, results, analysis, environment
+details, and serializable models and preprocessors.
 
+## REST API and Monitoring
 
-Contributing
-============
+The supported API is versioned under `/api/v1`. Important endpoints include:
 
-Pull requests are welcome. For major changes, please open an issue first
-to discuss what you would like to change.
+```text
+GET  /api/v1/estimators
+GET  /api/v1/datasets
+POST /api/v1/datasets/inspect
+POST /api/v1/workflow/validate
+POST /api/v1/runs
+GET  /api/v1/runs/{run_id}
+GET  /api/v1/runs/{run_id}/events
+GET  /api/v1/runs/{run_id}/history
+GET  /api/v1/runs/{run_id}/analysis
+GET  /api/v1/runs/{run_id}/predictions
+POST /api/v1/runs/{run_id}/cancel
+POST /api/v1/runs/{run_id}/retry
+```
 
-Please make sure to update tests as appropriate.
+OpenAPI is served at `/api/v1/docs` and `/api/v1/openapi.json`. Live progress
+uses Server-Sent Events with polling and persisted-history recovery.
 
-We are working towards adding the cross validation support that will
-take the training data and number of folds, then split the records and
-train each fold. Finally, the average performance is retuned to the
-user.
+## Security
 
-We are also working on adding multi-class classification and data
-oversampling techniques.
+The dashboard is a local application without built-in user accounts or API
+authentication. It binds to `127.0.0.1` by default for normal single-user use.
+Other bind addresses, including `0.0.0.0`, remain available and produce a clear
+warning. Keep the workspace and exported model files trusted: model artifacts
+use Python's ML serialization formats and should not be loaded after modification
+by an untrusted party. See [SECURITY.md](SECURITY.md) for supported versions and
+private vulnerability reporting.
 
+## Tests and Documentation
 
-Steps for adding another machine learning algorithm
-===================================================
+```bash
+uv run pytest
+cd frontend && npm run build
+uv run mkdocs build --strict
+uv build
+```
 
-The main reason behind the development of this package is to facilitate
-the use of the algorithms with a minimum amount of code required.
-However, the steps to add an algorithm are followed:
-
--   **Step 1:** Add a condition in the **get\_default\_search\_space()**
-    function to include the new algorithm default search space
-    parameters with upper/lower bounds
--   **Step 2:** Add a default search space based on the algorithm and
-    the task (binary classification or regression) to the
-    **get\_default\_params()** function
--   **Step 3:** Create a function **forward\_prop\_algorithmname()**
-    that accepts parameters (similar to
-    forward\_prop\_gbdt,forward\_prop\_svm) and returns two variables:
-    the model and fitness value
--   **Step 4:** Add a condition in the function **f()** to forward the
-    task to the function created in Step 3
--   **Step 5:** Add a condition in the function **predict()** to allow
-    building the model using the function created in Step 3
-
-License
-=======
-
-Copyright (c) [2020] [Ali Haidar]
-
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+These checks run from a [development checkout](https://ayhaidar.github.io/pspso/development/setup/).
+Run the documentation alongside the dashboard with
+`uv run --no-sync mkdocs serve --dev-addr 127.0.0.1:8001`. The detailed guides
+cover notebooks, the CLI, dashboard workflow, data preparation, search
+strategies, model recipes, REST/SSE contracts, tracking, architecture, and the
+[0.2 to 1.0 migration](https://ayhaidar.github.io/pspso/migration/1.0/).

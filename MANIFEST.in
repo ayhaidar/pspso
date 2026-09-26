@@ -1,0 +1,12 @@
+include LICENSE.txt README.md RELEASE_CHECKLIST.md mkdocs.yml uv.lock
+recursive-include tests *.py
+recursive-include scripts *.py
+recursive-include examples *.py *.json
+recursive-include pspso/datasets *.csv *.md
+recursive-include docs *.md *.svg *.png *.excalidraw
+include frontend/package.json frontend/package-lock.json frontend/index.html
+include frontend/tsconfig.json frontend/vite.config.ts frontend/vitest.config.ts frontend/playwright.config.ts
+recursive-include frontend/src *.ts *.tsx *.css
+recursive-include frontend/public *.svg
+recursive-include frontend/e2e *.ts
+recursive-include .github/workflows *.yml

@@ -1,0 +1,98 @@
+site_name: pspso
+site_description: PSPSO 1.0 modern hyperparameter optimization, experiment tracking, and live dashboard.
+site_url: https://ayhaidar.github.io/pspso/
+repo_url: https://github.com/ayhaidar/pspso
+repo_name: ayhaidar/pspso
+edit_uri: edit/main/docs/
+theme:
+  name: material
+  logo: assets/pspso-mark-inverse.svg
+  favicon: assets/pspso-mark.svg
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.indexes
+    - navigation.top
+    - navigation.tracking
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+    - content.tooltips
+    - search.highlight
+    - search.suggest
+    - toc.follow
+  palette:
+    - scheme: default
+      primary: teal
+      accent: amber
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+            inherited_members: true
+            merge_init_into_class: true
+            separate_signature: true
+            show_root_heading: true
+            show_signature_annotations: true
+            show_source: true
+  - mermaid2
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.snippets:
+      base_path:
+        - .
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:mermaid2.fence_mermaid_custom
+nav:
+  - Start Here:
+      - Overview: index.md
+      - Installation and First Run: getting-started.md
+  - Core Concepts:
+      - Experiments and Runs: concepts/experiments.md
+      - Evaluation and Reproducibility: concepts/evaluation.md
+      - Metrics and Cost: concepts/metrics.md
+  - User Guides:
+      - Dashboard Workflow: dashboard/workflow.md
+      - What Happens During a Run: dashboard/what-happens.md
+      - Notebook Workflow: guides/notebooks.md
+      - CLI Workflow: guides/cli.md
+      - Managed Local Runs: experiments.md
+      - Data Preparation: guides/data.md
+      - Tracking and Artifacts: guides/tracking.md
+      - Results and Diagnostics: guides/results.md
+      - Live Monitoring: dashboard/live-monitoring.md
+      - Troubleshooting: troubleshooting.md
+  - Optimization:
+      - Search Strategies: optimization/strategies.md
+      - Search Spaces: optimization/search-spaces.md
+  - Models:
+      - Registry and Capabilities: models/index.md
+      - Recipe Plugins: plugins.md
+  - API Reference:
+      - CLI Reference: api/cli.md
+      - Python API: api/python.md
+      - REST API v1: api/rest.md
+      - Events and Lifecycle: api/events.md
+  - Scenarios: scenarios.md
+  - Development:
+      - Source Setup: development/setup.md
+      - Releasing to PyPI: development/releasing.md
+      - Architecture: development/architecture.md
+      - Frontend and Backend Link: dashboard/frontend-backend-link.md
+      - Frontend: development/frontend.md
+      - Backend and Worker: development/backend.md
+  - Migration and Quality:
+      - Migrating 0.2 to 1.0: migration/1.0.md
+      - Release Notes 1.0: release-notes/1.0.md
+      - Tests and Results: quality/test-results.md

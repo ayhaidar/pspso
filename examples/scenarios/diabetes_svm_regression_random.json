@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "dataset": {
+    "source": "example",
+    "name": "diabetes",
+    "target_column": "target"
+  },
+  "task": "regression",
+  "metric": "rmse",
+  "estimator": "svm",
+  "fixed_params": {},
+  "search_space": {
+    "kernel": { "type": "choice", "values": ["linear", "rbf"] },
+    "C": { "type": "float", "low": 0.1, "high": 2.0, "precision": 1 },
+    "gamma": { "type": "float", "low": 0.1, "high": 1.0, "precision": 1 }
+  },
+  "strategy": "random",
+  "split": {
+    "validation_size": 0.2,
+    "random_state": 42,
+    "stratify": false
+  },
+  "runtime": {
+    "max_trials": 6,
+    "verbose": 0
+  }
+}

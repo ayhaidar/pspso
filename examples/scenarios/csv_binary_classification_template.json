@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "dataset": {
+    "source": "csv",
+    "name": null,
+    "csv_text": "feature_a,feature_b,target\n0.1,1,A\n0.2,0,A\n0.8,1,B\n0.9,0,B\n0.4,1,A\n0.7,0,B\n",
+    "target_column": "target"
+  },
+  "task": "binary_classification",
+  "metric": "accuracy",
+  "estimator": "svm",
+  "fixed_params": {
+    "probability": true
+  },
+  "search_space": {
+    "kernel": { "type": "choice", "values": ["linear", "rbf"] },
+    "C": { "type": "float", "low": 0.1, "high": 2.0, "precision": 1 },
+    "gamma": { "type": "float", "low": 0.1, "high": 1.0, "precision": 1 }
+  },
+  "strategy": "random",
+  "split": {
+    "validation_size": 0.33,
+    "random_state": 42,
+    "stratify": true
+  },
+  "runtime": {
+    "max_trials": 3,
+    "verbose": 0
+  }
+}

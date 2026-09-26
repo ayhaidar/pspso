@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "dataset": {
+    "source": "example",
+    "name": "diabetes",
+    "target_column": "target"
+  },
+  "task": "regression",
+  "metric": "rmse",
+  "estimator": "random_forest",
+  "fixed_params": {
+    "random_state": 42,
+    "n_jobs": -1
+  },
+  "search_space": {
+    "n_estimators": { "type": "int", "low": 10, "high": 30 },
+    "max_depth": { "type": "int", "low": 2, "high": 6 }
+  },
+  "strategy": "pso",
+  "split": {
+    "validation_size": 0.2,
+    "random_state": 42,
+    "stratify": false
+  },
+  "pso": {
+    "particles": 4,
+    "iterations": 3,
+    "c1": 1.49618,
+    "c2": 1.49618,
+    "w": 0.7298,
+    "topology": "global"
+  },
+  "runtime": {
+    "max_trials": 12,
+    "verbose": 0
+  }
+}
