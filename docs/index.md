@@ -6,9 +6,10 @@ PSPSO 1.0 is a local hyperparameter-optimization and experiment framework for
 tabular machine learning. It provides a typed notebook API, PSO, grid and random
 search, durable experiment tracking, a CLI, and a FastAPI + React dashboard.
 
-!!! warning "Development version"
-    The new 1.0 dashboard and CLI are still under active development on the
-    `dev` branch while they are prepared for the next PyPI release.
+!!! warning "Major update in progress"
+    PSPSO 1.0 adds a new dashboard, CLI, experiment service, data preparation
+    workflow, and reproducible result tracking. It remains under active
+    development until the updated package is published to PyPI.
 
 The current dashboard is designed for local/private experimentation:
 

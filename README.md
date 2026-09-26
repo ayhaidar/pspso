@@ -7,9 +7,11 @@ experiments and hyperparameter optimization. Particle swarm optimization is the
 primary search engine, with random and grid search available as comparison
 baselines.
 
-> **Development status:** The new 1.0 dashboard and CLI are under active
-> development on the `dev` branch. They are being prepared for the next PyPI
-> release and may still change before that release is published.
+> **Major update in progress:** PSPSO 1.0 adds a new dashboard, CLI, experiment
+> service, data preparation workflow, and reproducible result tracking. This
+> version is still under active development and may change before the next PyPI
+> release. The existing PyPI package remains the install source until that update
+> is published.
 
 Version 1.0 provides one typed contract across:
 

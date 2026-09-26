@@ -2,9 +2,9 @@
 
 ## Supported versions
 
-Security fixes are currently applied to the `dev` branch while version 1.0 is
-under development. After publication, fixes will target the latest `1.0.x`
-release. Older development snapshots are not supported.
+Security fixes are currently applied to the active version 1.0 development code.
+After publication, fixes will target the latest `1.0.x` release. Older
+development snapshots are not supported.
 
 ## Reporting a vulnerability
 
