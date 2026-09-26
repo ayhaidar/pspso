@@ -33,7 +33,9 @@ class ProcessTree:
         elif os.name != "nt":
             try:
                 # Workers start a fresh session; its process group survives parent exit.
-                os.killpg(self.parent.pid, signal.SIGKILL)  # type: ignore[attr-defined]
+                os_api: Any = os
+                signal_api: Any = signal
+                os_api.killpg(self.parent.pid, signal_api.SIGKILL)
             except ProcessLookupError:
                 pass
         for process in processes:
@@ -59,6 +61,8 @@ class _WindowsJob:
     def __init__(self, pid: int) -> None:
         from ctypes import wintypes
 
+        ctypes_api: Any = ctypes
+
         class BasicLimits(ctypes.Structure):
             _fields_ = [
                 ("PerProcessUserTimeLimit", ctypes.c_longlong),
@@ -82,7 +86,7 @@ class _WindowsJob:
                 ("PeakJobMemoryUsed", ctypes.c_size_t),
             ]
 
-        self.kernel: Any = ctypes.WinDLL("kernel32", use_last_error=True)
+        self.kernel: Any = ctypes_api.WinDLL("kernel32", use_last_error=True)
         self.kernel.CreateJobObjectW.argtypes = [ctypes.c_void_p, wintypes.LPCWSTR]
         self.kernel.CreateJobObjectW.restype = wintypes.HANDLE
         self.kernel.SetInformationJobObject.argtypes = [
@@ -100,20 +104,20 @@ class _WindowsJob:
         self.kernel.CloseHandle.restype = wintypes.BOOL
         self.handle = self.kernel.CreateJobObjectW(None, None)
         if not self.handle:
-            raise ctypes.WinError(ctypes.get_last_error())
+            raise ctypes_api.WinError(ctypes_api.get_last_error())
         try:
             limits = ExtendedLimits()
             limits.BasicLimitInformation.LimitFlags = 0x2000  # KILL_ON_JOB_CLOSE
             if not self.kernel.SetInformationJobObject(
                 self.handle, 9, ctypes.byref(limits), ctypes.sizeof(limits)
             ):
-                raise ctypes.WinError(ctypes.get_last_error())
+                raise ctypes_api.WinError(ctypes_api.get_last_error())
             process = self.kernel.OpenProcess(0x0101, False, pid)  # SET_QUOTA | TERMINATE
             if not process:
-                raise ctypes.WinError(ctypes.get_last_error())
+                raise ctypes_api.WinError(ctypes_api.get_last_error())
             try:
                 if not self.kernel.AssignProcessToJobObject(self.handle, process):
-                    raise ctypes.WinError(ctypes.get_last_error())
+                    raise ctypes_api.WinError(ctypes_api.get_last_error())
             finally:
                 self.kernel.CloseHandle(process)
         except BaseException:
