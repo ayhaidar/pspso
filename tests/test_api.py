@@ -118,6 +118,22 @@ def test_api_v1_is_the_only_public_rest_contract(tmp_path, client_factory):
     assert client.post("/api/v1/runs/validate", json=old_schema).status_code == 422
 
 
+def test_dashboard_responses_include_local_security_headers(tmp_path, client_factory):
+    client = client_factory(tmp_path / "tracking.sqlite3")
+
+    dashboard = client.get("/")
+    api = client.get("/api/v1/estimators")
+
+    for response in (dashboard, api):
+        assert response.headers["x-content-type-options"] == "nosniff"
+        assert response.headers["x-frame-options"] == "DENY"
+        assert response.headers["referrer-policy"] == "no-referrer"
+        assert response.headers["permissions-policy"] == (
+            "camera=(), geolocation=(), microphone=()"
+        )
+    assert api.headers["cache-control"] == "no-store"
+
+
 def test_systematic_workflow_metadata_and_scoped_validation(tmp_path, client_factory):
     client = client_factory(tmp_path / "tracking.sqlite3")
     metadata = client.get("/api/v1/estimators").json()

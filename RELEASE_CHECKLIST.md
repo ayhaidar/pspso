@@ -1,4 +1,8 @@
-# PSPSO 1.0 release completion record
+# PSPSO 1.0 development completion record
+
+Status: version 1.0 is still under active development on the `dev` branch. This
+record tracks completed implementation and verification work before the release
+is merged and published.
 
 Distribution target: the existing `pspso` project on PyPI. Public users install
 with `uv tool install pspso` or `python -m pip install --upgrade pspso`.

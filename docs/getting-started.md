@@ -3,6 +3,10 @@
 PSPSO includes the dashboard, CLI and Python API in one package. Python 3.10
 through 3.12 is supported; using the installed dashboard does not require Node.js.
 
+!!! warning "Development version"
+    The new 1.0 dashboard and CLI are still being finalized on the `dev` branch.
+    The installation workflow below describes the intended PyPI release.
+
 ## Install from PyPI
 
 Choose uv or pip. The uv tool installation is recommended for the dashboard and

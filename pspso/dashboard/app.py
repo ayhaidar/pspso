@@ -10,6 +10,7 @@ import json
 import os
 import secrets
 import threading
+from collections.abc import Awaitable, Callable
 from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
 from importlib.metadata import version as package_version
@@ -17,7 +18,7 @@ from pathlib import Path
 from typing import Any, Literal
 
 import numpy as np
-from fastapi import FastAPI, Header, HTTPException, Query
+from fastapi import FastAPI, Header, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -311,6 +312,22 @@ def create_app(db_path: str | Path | None = None, *, start_manager: bool = True)
         allow_methods=["GET", "POST", "PUT", "OPTIONS"],
         allow_headers=["Content-Type", "Last-Event-ID"],
     )
+
+    @app.middleware("http")
+    async def add_security_headers(
+        request: Request, call_next: Callable[[Request], Awaitable[Response]]
+    ) -> Response:
+        response = await call_next(request)
+        response.headers.setdefault("X-Content-Type-Options", "nosniff")
+        response.headers.setdefault("X-Frame-Options", "DENY")
+        response.headers.setdefault("Referrer-Policy", "no-referrer")
+        response.headers.setdefault(
+            "Permissions-Policy", "camera=(), geolocation=(), microphone=()"
+        )
+        if request.url.path.startswith("/api/v1/"):
+            response.headers.setdefault("Cache-Control", "no-store")
+        return response
+
     static_root = Path(__file__).with_name("static")
     if static_root.joinpath("assets").exists():
         app.mount("/assets", StaticFiles(directory=static_root / "assets"), name="assets")

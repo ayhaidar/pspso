@@ -33,8 +33,13 @@ Validation returns errors grouped by `dataset`, `task`, `estimator`,
 `fixed_params`, `search_space`, and `strategy`. Invalid requests are not
 persisted.
 
-The API is intended for local/private use and currently has no authentication.
-Do not expose it directly to an untrusted network.
+The API is intended for local/private use and has no built-in authentication.
+The dashboard command binds to `127.0.0.1` by default. A non-loopback bind such
+as `0.0.0.0` is supported but prints a warning; do not expose it directly to an
+untrusted network. Responses disable MIME sniffing and framing, restrict browser
+permissions and referrer data, and prevent API responses from being cached.
+CORS allows only the local development frontend unless `PSPSO_CORS_ORIGINS` is
+explicitly changed.
 
 ## Durable runs and downloads
 

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import ipaddress
 import json
 import os
 import sys
@@ -13,6 +14,7 @@ from pathlib import Path
 from typing import Any
 from urllib import error as urlerror
 from urllib import request as urlrequest
+from urllib.parse import urlsplit
 
 import uvicorn
 from fastapi import HTTPException
@@ -44,6 +46,12 @@ def build_dashboard_parser() -> argparse.ArgumentParser:
 def dashboard_main() -> None:
     parser = build_dashboard_parser()
     args = parser.parse_args()
+    if not _is_loopback_bind_address(args.host):
+        print(
+            "WARNING: PSPSO has no built-in authentication. The dashboard is now reachable "
+            "through the selected network interface.",
+            file=sys.stderr,
+        )
     if args.reload:
         uvicorn.run(
             "pspso.dashboard.app:create_app",
@@ -54,6 +62,15 @@ def dashboard_main() -> None:
         )
     else:
         uvicorn.run(create_app(), host=args.host, port=args.port)
+
+
+def _is_loopback_bind_address(host: str) -> bool:
+    if host.casefold() == "localhost":
+        return True
+    try:
+        return ipaddress.ip_address(host).is_loopback
+    except ValueError:
+        return False
 
 
 def _read_spec(path: Path) -> dict[str, Any]:
@@ -102,6 +119,9 @@ def _submit_standalone(store: RunStore, request: ExperimentSpec) -> dict[str, An
 def _api_request(
     api_url: str, method: str, path: str, payload: dict[str, Any] | None = None
 ) -> Any:
+    parsed_url = urlsplit(api_url)
+    if parsed_url.scheme not in {"http", "https"} or not parsed_url.netloc:
+        raise RuntimeError("The PSPSO API URL must be an http:// or https:// address.")
     data = None if payload is None else json.dumps(payload).encode("utf-8")
     request = urlrequest.Request(
         f"{api_url.rstrip('/')}{path}",
@@ -110,7 +130,8 @@ def _api_request(
         headers={"Content-Type": "application/json"},
     )
     try:
-        with urlrequest.urlopen(request, timeout=10) as response:
+        # Only HTTP(S) URLs reach this call; urlsplit validation above rejects other schemes.
+        with urlrequest.urlopen(request, timeout=10) as response:  # nosec B310
             return json.loads(response.read().decode("utf-8"))
     except urlerror.HTTPError as exc:
         detail = exc.read().decode("utf-8")

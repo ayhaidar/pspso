@@ -7,6 +7,10 @@ experiments and hyperparameter optimization. Particle swarm optimization is the
 primary search engine, with random and grid search available as comparison
 baselines.
 
+> **Development status:** The new 1.0 dashboard and CLI are under active
+> development on the `dev` branch. They are being prepared for the next PyPI
+> release and may still change before that release is published.
+
 Version 1.0 provides one typed contract across:
 
 - a notebook-friendly Python API;
@@ -293,6 +297,16 @@ POST /api/v1/runs/{run_id}/retry
 
 OpenAPI is served at `/api/v1/docs` and `/api/v1/openapi.json`. Live progress
 uses Server-Sent Events with polling and persisted-history recovery.
+
+## Security
+
+The dashboard is a local application without built-in user accounts or API
+authentication. It binds to `127.0.0.1` by default for normal single-user use.
+Other bind addresses, including `0.0.0.0`, remain available and produce a clear
+warning. Keep the workspace and exported model files trusted: model artifacts
+use Python's ML serialization formats and should not be loaded after modification
+by an untrusted party. See [SECURITY.md](SECURITY.md) for supported versions and
+private vulnerability reporting.
 
 ## Tests and Documentation
 

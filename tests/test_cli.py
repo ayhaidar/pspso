@@ -104,6 +104,20 @@ def test_cli_version_and_command_help(monkeypatch, capsys, tmp_path):
     assert capsys.readouterr().out.strip() == "pspso-dashboard 1.0.0"
 
 
+def test_dashboard_warns_when_bound_beyond_loopback(monkeypatch, capsys):
+    calls = []
+    monkeypatch.setattr(cli.uvicorn, "run", lambda *args, **kwargs: calls.append((args, kwargs)))
+    monkeypatch.setattr(sys, "argv", ["pspso-dashboard", "--host", "0.0.0.0"])
+    cli.dashboard_main()
+    assert calls[0][1]["host"] == "0.0.0.0"
+    assert "no built-in authentication" in capsys.readouterr().err
+
+
+def test_cli_rejects_non_http_api_urls():
+    with pytest.raises(RuntimeError, match="http:// or https://"):
+        cli._api_request("file:///tmp/pspso", "GET", "/api/v1/runs")
+
+
 def test_cli_start_list_show_cancel_retry_against_live_service(
     live_service, tmp_path, monkeypatch, capsys
 ):

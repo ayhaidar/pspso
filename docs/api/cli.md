@@ -82,6 +82,10 @@ pspso-dashboard --version
 Open `http://127.0.0.1:8000` after the service starts. OpenAPI documentation is
 available at `http://127.0.0.1:8000/api/v1/docs`.
 
+The default address keeps the single-user dashboard on the current computer.
+Binding to a non-loopback address such as `0.0.0.0` is supported and prints a
+warning because PSPSO does not add authentication or HTTPS.
+
 ## Workspace and output
 
 PSPSO stores data in `.pspso/v1` under the current working directory. Set
