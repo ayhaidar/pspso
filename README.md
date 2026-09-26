@@ -7,11 +7,18 @@ experiments and hyperparameter optimization. Particle swarm optimization is the
 primary search engine, with random and grid search available as comparison
 baselines.
 
-> **Major update in progress:** PSPSO 1.0 adds a new dashboard, CLI, experiment
-> service, data preparation workflow, and reproducible result tracking. This
-> version is still under active development and may change before the next PyPI
-> release. The existing PyPI package remains the install source until that update
-> is published.
+> [!CAUTION]
+> **Major update in progress**
+>
+> PSPSO 1.0 is a substantial update with a new dashboard, CLI, experiment
+> service, data preparation workflow, and reproducible result tracking. The
+> version on this repository is still under active development. APIs, defaults,
+> dashboard behaviour, and saved experiment formats may change before release.
+>
+> **Use this development version at your own risk.** Verify important results
+> independently and keep copies of valuable datasets and experiment artifacts.
+> The updated package will be published to PyPI after final validation; until
+> then, the current PyPI package remains the published release.
 
 Version 1.0 provides one typed contract across:
 
@@ -24,6 +31,20 @@ Version 1.0 provides one typed contract across:
 > Haidar A, Field M, Sykes J, Carolan M, Holloway L. PSPSO: A package for
 > parameters selection using particle swarm optimization. SoftwareX. 2021;
 > 15:100706.
+
+## Dashboard Snapshots
+
+### Overview
+
+![PSPSO dashboard overview showing the major-update notice and six-stage workflow](https://raw.githubusercontent.com/ayhaidar/pspso/main/docs/assets/screenshots/dashboard-overview.png)
+
+### Data Setup and Evaluation
+
+![PSPSO data setup showing an inspected binary-classification dataset and evaluation controls](https://raw.githubusercontent.com/ayhaidar/pspso/main/docs/assets/screenshots/dashboard-data-setup.png)
+
+### Experiment Results
+
+![PSPSO results showing the saved predictor, selected winner, evaluation split, and analysis tools](https://raw.githubusercontent.com/ayhaidar/pspso/main/docs/assets/screenshots/dashboard-results.png)
 
 ## Dashboard Workflow
 
