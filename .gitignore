@@ -83,6 +83,7 @@ docs/build/
 docs/html/
 docs/doctrees/
 site/
+brag-output/
 
 # Dashboard/frontend artifacts
 .pspso/

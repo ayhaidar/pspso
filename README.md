@@ -32,6 +32,23 @@ Version 1.0 provides one typed contract across:
 > parameters selection using particle swarm optimization. SoftwareX. 2021;
 > 15:100706.
 
+## See PSPSO in Action
+
+<p align="center">
+  <a href="https://cdn.jsdelivr.net/gh/ayhaidar/pspso@main/docs/assets/media/pspso-overview.mp4">
+    <img src="https://raw.githubusercontent.com/ayhaidar/pspso/main/docs/assets/images/pspso-overview.jpg" alt="Watch the PSPSO dashboard, CLI, and model-search overview" width="960">
+  </a>
+</p>
+
+<p align="center">
+  <strong><a href="https://cdn.jsdelivr.net/gh/ayhaidar/pspso@main/docs/assets/media/pspso-overview.mp4">Play the 25-second PSPSO overview</a></strong>
+</p>
+
+The overview follows a Breast Cancer classification experiment from local
+installation and data setup through five-fold evaluation, model search, and the
+saved result. It uses the current development interface; details may change as
+the major update progresses.
+
 ## Dashboard Snapshots
 
 ### Overview

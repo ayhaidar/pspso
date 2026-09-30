@@ -11,6 +11,24 @@ search, durable experiment tracking, a CLI, and a FastAPI + React dashboard.
     workflow, and reproducible result tracking. It remains under active
     development until the updated package is published to PyPI.
 
+## See PSPSO in Action
+
+<video
+  controls
+  preload="metadata"
+  poster="assets/images/pspso-overview.jpg"
+  style="display: block; width: 100%; max-width: 960px; margin: 0 auto 1rem;"
+>
+  <source src="assets/media/pspso-overview.mp4" type="video/mp4">
+  Your browser does not support embedded video. Open the
+  <a href="assets/media/pspso-overview.mp4">25-second PSPSO overview</a>.
+</video>
+
+The overview follows a Breast Cancer classification experiment from local
+installation and data setup through five-fold evaluation, model search, and the
+saved result. It uses the current development interface; details may change as
+the major update progresses.
+
 The current dashboard is designed for local/private experimentation:
 
 - choose a built-in, imported, or versioned CSV dataset;
